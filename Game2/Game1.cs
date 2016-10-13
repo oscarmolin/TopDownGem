@@ -11,7 +11,6 @@ namespace Game2
     /// </summary>
     public class CoolGAme : Game
     {
-        Random r = new Random();
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D Player;
@@ -41,10 +40,8 @@ namespace Game2
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            tileEngine = new TileEngine(this);
-            
-            tileEngine.TileHeight = 640;
-            tileEngine.TileWidth = 640;
+            tileEngine.TileHeight = 32;
+            tileEngine.TileWidth = 32;
             tileEngine.Data = new int[,]
                {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                 {0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,0},
@@ -84,7 +81,6 @@ namespace Game2
            
             
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            tileEngine.TileMap = Content.Load<Texture2D>("1");
             Player = this.Content.Load<Texture2D>("1");
             // TODO: use this.Content to load your game content here
         }
@@ -143,7 +139,7 @@ namespace Game2
                 graphics.ToggleFullScreen();
             if (ks.IsKeyDown(Keys.Space)||gs.IsButtonDown(Buttons.RightTrigger) || ms.LeftButton == ButtonState.Pressed)
             {
-                shots.Add(new shot(PlayerPos, pangle + RandomFireAngle.Angle(0)));
+                shots.Add(new shot(PlayerPos, pangle));
             }
             foreach (shot s in shots)
             {
@@ -162,7 +158,6 @@ namespace Game2
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            tileEngine.Draw(gameTime,spriteBatch);
             spriteBatch.Draw(Player,PlayerPos,null,Color.White,pangle,new Vector2(Player.Width/2,Player.Height/2),0.1f,SpriteEffects.None,1);
             if (!faku)
                 spriteBatch.Draw(Player, new Vector2(ms.Position.X, ms.Position.Y), null, Color.Red,pangle - (float)Math.PI/2, new Vector2(Player.Width / 2, Player.Height / 2), 0.05f, SpriteEffects.None, 1);
