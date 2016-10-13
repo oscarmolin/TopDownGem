@@ -6,11 +6,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{AFE6AB5B-BAFC-43FD-BC2A-AD8C90B9B7EA}</ProjectGuid>
+    <ProjectGuid>{80A255AB-BF0A-4BB9-B657-83D0A0CF849B}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Game2</RootNamespace>
-    <AssemblyName>Game2</AssemblyName>
+    <RootNamespace>Menu</RootNamespace>
+    <AssemblyName>Menu</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>Windows</MonoGamePlatform>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -38,18 +38,9 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Camera.cs" />
     <Compile Include="Game1.cs" />
-    <Compile Include="RandomFireAngle.cs" />
-    <Compile Include="KeyboardComponent.cs" />
-    <Compile Include="MenuChoice.cs" />
-    <Compile Include="MenuComponent.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="shot.cs" />
-    <Compile Include="TextureTool.cs" />
-    <Compile Include="TileEngine.cs" />
-    <Compile Include="TileEngineGood.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -57,19 +48,12 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
-    <Reference Include="TiledSharp, Version=0.15.5889.20321, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TiledSharp.0.15\lib\TiledSharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
