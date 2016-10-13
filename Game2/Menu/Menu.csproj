@@ -6,11 +6,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{AFE6AB5B-BAFC-43FD-BC2A-AD8C90B9B7EA}</ProjectGuid>
+    <ProjectGuid>{80A255AB-BF0A-4BB9-B657-83D0A0CF849B}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Game2</RootNamespace>
-    <AssemblyName>Game2</AssemblyName>
+    <RootNamespace>Menu</RootNamespace>
+    <AssemblyName>Menu</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>Windows</MonoGamePlatform>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -39,12 +39,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Game1.cs" />
-    <Compile Include="KeyboardComponent.cs" />
-    <Compile Include="MenuChoice.cs" />
-    <Compile Include="MenuComponent.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="shot.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

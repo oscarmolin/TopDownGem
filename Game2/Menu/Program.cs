@@ -1,7 +1,6 @@
 ﻿using System;
-using Meny;
 
-namespace Game2
+namespace Menu
 {
 #if WINDOWS || LINUX
     /// <summary>
@@ -15,7 +14,7 @@ namespace Game2
         [STAThread]
         static void Main()
         {
-            using (var game = new CoolGAme())
+            using (var game = new Game1())
                 game.Run();
         }
     }

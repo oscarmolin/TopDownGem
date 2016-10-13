@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using Meny;
 
 namespace Game2
 {
@@ -11,6 +12,12 @@ namespace Game2
     /// </summary>
     public class CoolGAme : Game
     {
+        enum GameState
+        { 
+            Start, Playing,Pause,GameOver
+        }
+
+        private GameState GS;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D Player;
@@ -20,6 +27,7 @@ namespace Game2
         MouseState ms;
         List<shot> shots;
         bool faku;
+        MenuComponent mc; 
         public CoolGAme()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -40,9 +48,13 @@ namespace Game2
         {
             // TODO: Add your initialization logic here
 
+            mc = new  MenuComponent(this);
+            Components.Add(mc);
+
             PlayerPos = new Vector2(300, 300);
             pspeed = 4;
             shots = new List<shot>();
+            GS =GameState.Start;
             base.Initialize();
         }
 
@@ -53,10 +65,9 @@ namespace Game2
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-           
             
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            Player = this.Content.Load<Texture2D>("1");
+            Player = Content.Load<Texture2D>("1");
             // TODO: use this.Content to load your game content here
         }
 
@@ -80,46 +91,55 @@ namespace Game2
                 Exit();
 
             // TODO: Add your update logic here
-            GamePadState gs = GamePad.GetState(0);
-            KeyboardState ks = Keyboard.GetState();
-            if (gs.IsConnected)
+            switch (GS)
             {
-                faku = true;
-                if (gs.ThumbSticks.Left != new Vector2(0,0))                
-                    PlayerPos += pspeed * new Vector2( gs.ThumbSticks.Left.X , gs.ThumbSticks.Left.Y* -1);
-                
-                if(gs.ThumbSticks.Right != new Vector2(0,0))
-                    pangle = (float)Math.Atan2( gs.ThumbSticks.Right.X,  gs.ThumbSticks.Right.Y) + (float)Math.PI/2;
-            }
-            else
-            {
-                faku = false;
-               
-                
-                if (ks.IsKeyDown(Keys.W))
-                    PlayerPos += new Vector2(0, -pspeed);
-                if (ks.IsKeyDown(Keys.A))
-                    PlayerPos += new Vector2(-pspeed, 0);
-                if (ks.IsKeyDown(Keys.S))
-                    PlayerPos += new Vector2(0, pspeed);
-                if (ks.IsKeyDown(Keys.D))
-                    PlayerPos += new Vector2(pspeed, 0);
-                ms = Mouse.GetState();
-                pangle = (float)Math.Atan2(PlayerPos.Y - ms.Y, PlayerPos.X - ms.X);
+                    case GameState.Start:
+                    
+                    break;
+                    case GameState.Playing:
+                    GamePadState gs = GamePad.GetState(0);
+                    KeyboardState ks = Keyboard.GetState();
+                    if (gs.IsConnected)
+                    {
+                        faku = true;
+                        if (gs.ThumbSticks.Left != new Vector2(0, 0))
+                            PlayerPos += pspeed * new Vector2(gs.ThumbSticks.Left.X, gs.ThumbSticks.Left.Y * -1);
 
+                        if (gs.ThumbSticks.Right != new Vector2(0, 0))
+                            pangle = (float)Math.Atan2(gs.ThumbSticks.Right.X, gs.ThumbSticks.Right.Y) + (float)Math.PI / 2;
+                    }
+                    else
+                    {
+                        faku = false;
+
+
+                        if (ks.IsKeyDown(Keys.W))
+                            PlayerPos += new Vector2(0, -pspeed);
+                        if (ks.IsKeyDown(Keys.A))
+                            PlayerPos += new Vector2(-pspeed, 0);
+                        if (ks.IsKeyDown(Keys.S))
+                            PlayerPos += new Vector2(0, pspeed);
+                        if (ks.IsKeyDown(Keys.D))
+                            PlayerPos += new Vector2(pspeed, 0);
+                        ms = Mouse.GetState();
+                        pangle = (float)Math.Atan2(PlayerPos.Y - ms.Y, PlayerPos.X - ms.X);
+
+                    }
+                    if (ks.IsKeyDown(Keys.R))
+                        Initialize();
+                    if (ks.IsKeyDown(Keys.Home))
+                        graphics.ToggleFullScreen();
+                    if (ks.IsKeyDown(Keys.Space) || gs.IsButtonDown(Buttons.RightTrigger))
+                    {
+                        shots.Add(new shot(PlayerPos, pangle));
+                    }
+                    foreach (shot s in shots)
+                    {
+                        s.pos -= new Vector2(10 * (float)Math.Cos(s.angle), 10 * (float)Math.Sin(s.angle));
+                    }
+                    break;
             }
-            if (ks.IsKeyDown(Keys.R))
-                Initialize();
-            if (ks.IsKeyDown(Keys.Home))
-                graphics.ToggleFullScreen();
-            if (ks.IsKeyDown(Keys.Space)||gs.IsButtonDown(Buttons.RightTrigger))
-            {
-                shots.Add(new shot(PlayerPos, pangle));
-            }
-            foreach (shot s in shots)
-            {
-                s.pos -= new Vector2(10 * (float)Math.Cos(s.angle), 10 * (float)Math.Sin(s.angle));
-            }
+            
             base.Update(gameTime);
         }
 
@@ -130,14 +150,28 @@ namespace Game2
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
+ spriteBatch.Begin();
             // TODO: Add your drawing code here
-            spriteBatch.Begin();
-            spriteBatch.Draw(Player,PlayerPos,null,Color.White,pangle,new Vector2(Player.Width/2,Player.Height/2),0.1f,SpriteEffects.None,1);
-            if (!faku)
-                spriteBatch.Draw(Player, new Vector2(ms.Position.X, ms.Position.Y), null, Color.Red,pangle - (float)Math.PI/2, new Vector2(Player.Width / 2, Player.Height / 2), 0.05f, SpriteEffects.None, 1);
-            foreach (shot s in shots)
-                spriteBatch.Draw(Player, s.pos, null, Color.White, s.angle, new Vector2(Player.Width / 2, Player.Height / 2), 0.05f, SpriteEffects.None, 1);
+            switch (GS)
+            {
+                case GameState.Start:
+                   mc.Draw(gameTime);
+                   
+                    break;
+                case GameState.Playing:
+
+                    
+                    spriteBatch.Draw(Player, PlayerPos, null, Color.White, pangle,
+                        new Vector2(Player.Width/2, Player.Height/2), 0.1f, SpriteEffects.None, 1);
+                    if (!faku)
+                        spriteBatch.Draw(Player, new Vector2(ms.Position.X, ms.Position.Y), null, Color.Red,
+                            pangle - (float) Math.PI/2, new Vector2(Player.Width/2, Player.Height/2), 0.05f,
+                            SpriteEffects.None, 1);
+                    foreach (shot s in shots)
+                        spriteBatch.Draw(Player, s.pos, null, Color.White, s.angle,
+                            new Vector2(Player.Width/2, Player.Height/2), 0.05f, SpriteEffects.None, 1);
+                    break;
+            }
             spriteBatch.End();
             base.Draw(gameTime);
         }
