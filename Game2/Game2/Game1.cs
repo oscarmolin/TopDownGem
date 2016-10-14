@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using Meny;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Game2
 {
@@ -27,7 +28,10 @@ namespace Game2
         MouseState ms;
         List<shot> shots;
         bool faku;
-        MenuComponent mc; 
+        MenuComponent mc;
+        float volume = 1.0f;
+        float pitch= 0.0f;
+        float pan = 0.0f;
         public CoolGAme()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -85,6 +89,7 @@ namespace Game2
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        private SoundEffect effect;
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -135,6 +140,8 @@ namespace Game2
                     if (ks.IsKeyDown(Keys.Space) || gs.IsButtonDown(Buttons.RightTrigger))
                     {
                         shots.Add(new shot(PlayerPos, pangle));
+                        effect = Content.Load<SoundEffect>("Pew");
+                        effect.Play(volume, pitch, pan);
                     }
                     foreach (shot s in shots)
                     {

@@ -41,3 +41,9 @@
 /processorParam:TextureFormat=Color
 /build:menuFontSelected.bmp
 
+#begin Pew
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Pew
+
