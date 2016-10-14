@@ -44,7 +44,6 @@ namespace Game2
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 1920;
             graphics.PreferredBackBufferHeight =  1080;
-            
            // graphics.IsFullScreen = true;
         }
 
@@ -56,7 +55,6 @@ namespace Game2
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
             //var version = map.Version;
             //var myTileset = map.Tilesets["myTileset"];
             //var myLayer = map.Layers[2];
@@ -111,7 +109,6 @@ namespace Game2
 
             
             //tileEngine.TileMap = Content.Load<Texture2D>("1");
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -119,8 +116,7 @@ namespace Game2
         /// game-specific content.
         /// </summary>
         protected override void UnloadContent()
-        {
-            // TODO: Unload any non ContentManager content here
+        { 
         }
 
         /// <summary>
@@ -133,8 +129,6 @@ namespace Game2
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            // TODO: Add your update logic here
             ms = Mouse.GetState();
             GamePadState gs = GamePad.GetState(0);
             KeyboardState ks = Keyboard.GetState();
@@ -218,7 +212,6 @@ namespace Game2
             TileEngineG.Draw(spriteBatch);
             //tileEngine.Draw(gameTime,spriteBatch);
             spriteBatch.Draw(Player,PlayerPos,null,Color.White,pangle,new Vector2(Player.Width/2,Player.Height/2),0.1f,SpriteEffects.None,0);
-            // TODO: Add your drawing code here
             switch (GS)
             {
                 case GameState.Start:
