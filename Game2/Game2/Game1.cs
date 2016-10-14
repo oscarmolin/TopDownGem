@@ -39,8 +39,6 @@ namespace Game2
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 1920;
             graphics.PreferredBackBufferHeight = 1080;
-            
-            //graphics.IsFullScreen = true;
         }
 
         /// <summary>
@@ -51,7 +49,6 @@ namespace Game2
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
 
             mc = new  MenuComponent(this);
             Components.Add(mc);
@@ -73,7 +70,6 @@ namespace Game2
             
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Player = Content.Load<Texture2D>("1");
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -81,8 +77,7 @@ namespace Game2
         /// game-specific content.
         /// </summary>
         protected override void UnloadContent()
-        {
-            // TODO: Unload any non ContentManager content here
+        { 
         }
 
         /// <summary>
@@ -95,8 +90,6 @@ namespace Game2
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            // TODO: Add your update logic here
             ms = Mouse.GetState();
             GamePadState gs = GamePad.GetState(0);
             KeyboardState ks = Keyboard.GetState();
@@ -162,7 +155,6 @@ namespace Game2
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
-            // TODO: Add your drawing code here
             switch (GS)
             {
                 case GameState.Start:
