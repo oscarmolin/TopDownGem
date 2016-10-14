@@ -18,6 +18,7 @@ namespace Game2
             Start, Playing,Pause,GameOver
         }
 
+        public SoundEffect effect;
         public static GameState GS;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -127,7 +128,7 @@ namespace Game2
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        private SoundEffect effect;
+        
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
