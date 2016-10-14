@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using TiledSharp;
 
 namespace Game2
 {
@@ -22,12 +23,14 @@ namespace Game2
         List<shot> shots;
         TileEngine tileEngine;
         bool faku;
+        TmxMap map;
+        TileEngineGood TileEngineG;
         public CoolGAme()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight = 1080;
+            graphics.PreferredBackBufferHeight =  1080;
             
             //graphics.IsFullScreen = true;
         }
@@ -41,31 +44,35 @@ namespace Game2
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            tileEngine = new TileEngine(this);
+            //var version = map.Version;
+            //var myTileset = map.Tilesets["myTileset"];
+            //var myLayer = map.Layers[2];
+            //var hiddenChest = map.ObjectGroups["Chests"].Objects["hiddenChest"];
             
-            tileEngine.TileHeight = 640;
-            tileEngine.TileWidth = 640;
-            tileEngine.Data = new int[,]
-               {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                {0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,0},
-                {0,1,0,0,1,0,0,0,0,0,1,0,1,1,1,0,0,0,1,0,0,1,0,0,1,1,1,0},
-                {0,1,0,0,1,1,1,1,1,0,1,0,1,1,1,0,0,0,1,0,0,1,0,0,1,1,1,0},
-                {0,1,0,0,1,0,0,0,0,0,1,0,1,1,1,0,0,1,1,0,0,1,0,0,1,1,1,0},
-                {0,1,0,1,1,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,1,0,0,0,1,1,0},
-                {0,1,0,1,1,1,1,1,0,0,0,0,0,1,0,1,1,1,1,1,1,1,0,1,0,1,1,0},
-                {0,1,0,0,1,0,0,1,1,1,1,0,0,1,0,0,0,0,1,0,0,0,0,1,0,1,0,0},
-                {0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,1,1,1,1,0,1,0,0},
-                {0,1,1,1,0,1,1,1,1,1,1,0,0,1,0,1,1,1,1,1,1,0,0,1,0,1,1,0},
-                {0,1,1,1,0,1,0,0,0,0,1,0,0,1,0,1,0,1,1,1,1,0,0,1,0,0,1,0},
-                {0,1,1,1,0,1,0,1,1,1,1,0,0,1,0,1,0,0,0,0,0,0,1,1,1,0,1,0},
-                {0,1,1,1,0,1,0,1,0,0,0,0,0,1,0,1,0,1,1,1,0,0,0,1,0,0,1,0},
-                {0,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,0,1,0,0,0,1,0,0,1,0},
-                {0,1,1,1,0,1,0,0,0,0,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,0},
-                {0,1,0,0,0,1,0,1,1,1,1,1,0,1,0,1,0,1,0,1,0,1,0,0,0,0,1,0},
-                {0,1,0,0,0,1,0,1,0,0,0,0,0,1,0,1,0,1,0,1,1,1,1,1,0,0,1,0},
-                {0,1,0,0,0,1,0,1,1,1,1,1,1,1,0,0,0,1,0,0,1,1,0,1,0,1,1,0},
-                {0,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,0,1,1,1,0,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+            //tileEngine = new TileEngine(this);
+            //tileEngine.TileHeight = 640;
+            //tileEngine.TileWidth = 640;
+            //tileEngine.Data = new int[,]
+            //   {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            //    {0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,0},
+            //    {0,1,0,0,1,0,0,0,0,0,1,0,1,1,1,0,0,0,1,0,0,1,0,0,1,1,1,0},
+            //    {0,1,0,0,1,1,1,1,1,0,1,0,1,1,1,0,0,0,1,0,0,1,0,0,1,1,1,0},
+            //    {0,1,0,0,1,0,0,0,0,0,1,0,1,1,1,0,0,1,1,0,0,1,0,0,1,1,1,0},
+            //    {0,1,0,1,1,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,1,0,0,0,1,1,0},
+            //    {0,1,0,1,1,1,1,1,0,0,0,0,0,1,0,1,1,1,1,1,1,1,0,1,0,1,1,0},
+            //    {0,1,0,0,1,0,0,1,1,1,1,0,0,1,0,0,0,0,1,0,0,0,0,1,0,1,0,0},
+            //    {0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,1,1,1,1,0,1,0,0},
+            //    {0,1,1,1,0,1,1,1,1,1,1,0,0,1,0,1,1,1,1,1,1,0,0,1,0,1,1,0},
+            //    {0,1,1,1,0,1,0,0,0,0,1,0,0,1,0,1,0,1,1,1,1,0,0,1,0,0,1,0},
+            //    {0,1,1,1,0,1,0,1,1,1,1,0,0,1,0,1,0,0,0,0,0,0,1,1,1,0,1,0},
+            //    {0,1,1,1,0,1,0,1,0,0,0,0,0,1,0,1,0,1,1,1,0,0,0,1,0,0,1,0},
+            //    {0,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,0,1,0,0,0,1,0,0,1,0},
+            //    {0,1,1,1,0,1,0,0,0,0,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,0},
+            //    {0,1,0,0,0,1,0,1,1,1,1,1,0,1,0,1,0,1,0,1,0,1,0,0,0,0,1,0},
+            //    {0,1,0,0,0,1,0,1,0,0,0,0,0,1,0,1,0,1,0,1,1,1,1,1,0,0,1,0},
+            //    {0,1,0,0,0,1,0,1,1,1,1,1,1,1,0,0,0,1,0,0,1,1,0,1,0,1,1,0},
+            //    {0,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,0,1,1,1,0,0},
+            //    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
 
 
             PlayerPos = new Vector2(300, 300);
@@ -81,10 +88,16 @@ namespace Game2
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-           
+
             
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            tileEngine.TileMap = Content.Load<Texture2D>("1");
+            
+            map = new TmxMap("house.tmx");
+            TileEngineG = new TileEngineGood(map);
+            TileEngineG.LoadContent(this);
+
+            
+            //tileEngine.TileMap = Content.Load<Texture2D>("1");
             Player = this.Content.Load<Texture2D>("1");
             // TODO: use this.Content to load your game content here
         }
@@ -137,13 +150,14 @@ namespace Game2
                 pangle = (float)Math.Atan2(PlayerPos.Y - ms.Y, PlayerPos.X - ms.X);
 
             }
+            
             if (ks.IsKeyDown(Keys.R))
                 Initialize();
             if (ks.IsKeyDown(Keys.Home))
                 graphics.ToggleFullScreen();
             if (ks.IsKeyDown(Keys.Space)||gs.IsButtonDown(Buttons.RightTrigger) || ms.LeftButton == ButtonState.Pressed)
             {
-                shots.Add(new shot(PlayerPos, pangle + RandomFireAngle.Angle(0)));
+                shots.Add(new shot(PlayerPos, pangle + RandomFireAngle.Angle(0.3f)));
             }
             foreach (shot s in shots)
             {
@@ -162,7 +176,8 @@ namespace Game2
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            tileEngine.Draw(gameTime,spriteBatch);
+            TileEngineG.Draw(spriteBatch);
+            //tileEngine.Draw(gameTime,spriteBatch);
             spriteBatch.Draw(Player,PlayerPos,null,Color.White,pangle,new Vector2(Player.Width/2,Player.Height/2),0.1f,SpriteEffects.None,1);
             if (!faku)
                 spriteBatch.Draw(Player, new Vector2(ms.Position.X, ms.Position.Y), null, Color.Red,pangle - (float)Math.PI/2, new Vector2(Player.Width / 2, Player.Height / 2), 0.05f, SpriteEffects.None, 1);
