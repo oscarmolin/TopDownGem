@@ -13,12 +13,11 @@ namespace Game2
     public class CoolGAme : Game
     {
         Random r = new Random();
-        enum GameState
         { 
             Start, Playing,Pause,GameOver
         }
 
-        private GameState GS;
+        public static GameState GS;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D Player;
@@ -130,14 +129,17 @@ namespace Game2
                 Exit();
 
             // TODO: Add your update logic here
+            ms = Mouse.GetState();
+            GamePadState gs = GamePad.GetState(0);
+            KeyboardState ks = Keyboard.GetState();
             switch (GS)
             {
+               
                     case GameState.Start:
-                    
+                    mc.Update(gameTime);
                     break;
                     case GameState.Playing:
-                    GamePadState gs = GamePad.GetState(0);
-                    KeyboardState ks = Keyboard.GetState();
+                    
             ms = Mouse.GetState();
             if (PlayerPos.X > graphics.PreferredBackBufferWidth / 2 && PlayerPos.Y > graphics.PreferredBackBufferHeight / 2)
                 cam.pos = PlayerPos;
@@ -167,7 +169,7 @@ namespace Game2
                             PlayerPos += new Vector2(0, pspeed);
                         if (ks.IsKeyDown(Keys.D))
                             PlayerPos += new Vector2(pspeed, 0);
-                        ms = Mouse.GetState();
+                        
                         pangle = (float)Math.Atan2(PlayerPos.Y - ms.Y, PlayerPos.X - ms.X);
 
                     }
@@ -220,15 +222,16 @@ namespace Game2
                     
                     spriteBatch.Draw(Player, PlayerPos, null, Color.White, pangle,
                         new Vector2(Player.Width/2, Player.Height/2), 0.1f, SpriteEffects.None, 1);
-                    if (!faku)
+                   
                 spriteBatch.Draw(Player, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red,pangle - (float)Math.PI/2, new Vector2(Player.Width / 2, Player.Height / 2), 0.05f, SpriteEffects.None, 0);
-                            pangle - (float) Math.PI/2, new Vector2(Player.Width/2, Player.Height/2), 0.05f,
-                            SpriteEffects.None, 1);
                     foreach (shot s in shots)
                 spriteBatch.Draw(Player, s.pos, null, Color.White, s.angle, new Vector2(Player.Width / 2, Player.Height / 2), 0.05f, SpriteEffects.None, 0);
                             new Vector2(Player.Width/2, Player.Height/2), 0.05f, SpriteEffects.None, 1);
                     break;
             }
+            spriteBatch.Draw(Player, new Vector2(ms.Position.X, ms.Position.Y), null, Color.Red,
+                            pangle - (float)Math.PI / 2, new Vector2(Player.Width / 2, Player.Height / 2), 0.05f,
+                            SpriteEffects.None, 1);
             spriteBatch.End();
             base.Draw(gameTime);
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game2;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,15 +15,18 @@ namespace Meny
     /// </summary>
     public class MenuComponent : Microsoft.Xna.Framework.DrawableGameComponent
     {
+        
         SpriteBatch _spriteBatch;
         SpriteFont _normalFont;
         SpriteFont _selectedFont;
         List<MenuChoice> _choices;
         Color _backgroundColor;
         MouseState _previousMouseState;
+        CoolGAme.GameState GS = CoolGAme.GameState.Start;
 
         public MenuComponent(Game game) : base(game)
         {
+            
         }
         public override void Initialize()
         {
@@ -36,17 +40,15 @@ namespace Meny
         }
         private void MenuStartClicked()
         {
-            _backgroundColor = Color.Turquoise;
+            CoolGAme.GS = CoolGAme.GameState.Playing;
         }
 
         private void MenuSelectClicked()
         {
-            _backgroundColor = Color.Teal;
         }
 
         private void MenuOptionsClicked()
         {
-            _backgroundColor = Color.Silver;
         }
 
         private void MenuQuitClicked()
@@ -122,7 +124,7 @@ namespace Meny
             _choices[selectedIndex].Selected = true;
         }
 
-        public override void Draw(GameTime gameTime)
+        public void Draw(GameTime gameTime)
         {
             //GraphicsDevice.Clear(_backgroundColor);
             _spriteBatch.Begin();
