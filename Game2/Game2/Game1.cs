@@ -28,9 +28,16 @@ namespace Game2
         Camera2D cam;
         Vector2 mousePosition;
 
-        Texture2D enemy;
+        Texture2D enemy_zombie;
+        Texture2D enemy_crippler;
+        Texture2D enemy_spitter;
+        Texture2D enemy_charger;
+        Texture2D enemy_pistolzombie;
+        Texture2D enemy_shotgunzombie;
         Vector2 enemyPos;
         float enemyAngle;
+        EnemyStat enemyStat;
+
         public CoolGAme()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -80,8 +87,11 @@ namespace Game2
             //    {0,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,0,1,1,1,0,0},
             //    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
 
+            enemyStat = Enemies.SpawnOne((EnemyType)r.Next(6));
+
             cam = new Camera2D();
             PlayerPos = new Vector2(300, 300);
+            enemyPos = new Vector2(200, 200);
             pspeed = 4;
             shots = new List<shot>();
             base.Initialize();
@@ -98,14 +108,19 @@ namespace Game2
             
             spriteBatch = new SpriteBatch(GraphicsDevice);
             
-            map = new TmxMap("house.tmx");
+            map = new TmxMap("data/house.tmx");
             TileEngineG = new TileEngineGood(map);
             TileEngineG.LoadContent(this);
 
             
             //tileEngine.TileMap = Content.Load<Texture2D>("1");
             Player = this.Content.Load<Texture2D>("1");
-            enemy = this.Content.Load<Texture2D>("zombie2_hold");
+            enemy_zombie = this.Content.Load<Texture2D>("zombie2_hold");
+            enemy_crippler = this.Content.Load<Texture2D>("zoimbie1_hold");
+            enemy_spitter = this.Content.Load<Texture2D>("robot1_hold");
+            enemy_charger = this.Content.Load<Texture2D>("robot2_hold");
+            enemy_pistolzombie = this.Content.Load<Texture2D>("zombie2_silencer");
+            enemy_shotgunzombie = this.Content.Load<Texture2D>("zombie2_machine");
             // TODO: use this.Content to load your game content here
         }
 
@@ -200,7 +215,30 @@ namespace Game2
             
             TileEngineG.Draw(spriteBatch);
             //tileEngine.Draw(gameTime,spriteBatch);
-            spriteBatch.Draw(enemy, enemyPos,null, Color.White, enemyAngle, new Vector2(enemy.Width / 2, enemy.Height / 2), 1.0f, SpriteEffects.None, 0);
+            if ( enemyStat.Enemytype == EnemyType.Zombie )
+            {
+                spriteBatch.Draw(enemy_zombie, enemyPos, null, Color.White, enemyAngle, new Vector2(enemy_zombie.Width / 2, enemy_zombie.Height / 2), 1.0f, SpriteEffects.None, 0);
+            }
+            else if (enemyStat.Enemytype == EnemyType.Crippler)
+            {
+                spriteBatch.Draw(enemy_crippler, enemyPos, null, Color.White, enemyAngle, new Vector2(enemy_crippler.Width / 2, enemy_crippler.Height / 2), 1.0f, SpriteEffects.None, 0);
+            }
+            else if (enemyStat.Enemytype == EnemyType.Spitter)
+            {
+                spriteBatch.Draw(enemy_spitter, enemyPos, null, Color.White, enemyAngle, new Vector2(enemy_spitter.Width / 2, enemy_spitter.Height / 2), 1.0f, SpriteEffects.None, 0);
+            }
+            else if (enemyStat.Enemytype == EnemyType.Charger)
+            {
+                spriteBatch.Draw(enemy_charger, enemyPos, null, Color.White, enemyAngle, new Vector2(enemy_charger.Width / 2, enemy_charger.Height / 2), 1.0f, SpriteEffects.None, 0);
+            }
+            else if (enemyStat.Enemytype == EnemyType.PistolZombie)
+            {
+                spriteBatch.Draw(enemy_pistolzombie, enemyPos, null, Color.White, enemyAngle, new Vector2(enemy_pistolzombie.Width / 2, enemy_pistolzombie.Height / 2), 1.0f, SpriteEffects.None, 0);
+            }
+            else if (enemyStat.Enemytype == EnemyType.ShotgunZombie)
+            {
+                spriteBatch.Draw(enemy_shotgunzombie, enemyPos, null, Color.White, enemyAngle, new Vector2(enemy_shotgunzombie.Width / 2, enemy_shotgunzombie.Height / 2), 1.0f, SpriteEffects.None, 0);
+            }
             spriteBatch.Draw(Player,PlayerPos,null,Color.White,pangle,new Vector2(Player.Width/2,Player.Height/2),0.1f,SpriteEffects.None,0);
             if (!faku)
                 spriteBatch.Draw(Player, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red,pangle - (float)Math.PI/2, new Vector2(Player.Width / 2, Player.Height / 2), 0.05f, SpriteEffects.None, 0);

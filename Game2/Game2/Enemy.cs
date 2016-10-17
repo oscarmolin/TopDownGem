@@ -17,8 +17,9 @@ namespace Game2
         public int Rescitense { get; set; }
         public int Speed { get; set; }
         public string Name { get; set; }
+        public EnemyType Enemytype { get; set; }
     }
-    enum EnemyType
+    public enum EnemyType
     {
         Zombie,
         Crippler,
@@ -29,11 +30,9 @@ namespace Game2
     }
     class Enemies
     {
-        public EnemyType Type { get; private set; }
-        public Enemies(EnemyType type)
+        public static EnemyStat SpawnOne(EnemyType type)
         {
-            Type = type;
-            switch (Type)
+            switch (type)
             {
                 case EnemyType.Zombie:
                     EnemyStat zombie = new EnemyStat();
@@ -42,6 +41,8 @@ namespace Game2
                     zombie.Rescitense = 0;
                     zombie.Speed = 2;
                     zombie.Name = "Zombie";
+                    zombie.Enemytype = type;
+                    return zombie;
                     break;
                 case EnemyType.Crippler:
                     EnemyStat crippler = new EnemyStat();
@@ -50,6 +51,8 @@ namespace Game2
                     crippler.Rescitense = 10;
                     crippler.Speed = 1;
                     crippler.Name = "Crippler";
+                    crippler.Enemytype = type;
+                    return crippler;
                     break;
                 case EnemyType.Spitter:
                     EnemyStat spitter = new EnemyStat();
@@ -58,6 +61,8 @@ namespace Game2
                     spitter.Rescitense = 5;
                     spitter.Speed = 2;
                     spitter.Name = "Spitter";
+                    spitter.Enemytype = type;
+                    return spitter;
                     break;
                 case EnemyType.Charger:
                     EnemyStat charger = new EnemyStat();
@@ -66,6 +71,8 @@ namespace Game2
                     charger.Rescitense = 10;
                     charger.Speed = 5;
                     charger.Name = "Charger";
+                    charger.Enemytype = type;
+                    return charger;
                     break;
                 case EnemyType.PistolZombie:
                     EnemyStat pistolzombie = new EnemyStat();
@@ -74,6 +81,8 @@ namespace Game2
                     pistolzombie.Rescitense = 15;
                     pistolzombie.Speed = 2;
                     pistolzombie.Name = "Pistol Zombie";
+                    pistolzombie.Enemytype = type;
+                    return pistolzombie;
                     break;
                 case EnemyType.ShotgunZombie:
                     EnemyStat shotgunzombie = new EnemyStat();
@@ -82,9 +91,11 @@ namespace Game2
                     shotgunzombie.Rescitense = 15;
                     shotgunzombie.Speed = 2;
                     shotgunzombie.Name = "Shotgun Zombie";
+                    shotgunzombie.Enemytype = type;
+                    return shotgunzombie;
                     break;
             }
-
+            return null;
         }
     }
 }
