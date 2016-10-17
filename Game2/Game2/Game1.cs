@@ -15,9 +15,8 @@ namespace Game2
     {
         Random r = new Random();
         { 
-            Start, Playing,Pause,GameOver
+            Start, Playing, Pause, GameOver
         }
-
         public SoundEffect effect;
         public static GameState GS;
         GraphicsDeviceManager graphics;
@@ -35,7 +34,7 @@ namespace Game2
         TileEngineGood TileEngineG;
         Camera2D cam;
         float volume = 1.0f;
-        float pitch= 0.0f;
+        float pitch= 0.5f;
         float pan = 0.0f;
         Vector2 mousePosition;
         public CoolGAme()
@@ -46,7 +45,6 @@ namespace Game2
             graphics.PreferredBackBufferHeight =  1080;
            // graphics.IsFullScreen = true;
         }
-
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
         /// This is where it can query for any required services and load any non-graphic
@@ -59,10 +57,8 @@ namespace Game2
             //var myTileset = map.Tilesets["myTileset"];
             //var myLayer = map.Layers[2];
             //var hiddenChest = map.ObjectGroups["Chests"].Objects["hiddenChest"];
-
             mc = new  MenuComponent(this);
             Components.Add(mc);
-
             //tileEngine.Data = new int[,]
             //   {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
             //    {0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,0},
