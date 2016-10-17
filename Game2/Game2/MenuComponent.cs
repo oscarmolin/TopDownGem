@@ -20,7 +20,6 @@ namespace Meny
         SpriteFont _normalFont;
         SpriteFont _selectedFont;
         List<MenuChoice> _choices;
-        Color _backgroundColor;
         MouseState _previousMouseState;
         CoolGAme.GameState GS = CoolGAme.GameState.Start;
 
@@ -32,7 +31,6 @@ namespace Meny
         {
             _choices = new List<MenuChoice>();
             _choices.Add(new MenuChoice() { Text = "START", Selected = true, ClickAction = MenuStartClicked });
-            _choices.Add(new MenuChoice() { Text = "SELECT LEVEL", ClickAction = MenuSelectClicked });
             _choices.Add(new MenuChoice() { Text = "OPTIONS", ClickAction = MenuOptionsClicked });
             _choices.Add(new MenuChoice() { Text = "QUIT", ClickAction = MenuQuitClicked });
 
@@ -42,15 +40,9 @@ namespace Meny
         {
             CoolGAme.GS = CoolGAme.GameState.Playing;
         }
-
-        private void MenuSelectClicked()
-        {
-        }
-
         private void MenuOptionsClicked()
         {
         }
-
         private void MenuQuitClicked()
         {
             this.Game.Exit();
@@ -60,7 +52,6 @@ namespace Meny
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _normalFont = Game.Content.Load<SpriteFont>("menuFontNormal");
             _selectedFont = Game.Content.Load<SpriteFont>("menuFontSelected");
-            _backgroundColor = Color.White;
             float startY = 0.2f * GraphicsDevice.Viewport.Height;
 
             foreach (var choice in _choices)
@@ -126,7 +117,6 @@ namespace Meny
 
         public void Draw(GameTime gameTime)
         {
-            //GraphicsDevice.Clear(_backgroundColor);
             _spriteBatch.Begin();
             foreach (var choice in _choices)
             {

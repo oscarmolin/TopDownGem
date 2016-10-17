@@ -15,9 +15,8 @@ namespace Game2
     {
         public enum GameState
         { 
-            Start, Playing,Pause,GameOver
+            Start, Playing, Pause, GameOver
         }
-
         public SoundEffect effect;
         public static GameState GS;
         GraphicsDeviceManager graphics;
@@ -31,7 +30,7 @@ namespace Game2
         bool faku;
         MenuComponent mc;
         float volume = 1.0f;
-        float pitch= 0.0f;
+        float pitch= 0.5f;
         float pan = 0.0f;
         public CoolGAme()
         {
@@ -40,7 +39,6 @@ namespace Game2
             graphics.PreferredBackBufferWidth = 1920;
             graphics.PreferredBackBufferHeight = 1080;
         }
-
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
         /// This is where it can query for any required services and load any non-graphic
@@ -49,10 +47,8 @@ namespace Game2
         /// </summary>
         protected override void Initialize()
         {
-
             mc = new  MenuComponent(this);
             Components.Add(mc);
-
             PlayerPos = new Vector2(300, 300);
             pspeed = 4;
             shots = new List<shot>();
