@@ -157,23 +157,8 @@ namespace Game2
                         if (gs.ThumbSticks.Right != new Vector2(0, 0))
                             pangle = (float)Math.Atan2(gs.ThumbSticks.Right.X, gs.ThumbSticks.Right.Y) + (float)Math.PI / 2;
                     }
-                    else
-                    {
-                        faku = false;
-
-
-                        if (ks.IsKeyDown(Keys.W))
-                            PlayerPos += new Vector2(0, -pspeed);
-                        if (ks.IsKeyDown(Keys.A))
-                            PlayerPos += new Vector2(-pspeed, 0);
-                        if (ks.IsKeyDown(Keys.S))
-                            PlayerPos += new Vector2(0, pspeed);
-                        if (ks.IsKeyDown(Keys.D))
-                            PlayerPos += new Vector2(pspeed, 0);
-                        
-                        pangle = (float)Math.Atan2(PlayerPos.Y - mousePosition.Y, PlayerPos.X - mousePosition.X);
-
-                    }
+                    
+                   
             
                     if (ks.IsKeyDown(Keys.R))
                         Initialize();
