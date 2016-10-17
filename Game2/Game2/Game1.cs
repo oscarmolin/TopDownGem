@@ -187,7 +187,7 @@ namespace Game2
             // TODO: Add your drawing code here
             spriteBatch.Begin( SpriteSortMode.Deferred,
                                BlendState.AlphaBlend,
-                               SamplerState.LinearWrap,
+                               SamplerState.PointClamp,
                                DepthStencilState.Default,
                                RasterizerState.CullNone,
                                null,
