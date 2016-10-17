@@ -27,6 +27,10 @@ namespace Game2
         TileEngineGood TileEngineG;
         Camera2D cam;
         Vector2 mousePosition;
+
+        Texture2D enemy;
+        Vector2 enemyPos;
+        float enemyAngle;
         public CoolGAme()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -101,6 +105,7 @@ namespace Game2
             
             //tileEngine.TileMap = Content.Load<Texture2D>("1");
             Player = this.Content.Load<Texture2D>("1");
+            enemy = this.Content.Load<Texture2D>("zombie2_hold");
             // TODO: use this.Content to load your game content here
         }
 
@@ -195,6 +200,7 @@ namespace Game2
             
             TileEngineG.Draw(spriteBatch);
             //tileEngine.Draw(gameTime,spriteBatch);
+            spriteBatch.Draw(enemy, enemyPos,null, Color.White, enemyAngle, new Vector2(enemy.Width / 2, enemy.Height / 2), 1.0f, SpriteEffects.None, 0);
             spriteBatch.Draw(Player,PlayerPos,null,Color.White,pangle,new Vector2(Player.Width/2,Player.Height/2),0.1f,SpriteEffects.None,0);
             if (!faku)
                 spriteBatch.Draw(Player, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red,pangle - (float)Math.PI/2, new Vector2(Player.Width / 2, Player.Height / 2), 0.05f, SpriteEffects.None, 0);
