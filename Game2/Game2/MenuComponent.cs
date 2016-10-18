@@ -45,7 +45,7 @@ namespace Meny
         }
         private void MenuQuitClicked()
         {
-            this.Game.Exit();
+            Game.Exit();
         }
         protected override void LoadContent()
         {
@@ -66,16 +66,22 @@ namespace Meny
             base.LoadContent();
         }
         public override void Update(GameTime gameTime)
-        {
-            if (KeyboardComponent.KeyPressed(Keys.Down))
-            NextMenuChoice();
-            if (KeyboardComponent.KeyPressed(Keys.Up))
-            PreviousMenuChoice();
-            if (KeyboardComponent.KeyPressed(Keys.Enter))
+        { 
+
+            if (KeyboardComponent.KeyPressed(Keys.Down) || GamePadComponent.ButtonPressed(Buttons.LeftThumbstickDown))
+            {
+                PreviousMenuChoice();
+            }
+            if (KeyboardComponent.KeyPressed(Keys.Up) || GamePadComponent.ButtonPressed(Buttons.LeftThumbstickUp))
+            {
+                NextMenuChoice();
+            }
+            if (KeyboardComponent.KeyPressed(Keys.Enter) || GamePadComponent.ButtonPressed(Buttons.A))
             {
                 var selectedChoice = _choices.First(c => c.Selected);
                 selectedChoice.ClickAction.Invoke();
             }
+            
             var mouseState = Mouse.GetState();
             foreach (var choice in _choices)
             {
