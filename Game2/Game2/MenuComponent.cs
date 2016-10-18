@@ -21,13 +21,15 @@ namespace Meny
         SpriteFont _selectedFont;
         List<MenuChoice> _choices;
         MouseState _previousMouseState;
+        OptionsMeny om;
         public MenuComponent(Game game) : base(game)
         {
             _choices = new List<MenuChoice>();
             _choices.Add(new MenuChoice() {Text = "START", Selected = true, ClickAction = MenuStartClicked});           
             _choices.Add(new MenuChoice() { Text = "OPTIONS", ClickAction = MenuOptionsClicked });
             _choices.Add(new MenuChoice() { Text = "QUIT", ClickAction = MenuQuitClicked });
-
+            om = new OptionsMeny();
+            
             
         }
         
@@ -37,6 +39,7 @@ namespace Meny
         }
         private void MenuOptionsClicked()
         {
+            om.Draw();
         }
         private void MenuQuitClicked()
         {
@@ -65,15 +68,15 @@ namespace Meny
         }
         public override void Update(GameTime gameTime)
         { 
-            if (KeyboardComponent.KeyPressed(Keys.Down) || GamePadComponent.ButtonPressed(Buttons.LeftThumbstickDown))
+            if (KeyboardComponent.KeyPressed(Keys.Down) || GamePadComponent.ButtonPressed(Buttons.LeftThumbstickDown) ||  KeyboardComponent.KeyPressed(Keys.S))
             {
                 PreviousMenuChoice();
             }
-            if (KeyboardComponent.KeyPressed(Keys.Up) || GamePadComponent.ButtonPressed(Buttons.LeftThumbstickUp))
+            if (KeyboardComponent.KeyPressed(Keys.Up) || GamePadComponent.ButtonPressed(Buttons.LeftThumbstickUp) || KeyboardComponent.KeyPressed(Keys.W))
             {
                 NextMenuChoice();
             }
-            if (KeyboardComponent.KeyPressed(Keys.Enter) || GamePadComponent.ButtonPressed(Buttons.A))
+            if (KeyboardComponent.KeyPressed(Keys.Enter) || GamePadComponent.ButtonPressed(Buttons.A) || KeyboardComponent.KeyPressed(Keys.Space))
             {
                 
                     var selectedChoice = _choices.First(c => c.Selected);

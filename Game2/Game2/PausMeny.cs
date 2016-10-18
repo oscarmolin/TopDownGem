@@ -21,13 +21,14 @@ namespace Meny
         SpriteFont _selectedFont;
         List<MenuChoice> _Paus;
         MouseState _previousMouseState;
+        OptionsMeny om;
         public PausMeny(Game game) : base(game)
         {
             _Paus = new List<MenuChoice>();
             _Paus.Add(new MenuChoice() { Text = "CONTINUE", Selected = true, ClickAction = MenuStartClicked });
             _Paus.Add(new MenuChoice() { Text = "OPTIONS", ClickAction = MenuOptionsClicked });
             _Paus.Add(new MenuChoice() { Text = "QUIT", ClickAction = MenuQuitClicked });
-
+            om = new OptionsMeny();
 
         }
 
@@ -37,6 +38,7 @@ namespace Meny
         }
         private void MenuOptionsClicked()
         {
+            om.Draw();
         }
         private void MenuQuitClicked()
         {
@@ -65,15 +67,15 @@ namespace Meny
         }
         public override void Update(GameTime gameTime)
         {
-            if (KeyboardComponent.KeyPressed(Keys.Down) || GamePadComponent.ButtonPressed(Buttons.LeftThumbstickDown))
+            if (KeyboardComponent.KeyPressed(Keys.Down) || GamePadComponent.ButtonPressed(Buttons.LeftThumbstickDown) || KeyboardComponent.KeyPressed(Keys.S))
             {
                 PreviousMenuChoice();
             }
-            if (KeyboardComponent.KeyPressed(Keys.Up) || GamePadComponent.ButtonPressed(Buttons.LeftThumbstickUp))
+            if (KeyboardComponent.KeyPressed(Keys.Up) || GamePadComponent.ButtonPressed(Buttons.LeftThumbstickUp) || KeyboardComponent.KeyPressed(Keys.W))
             {
                 NextMenuChoice();
             }
-            if (KeyboardComponent.KeyPressed(Keys.Enter) || GamePadComponent.ButtonPressed(Buttons.A))
+            if (KeyboardComponent.KeyPressed(Keys.Enter) || GamePadComponent.ButtonPressed(Buttons.A) || KeyboardComponent.KeyPressed(Keys.Space))
             {
 
                 var selectedChoice = _Paus.First(c => c.Selected);
@@ -107,7 +109,7 @@ namespace Meny
             _Paus[selectedIndex].Selected = false;
             selectedIndex--;
             if (selectedIndex < 0)
-                selectedIndex = _Paus.Count - 1;
+            selectedIndex = _Paus.Count - 1;
             _Paus[selectedIndex].Selected = true;
 
         }
@@ -119,7 +121,7 @@ namespace Meny
             _Paus[selectedIndex].Selected = false;
             selectedIndex++;
             if (selectedIndex >= _Paus.Count)
-                selectedIndex = 0;
+            selectedIndex = 0;
             _Paus[selectedIndex].Selected = true;
 
         }

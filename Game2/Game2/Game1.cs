@@ -193,6 +193,9 @@ namespace Game2
                     {
                         GS = GameState.Playing;
                     }
+                    pm.Update(gameTime);
+                    ms = Mouse.GetState();
+                    mousePosition = new Vector2(ms.Position.X, ms.Position.Y) + cam.pos - new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
                     break;
 
             }
@@ -244,9 +247,7 @@ namespace Game2
                     break;
                     case GameState.Pause:
                     pm.Draw(gameTime);
-                    spriteBatch.Draw(Player, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red,
-                        pangle - (float)Math.PI / 2, new Vector2(Player.Width / 2, Player.Height / 2), 0.05f,
-                        SpriteEffects.None, 0);
+                    spriteBatch.Draw(Player, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red,pangle - (float)Math.PI / 2, new Vector2(Player.Width / 2, Player.Height / 2), 0.05f,SpriteEffects.None, 0);
                     break;
             }
 
