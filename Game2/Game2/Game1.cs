@@ -37,7 +37,6 @@ namespace Game2
         TileEngine tileEngine;
         bool faku;
         MenuComponent mc;
-        PauseMeny pm;
         KeyboardComponent kc;
         GamePadComponent gc;
         TmxMap map;
@@ -47,6 +46,7 @@ namespace Game2
         float pitch = 0.5f;
         float pan = 0.0f;
         Vector2 mousePosition;
+        KeyboardState ks = new KeyboardState();
 
         public CoolGAme()
         {
@@ -65,39 +65,13 @@ namespace Game2
         /// </summary>
         protected override void Initialize()
         {
-            //var version = map.Version;
-            //var myTileset = map.Tilesets["myTileset"];
-            //var myLayer = map.Layers[2];
-            //var hiddenChest = map.ObjectGroups["Chests"].Objects["hiddenChest"];
+            
             mc = new MenuComponent(this);
             Components.Add(mc);
             kc = new KeyboardComponent(this);
             Components.Add(kc);
             gc = new GamePadComponent(this);
             Components.Add(gc);
-            pm = new PauseMeny();
-            //tileEngine.Data = new int[,]
-            //   {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            //    {0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,0},
-            //    {0,1,0,0,1,0,0,0,0,0,1,0,1,1,1,0,0,0,1,0,0,1,0,0,1,1,1,0},
-            //    {0,1,0,0,1,1,1,1,1,0,1,0,1,1,1,0,0,0,1,0,0,1,0,0,1,1,1,0},
-            //    {0,1,0,0,1,0,0,0,0,0,1,0,1,1,1,0,0,1,1,0,0,1,0,0,1,1,1,0},
-            //    {0,1,0,1,1,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,1,0,0,0,1,1,0},
-            //    {0,1,0,1,1,1,1,1,0,0,0,0,0,1,0,1,1,1,1,1,1,1,0,1,0,1,1,0},
-            //    {0,1,0,0,1,0,0,1,1,1,1,0,0,1,0,0,0,0,1,0,0,0,0,1,0,1,0,0},
-            //    {0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,1,1,1,1,0,1,0,0},
-            //    {0,1,1,1,0,1,1,1,1,1,1,0,0,1,0,1,1,1,1,1,1,0,0,1,0,1,1,0},
-            //    {0,1,1,1,0,1,0,0,0,0,1,0,0,1,0,1,0,1,1,1,1,0,0,1,0,0,1,0},
-            //    {0,1,1,1,0,1,0,1,1,1,1,0,0,1,0,1,0,0,0,0,0,0,1,1,1,0,1,0},
-            //    {0,1,1,1,0,1,0,1,0,0,0,0,0,1,0,1,0,1,1,1,0,0,0,1,0,0,1,0},
-            //    {0,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,0,1,0,0,0,1,0,0,1,0},
-            //    {0,1,1,1,0,1,0,0,0,0,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,0},
-            //    {0,1,0,0,0,1,0,1,1,1,1,1,0,1,0,1,0,1,0,1,0,1,0,0,0,0,1,0},
-            //    {0,1,0,0,0,1,0,1,0,0,0,0,0,1,0,1,0,1,0,1,1,1,1,1,0,0,1,0},
-            //    {0,1,0,0,0,1,0,1,1,1,1,1,1,1,0,0,0,1,0,0,1,1,0,1,0,1,1,0},
-            //    {0,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,0,1,1,1,0,0},
-            //    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
-
             cam = new Camera2D();
             PlayerPos = new Vector2(300, 300);
             pspeed = 4;
@@ -141,10 +115,12 @@ namespace Game2
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 Exit();
-
+            
+            KeyboardState prevks = ks;
             ms = Mouse.GetState();
             GamePadState gs = GamePad.GetState(0);
-            KeyboardState ks = Keyboard.GetState();
+            ks = Keyboard.GetState();
+           
             switch (GS)
             {
 
@@ -155,7 +131,7 @@ namespace Game2
                     break;
                 case GameState.Playing:
                     ms = Mouse.GetState();
-                    if (ks.IsKeyDown(Keys.Escape))
+                    if (ks.IsKeyDown(Keys.Escape) && prevks.IsKeyUp(Keys.Escape))
                         GS = GameState.Pause;
                     if (PlayerPos.X > graphics.PreferredBackBufferWidth/2 &&
                         PlayerPos.Y > graphics.PreferredBackBufferHeight/2)
@@ -211,8 +187,12 @@ namespace Game2
                     }
                     break;
                     case GameState.Pause:
-                    pm.Draw();
+                    if (ks.IsKeyDown(Keys.Escape) && prevks.IsKeyUp(Keys.Escape))
+                    {
+                        GS = GameState.Playing;
+                    }
                     break;
+
             }
 
             base.Update(gameTime);
@@ -259,6 +239,12 @@ namespace Game2
                     foreach (shot s in shots)
                         spriteBatch.Draw(Player, s.pos, null, Color.White, s.angle,
                             new Vector2(Player.Width/2, Player.Height/2), 0.05f, SpriteEffects.None, 0);
+                    break;
+                    case GameState.Pause:
+                    mc.Draw(gameTime);
+                    spriteBatch.Draw(Player, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red,
+                        pangle - (float)Math.PI / 2, new Vector2(Player.Width / 2, Player.Height / 2), 0.05f,
+                        SpriteEffects.None, 0);
                     break;
             }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using Game2;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -15,27 +16,20 @@ namespace Meny
     /// </summary>
     public class MenuComponent : Microsoft.Xna.Framework.DrawableGameComponent
     {
-        
         SpriteBatch _spriteBatch;
         SpriteFont _normalFont;
         SpriteFont _selectedFont;
         List<MenuChoice> _choices;
         MouseState _previousMouseState;
-        CoolGAme.GameState GS = CoolGAme.GameState.Start;
-
         public MenuComponent(Game game) : base(game)
         {
-            
-        }
-        public override void Initialize()
-        {
             _choices = new List<MenuChoice>();
-            _choices.Add(new MenuChoice() { Text = "START", Selected = true, ClickAction = MenuStartClicked });
+            _choices.Add(new MenuChoice() {Text = "START", Selected = true, ClickAction = MenuStartClicked, IsVisible = () => CoolGAme.GS == CoolGAme.GameState.Start});           
+            _choices.Add(new MenuChoice() { Text = "CONTINUE", Selected = true, ClickAction = MenuStartClicked, IsVisible = () => CoolGAme.GS == CoolGAme.GameState.Pause});            
             _choices.Add(new MenuChoice() { Text = "OPTIONS", ClickAction = MenuOptionsClicked });
             _choices.Add(new MenuChoice() { Text = "QUIT", ClickAction = MenuQuitClicked });
-
-            base.Initialize();
         }
+        
         private void MenuStartClicked()
         {
             CoolGAme.GS = CoolGAme.GameState.Playing;
@@ -103,6 +97,7 @@ namespace Meny
         }
         private void PreviousMenuChoice()
         {
+            
             int selectedIndex = _choices.IndexOf(_choices.First(c => c.Selected));
             _choices[selectedIndex].Selected = false;
             selectedIndex--;
@@ -126,8 +121,11 @@ namespace Meny
             _spriteBatch.Begin();
             foreach (var choice in _choices)
             {
-                    _spriteBatch.DrawString(choice.Selected ? _selectedFont : _normalFont,
-                    choice.Text, new Vector2(choice.X, choice.Y), Color.White);
+                if(choice.IsVisible != null && !choice.IsVisible())
+                    continue;
+
+                _spriteBatch.DrawString(choice.Selected ? _selectedFont : _normalFont,
+                choice.Text, new Vector2(choice.X, choice.Y), Color.White);
             }
             _spriteBatch.End();
             base.Draw(gameTime);

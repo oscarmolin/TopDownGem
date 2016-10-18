@@ -17,6 +17,7 @@ namespace Meny
         public Action ClickAction { get; set; }
         public Rectangle HitBox { get; set; }
 
+        public Func<bool> IsVisible { get; set; }
 
     }
 }
