@@ -16,17 +16,15 @@ namespace Game2
     {
         Random r = new Random();
         public enum GameState
-        { 
+        {
             Start, Playing, Pause, GameOver
         }
         public SoundEffect effect;
         public static GameState GS;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D Player;
-        Vector2 PlayerPos;
-        float pspeed;
-        float pangle;
+        Player player1;
+        Player player2;
         MouseState ms;
         List<shot> shots;
         TileEngine tileEngine;
@@ -35,17 +33,15 @@ namespace Game2
         TmxMap map;
         TileEngineGood TileEngineG;
         Camera2D cam;
-        float volume = 1.0f;
-        float pitch= 0.5f;
-        float pan = 0.0f;
+
         Vector2 mousePosition;
         public CoolGAme()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight =  1080;
-           // graphics.IsFullScreen = true;
+            graphics.PreferredBackBufferHeight = 1080;
+            // graphics.IsFullScreen = true;
         }
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -55,39 +51,15 @@ namespace Game2
         /// </summary>
         protected override void Initialize()
         {
-            //var version = map.Version;
-            //var myTileset = map.Tilesets["myTileset"];
-            //var myLayer = map.Layers[2];
-            //var hiddenChest = map.ObjectGroups["Chests"].Objects["hiddenChest"];
-            mc = new  MenuComponent(this);
+            mc = new MenuComponent(this);
             Components.Add(mc);
-            //tileEngine.Data = new int[,]
-            //   {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            //    {0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,0},
-            //    {0,1,0,0,1,0,0,0,0,0,1,0,1,1,1,0,0,0,1,0,0,1,0,0,1,1,1,0},
-            //    {0,1,0,0,1,1,1,1,1,0,1,0,1,1,1,0,0,0,1,0,0,1,0,0,1,1,1,0},
-            //    {0,1,0,0,1,0,0,0,0,0,1,0,1,1,1,0,0,1,1,0,0,1,0,0,1,1,1,0},
-            //    {0,1,0,1,1,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,1,0,0,0,1,1,0},
-            //    {0,1,0,1,1,1,1,1,0,0,0,0,0,1,0,1,1,1,1,1,1,1,0,1,0,1,1,0},
-            //    {0,1,0,0,1,0,0,1,1,1,1,0,0,1,0,0,0,0,1,0,0,0,0,1,0,1,0,0},
-            //    {0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,1,1,1,1,0,1,0,0},
-            //    {0,1,1,1,0,1,1,1,1,1,1,0,0,1,0,1,1,1,1,1,1,0,0,1,0,1,1,0},
-            //    {0,1,1,1,0,1,0,0,0,0,1,0,0,1,0,1,0,1,1,1,1,0,0,1,0,0,1,0},
-            //    {0,1,1,1,0,1,0,1,1,1,1,0,0,1,0,1,0,0,0,0,0,0,1,1,1,0,1,0},
-            //    {0,1,1,1,0,1,0,1,0,0,0,0,0,1,0,1,0,1,1,1,0,0,0,1,0,0,1,0},
-            //    {0,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,0,1,0,0,0,1,0,0,1,0},
-            //    {0,1,1,1,0,1,0,0,0,0,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,0},
-            //    {0,1,0,0,0,1,0,1,1,1,1,1,0,1,0,1,0,1,0,1,0,1,0,0,0,0,1,0},
-            //    {0,1,0,0,0,1,0,1,0,0,0,0,0,1,0,1,0,1,0,1,1,1,1,1,0,0,1,0},
-            //    {0,1,0,0,0,1,0,1,1,1,1,1,1,1,0,0,0,1,0,0,1,1,0,1,0,1,1,0},
-            //    {0,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,0,1,1,1,0,0},
-            //    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+
 
             cam = new Camera2D();
-            PlayerPos = new Vector2(300, 300);
-            pspeed = 4;
+            player1 = new Player(new Vector2(300, 300), Controller.Keyboard, 6);
+            player2 = new Player(new Vector2(300, 500), Controller.Controller1, 6);
             shots = new List<shot>();
-            GS =GameState.Start;
+            GS = GameState.Start;
             base.Initialize();
         }
 
@@ -100,12 +72,13 @@ namespace Game2
             // Create a new SpriteBatch, which can be used to draw textures.
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            Player = Content.Load<Texture2D>("1");
+            player1.LoadContent(this, "1");
+            player2.LoadContent(this, "1");
             map = new TmxMap("house.tmx");
             TileEngineG = new TileEngineGood(map);
             TileEngineG.LoadContent(this);
 
-            
+
             //tileEngine.TileMap = Content.Load<Texture2D>("1");
         }
 
@@ -114,7 +87,7 @@ namespace Game2
         /// game-specific content.
         /// </summary>
         protected override void UnloadContent()
-        { 
+        {
         }
 
         /// <summary>
@@ -122,7 +95,7 @@ namespace Game2
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        
+
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -132,51 +105,39 @@ namespace Game2
             KeyboardState ks = Keyboard.GetState();
             switch (GS)
             {
-               
-                    case GameState.Start:
+
+                case GameState.Start:
                     ms = Mouse.GetState();
                     mousePosition = new Vector2(ms.Position.X, ms.Position.Y) + cam.pos - new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
-                    
+
                     mc.Update(gameTime);
                     break;
-                    case GameState.Playing:
+                case GameState.Playing:
+                    player1.Update(mousePosition,ks);
+                    player2.Update(mousePosition, ks);
+                    ms = Mouse.GetState();
+                    if (player1.X > graphics.PreferredBackBufferWidth / 2 && player1.Y > graphics.PreferredBackBufferHeight / 2)
+                        cam.pos = player1.position;
+                    else
+                        cam.pos = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
+                    mousePosition = new Vector2(ms.Position.X, ms.Position.Y) + cam.pos - new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
                     
-            ms = Mouse.GetState();
-            if (PlayerPos.X > graphics.PreferredBackBufferWidth / 2 && PlayerPos.Y > graphics.PreferredBackBufferHeight / 2)
-                cam.pos = PlayerPos;
-            else
-                cam.pos = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
-
-            mousePosition = new Vector2(ms.Position.X,ms.Position.Y) + cam.pos - new Vector2(graphics.PreferredBackBufferWidth/2,graphics.PreferredBackBufferHeight/2);
-                    if (gs.IsConnected)
-                    {
-                        faku = true;
-                        if (gs.ThumbSticks.Left != new Vector2(0, 0))
-                            PlayerPos += pspeed * new Vector2(gs.ThumbSticks.Left.X, gs.ThumbSticks.Left.Y * -1);
-
-                        if (gs.ThumbSticks.Right != new Vector2(0, 0))
-                            pangle = (float)Math.Atan2(gs.ThumbSticks.Right.X, gs.ThumbSticks.Right.Y) + (float)Math.PI / 2;
-                    }
-                    
-                   
-            
                     if (ks.IsKeyDown(Keys.R))
                         Initialize();
                     if (ks.IsKeyDown(Keys.Home))
                         graphics.ToggleFullScreen();
-                    if (ks.IsKeyDown(Keys.Space) || ms.LeftButton == ButtonState.Pressed|| gs.IsButtonDown(Buttons.RightTrigger))
+
+                    foreach (shot s in player1.shots)
                     {
-                        shots.Add(new shot(PlayerPos, pangle));
-                        effect = Content.Load<SoundEffect>("Pew");
-                        effect.Play(volume, pitch, pan);
+                        s.pos -= new Vector2(10 * (float)Math.Cos(s.angle), 10 * (float)Math.Sin(s.angle));
                     }
-                    foreach (shot s in shots)
+                    foreach (shot s in player2.shots)
                     {
                         s.pos -= new Vector2(10 * (float)Math.Cos(s.angle), 10 * (float)Math.Sin(s.angle));
                     }
                     break;
             }
-            
+
             base.Update(gameTime);
         }
 
@@ -187,35 +148,37 @@ namespace Game2
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin( SpriteSortMode.Deferred,
+            spriteBatch.Begin(SpriteSortMode.Deferred,
                                BlendState.AlphaBlend,
                                SamplerState.PointClamp,
                                DepthStencilState.Default,
                                RasterizerState.CullNone,
                                null,
                                cam.get_transformation(GraphicsDevice));
-            
-            TileEngineG.Draw(spriteBatch);
+
+
             //tileEngine.Draw(gameTime,spriteBatch);
-            spriteBatch.Draw(Player,PlayerPos,null,Color.White,pangle,new Vector2(Player.Width/2,Player.Height/2),0.1f,SpriteEffects.None,0);
+
             switch (GS)
             {
                 case GameState.Start:
-                   mc.Draw(gameTime);
-                    spriteBatch.Draw(Player, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red, pangle - (float)Math.PI / 2, new Vector2(Player.Width / 2, Player.Height / 2), 0.05f, SpriteEffects.None, 0);
+                    mc.Draw(gameTime);
 
                     break;
                 case GameState.Playing:
-
+                    TileEngineG.Draw(spriteBatch);
+                    player1.draw(spriteBatch);
+                    player2.draw(spriteBatch);
+                    foreach (shot s in player1.shots)
+                        spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
                     
-                    spriteBatch.Draw(Player, PlayerPos, null, Color.White, pangle, new Vector2(Player.Width/2, Player.Height/2), 0.1f, SpriteEffects.None, 0);
-                   if(!faku)
-                spriteBatch.Draw(Player, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red,pangle - (float)Math.PI/2, new Vector2(Player.Width / 2, Player.Height / 2), 0.05f, SpriteEffects.None, 0);
-                    foreach (shot s in shots)
-                spriteBatch.Draw(Player, s.pos, null, Color.White, s.angle, new Vector2(Player.Width / 2, Player.Height / 2), 0.05f, SpriteEffects.None, 0);
+                    foreach (shot s in player2.shots)
+                        spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
                     break;
             }
-            
+            if (player1.controller == Controller.Keyboard||GS!=GameState.Playing)
+                spriteBatch.Draw(player1.texture, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red, 0, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
+
             spriteBatch.End();
             base.Draw(gameTime);
         }
