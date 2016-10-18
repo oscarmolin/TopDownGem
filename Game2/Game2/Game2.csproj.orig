@@ -41,12 +41,16 @@
     <Compile Include="Camera.cs" />
     <Compile Include="Game1.cs" />
 <<<<<<< HEAD
-    <Compile Include="RandomFireAngle.cs" />
+    <Compile Include="GamePadComponent.cs" />
+    <Compile Include="OptionsMeny.cs" />
+    <Compile Include="PausMeny.cs" />
 =======
+    <Compile Include="Player.cs" />
+>>>>>>> origin/Playerstuff
+    <Compile Include="RandomFireAngle.cs" />
     <Compile Include="KeyboardComponent.cs" />
     <Compile Include="MenuChoice.cs" />
     <Compile Include="MenuComponent.cs" />
->>>>>>> Meny
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="shot.cs" />

@@ -118,35 +118,24 @@ namespace Game2
             
             KeyboardState prevks = ks;
             ms = Mouse.GetState();
-            GamePadState gs = GamePad.GetState(0);
             ks = Keyboard.GetState();
-           
+            mousePosition = new Vector2(ms.Position.X, ms.Position.Y) + cam.pos -new Vector2(graphics.PreferredBackBufferWidth/2,graphics.PreferredBackBufferHeight/2);
             switch (GS)
             {
 
-                case GameState.Start:
-                    ms = Mouse.GetState();
-                    mousePosition = new Vector2(ms.Position.X, ms.Position.Y) + cam.pos -new Vector2(graphics.PreferredBackBufferWidth/2,graphics.PreferredBackBufferHeight/2);
-
+                case GameState.Start:                    
                     mc.Update(gameTime);
                     break;
                 case GameState.Playing:
                     player1.Update(mousePosition,ks);
-                    player2.Update(mousePosition, ks);
-                    ms = Mouse.GetState();
-                    if (player1.X > graphics.PreferredBackBufferWidth / 2 && player1.Y > graphics.PreferredBackBufferHeight / 2)
-                        cam.pos = player1.position;
+                    player2.Update(mousePosition, ks);                    
                     if (ks.IsKeyDown(Keys.Escape) && prevks.IsKeyUp(Keys.Escape))
                         GS = GameState.Pause;
-                    if (PlayerPos.X > graphics.PreferredBackBufferWidth/2 &&
-                        PlayerPos.Y > graphics.PreferredBackBufferHeight/2)
+                    if (player1.X > graphics.PreferredBackBufferWidth / 2 && player1.Y > graphics.PreferredBackBufferHeight / 2)
+                        cam.pos = player1.position;                  
                     else
                         cam.pos = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
-                    mousePosition = new Vector2(ms.Position.X, ms.Position.Y) + cam.pos - new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
-                                    new Vector2(graphics.PreferredBackBufferWidth/2,
-                                        graphics.PreferredBackBufferHeight/2);
-                                     (float) Math.PI/2;
-                    
+
                     if (ks.IsKeyDown(Keys.R))
                         Initialize();
                     if (ks.IsKeyDown(Keys.Home))
@@ -183,24 +172,14 @@ namespace Game2
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin(SpriteSortMode.Deferred,
-                BlendState.AlphaBlend,
-                SamplerState.PointClamp,
-                DepthStencilState.Default,
-                RasterizerState.CullNone,
-                null,
-                cam.get_transformation(GraphicsDevice));
-
-
-
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default,  RasterizerState.CullNone, null, cam.get_transformation(GraphicsDevice));
+            
             switch (GS)
             {
                 case GameState.Start:
                     mc.Draw(gameTime);
-                        pangle - (float) Math.PI/2, new Vector2(Player.Width/2, Player.Height/2), 0.05f,
-                        SpriteEffects.None, 0);
-
                     break;
+
                 case GameState.Playing:
                     TileEngineG.Draw(spriteBatch);
                     player1.draw(spriteBatch);
@@ -210,13 +189,10 @@ namespace Game2
                     
                     foreach (shot s in player2.shots)
                         spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
-                            pangle - (float) Math.PI/2, new Vector2(Player.Width/2, Player.Height/2), 0.05f,
-                            SpriteEffects.None, 0);
-                            new Vector2(Player.Width/2, Player.Height/2), 0.05f, SpriteEffects.None, 0);
                     break;
-                    case GameState.Pause:
+
+                case GameState.Pause:
                     pm.Draw(gameTime);
-                    spriteBatch.Draw(Player, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red,pangle - (float)Math.PI / 2, new Vector2(Player.Width / 2, Player.Height / 2), 0.05f,SpriteEffects.None, 0);
                     break;
             }
             if (player1.controller == Controller.Keyboard||GS!=GameState.Playing)
