@@ -131,10 +131,10 @@ namespace Game2
                     player2.Update(mousePosition, ks);                    
                     if (ks.IsKeyDown(Keys.Escape) && prevks.IsKeyUp(Keys.Escape))
                         GS = GameState.Pause;
-                    if (player1.X > graphics.PreferredBackBufferWidth / 2 && player1.Y > graphics.PreferredBackBufferHeight / 2)
+                    //if (player1.X > graphics.PreferredBackBufferWidth / 2 && player1.Y > graphics.PreferredBackBufferHeight / 2)
                         cam.pos = player1.position;                  
-                    else
-                        cam.pos = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
+                    //else
+                    //    cam.pos = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
 
                     if (ks.IsKeyDown(Keys.R))
                         Initialize();
