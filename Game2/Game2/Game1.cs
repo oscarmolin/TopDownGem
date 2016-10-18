@@ -37,6 +37,7 @@ namespace Game2
         TileEngine tileEngine;
         bool faku;
         MenuComponent mc;
+        PausMeny pm;
         KeyboardComponent kc;
         GamePadComponent gc;
         TmxMap map;
@@ -72,6 +73,8 @@ namespace Game2
             Components.Add(kc);
             gc = new GamePadComponent(this);
             Components.Add(gc);
+            pm = new PausMeny(this);
+            Components.Add(pm);
             cam = new Camera2D();
             PlayerPos = new Vector2(300, 300);
             pspeed = 4;
@@ -139,7 +142,7 @@ namespace Game2
                     else
                         cam.pos = new Vector2(graphics.PreferredBackBufferWidth/2, graphics.PreferredBackBufferHeight/2);
 
-                    mousePosition = new Vector2(ms.Position.X, ms.Position.Y) + cam.pos -
+                        mousePosition = new Vector2(ms.Position.X, ms.Position.Y) + cam.pos -
                                     new Vector2(graphics.PreferredBackBufferWidth/2,
                                         graphics.PreferredBackBufferHeight/2);
                     if (gs.IsConnected)
@@ -155,7 +158,6 @@ namespace Game2
                     else
                     {
                         faku = false;
-
 
                         if (ks.IsKeyDown(Keys.W))
                             PlayerPos += new Vector2(0, -pspeed);
@@ -241,7 +243,7 @@ namespace Game2
                             new Vector2(Player.Width/2, Player.Height/2), 0.05f, SpriteEffects.None, 0);
                     break;
                     case GameState.Pause:
-                    mc.Draw(gameTime);
+                    pm.Draw(gameTime);
                     spriteBatch.Draw(Player, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red,
                         pangle - (float)Math.PI / 2, new Vector2(Player.Width / 2, Player.Height / 2), 0.05f,
                         SpriteEffects.None, 0);
