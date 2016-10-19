@@ -16,7 +16,7 @@ namespace Game2
 
         public void Draw()
         {
-
+            
         }
     }
 }

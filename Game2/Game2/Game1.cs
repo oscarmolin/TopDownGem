@@ -51,7 +51,6 @@ namespace Game2
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 1920;
             graphics.PreferredBackBufferHeight = 1080;
-            // graphics.IsFullScreen = true;
         }
 
         /// <summary>
@@ -62,7 +61,6 @@ namespace Game2
         /// </summary>
         protected override void Initialize()
         {
-            
             mc = new MenuComponent(this);
             Components.Add(mc);
             kc = new KeyboardComponent(this);
@@ -140,7 +138,7 @@ namespace Game2
                         Initialize();
                     if (ks.IsKeyDown(Keys.Home))
                         graphics.ToggleFullScreen();
-
+                    
                     foreach (shot s in player1.shots)
                     {
                         s.pos -= new Vector2(10 * (float)Math.Cos(s.angle), 10 * (float)Math.Sin(s.angle));

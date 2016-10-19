@@ -16,12 +16,17 @@ namespace Meny
     /// </summary>
     public class PausMeny : Microsoft.Xna.Framework.DrawableGameComponent
     {
+        public enum GameState
+        {
+            PausMenu, Playing
+        }
         SpriteBatch _spriteBatch;
         SpriteFont _normalFont;
         SpriteFont _selectedFont;
         List<MenuChoice> _Paus;
         MouseState _previousMouseState;
         OptionsMeny om;
+        public static GameState gs;
         public PausMeny(Game game) : base(game)
         {
             _Paus = new List<MenuChoice>();
@@ -29,12 +34,13 @@ namespace Meny
             _Paus.Add(new MenuChoice() { Text = "OPTIONS", ClickAction = MenuOptionsClicked });
             _Paus.Add(new MenuChoice() { Text = "QUIT", ClickAction = MenuQuitClicked });
             om = new OptionsMeny();
-
+            gs = GameState.PausMenu;
         }
 
         private void MenuStartClicked()
         {
             CoolGAme.GS = CoolGAme.GameState.Playing;
+            gs = GameState.Playing;
         }
         private void MenuOptionsClicked()
         {
@@ -51,54 +57,70 @@ namespace Meny
             _selectedFont = Game.Content.Load<SpriteFont>("menuFontSelected");
             float startY = 0.2f * GraphicsDevice.Viewport.Height;
 
-
-            foreach (var choice in _Paus)
+            switch (gs)
             {
-                Vector2 size = _normalFont.MeasureString(choice.Text);
-                choice.Y = startY;
-                choice.X = GraphicsDevice.Viewport.Width / 2.0f - size.X / 2;
-                choice.HitBox = new Rectangle((int)choice.X, (int)choice.Y, (int)size.X, (int)size.Y);
-                startY += 70;
+                case GameState.PausMenu:
+                    foreach (var choice in _Paus)
+                    {
+                        Vector2 size = _normalFont.MeasureString(choice.Text);
+                        choice.Y = startY;
+                        choice.X = GraphicsDevice.Viewport.Width/2.0f - size.X/2;
+                        choice.HitBox = new Rectangle((int) choice.X, (int) choice.Y, (int) size.X, (int) size.Y);
+                        startY += 70;
+                    }
+                    break;
+                case GameState.Playing:
+                    break;
             }
-
 
             _previousMouseState = Mouse.GetState();
             base.LoadContent();
         }
         public override void Update(GameTime gameTime)
         {
-            if (KeyboardComponent.KeyPressed(Keys.Down) || GamePadComponent.ButtonPressed(Buttons.LeftThumbstickDown) || KeyboardComponent.KeyPressed(Keys.S))
+            switch (gs)
             {
-                PreviousMenuChoice();
-            }
-            if (KeyboardComponent.KeyPressed(Keys.Up) || GamePadComponent.ButtonPressed(Buttons.LeftThumbstickUp) || KeyboardComponent.KeyPressed(Keys.W))
-            {
-                NextMenuChoice();
-            }
-            if (KeyboardComponent.KeyPressed(Keys.Enter) || GamePadComponent.ButtonPressed(Buttons.A) || KeyboardComponent.KeyPressed(Keys.Space))
-            {
-
-                var selectedChoice = _Paus.First(c => c.Selected);
-                selectedChoice.ClickAction.Invoke();
-            }
-
-            var mouseState = Mouse.GetState();
-            foreach (var choice in _Paus)
-            {
-                if (choice.HitBox.Contains(mouseState.X, mouseState.Y))
+                case GameState.PausMenu:
+                    if (KeyboardComponent.KeyPressed(Keys.Down) ||
+                    GamePadComponent.ButtonPressed(Buttons.LeftThumbstickDown) || KeyboardComponent.KeyPressed(Keys.S))
                 {
-                    _Paus.ForEach(c => c.Selected = false);
-                    choice.Selected = true;
-
-                    if (_previousMouseState.LeftButton == ButtonState.Released
-                        && mouseState.LeftButton == ButtonState.Pressed)
-                        choice.ClickAction.Invoke();
+                    PreviousMenuChoice();
                 }
-            }
+                if (KeyboardComponent.KeyPressed(Keys.Up) || GamePadComponent.ButtonPressed(Buttons.LeftThumbstickUp) ||
+                    KeyboardComponent.KeyPressed(Keys.W))
+                {
+                    NextMenuChoice();
+                }
+                if (KeyboardComponent.KeyPressed(Keys.Enter) || GamePadComponent.ButtonPressed(Buttons.A) ||
+                    KeyboardComponent.KeyPressed(Keys.Space))
+                {
+
+                    var selectedChoice = _Paus.First(c => c.Selected);
+                    selectedChoice.ClickAction.Invoke();
+                }
+
+                var mouseState = Mouse.GetState();
+                foreach (var choice in _Paus)
+                {
+                    if (choice.HitBox.Contains(mouseState.X, mouseState.Y))
+                    {
+                        _Paus.ForEach(c => c.Selected = false);
+                        choice.Selected = true;
+
+                        if (_previousMouseState.LeftButton == ButtonState.Released
+                            && mouseState.LeftButton == ButtonState.Pressed)
+                            choice.ClickAction.Invoke();
+                    }
+                }
+            
+            
 
 
             _previousMouseState = mouseState;
-
+                    break;
+                case GameState.Playing:
+                    break;
+            }
             base.Update(gameTime);
 
         }
@@ -128,18 +150,23 @@ namespace Meny
 
         public void Draw(GameTime gameTime)
         {
-            _spriteBatch.Begin();
-            foreach (var choice in _Paus)
+            switch (gs)
             {
-                //if(choice.IsVisible != null && !choice.IsVisible())
-                //    continue;
-                _spriteBatch.DrawString(choice.Selected ? _selectedFont : _normalFont,
-                    choice.Text, new Vector2(choice.X, choice.Y), Color.White);
+                case GameState.PausMenu:
+                    _spriteBatch.Begin();
+                    foreach (var choice in _Paus)
+                    {
+                        //if(choice.IsVisible != null && !choice.IsVisible())
+                        //    continue;
+                        _spriteBatch.DrawString(choice.Selected ? _selectedFont : _normalFont,
+                            choice.Text, new Vector2(choice.X, choice.Y), Color.White);
+                    }
+                    _spriteBatch.End();
+                    base.Draw(gameTime);
+                    break;
+                case GameState.Playing:
+                    break;
             }
-            _spriteBatch.End();
-            base.Draw(gameTime);
-
-
         }
     }
 }

@@ -22,6 +22,12 @@ namespace Meny
         List<MenuChoice> _choices;
         MouseState _previousMouseState;
         OptionsMeny om;
+        public enum GameState
+        {
+            MainMenu, Playing
+        }
+
+        public static GameState gs;
         public MenuComponent(Game game) : base(game)
         {
             _choices = new List<MenuChoice>();
@@ -29,13 +35,14 @@ namespace Meny
             _choices.Add(new MenuChoice() { Text = "OPTIONS", ClickAction = MenuOptionsClicked });
             _choices.Add(new MenuChoice() { Text = "QUIT", ClickAction = MenuQuitClicked });
             om = new OptionsMeny();
-            
+            gs = GameState.MainMenu;
             
         }
         
         private void MenuStartClicked()
         {
             CoolGAme.GS = CoolGAme.GameState.Playing;
+            gs = GameState.Playing;
         }
         private void MenuOptionsClicked()
         {
@@ -52,8 +59,11 @@ namespace Meny
             _selectedFont = Game.Content.Load<SpriteFont>("menuFontSelected");
             float startY = 0.2f * GraphicsDevice.Viewport.Height;
 
-            
-                foreach (var choice in _choices)
+            switch (gs)
+            {
+
+                case GameState.MainMenu:
+                    foreach (var choice in _choices)
                 {
                     Vector2 size = _normalFont.MeasureString(choice.Text);
                     choice.Y = startY;
@@ -61,14 +71,22 @@ namespace Meny
                     choice.HitBox = new Rectangle((int) choice.X, (int) choice.Y, (int) size.X, (int) size.Y);
                     startY += 70;
                 }
-            
-            
+                    break;
+                case GameState.Playing:
+                    break;
+            }
+
             _previousMouseState = Mouse.GetState();
             base.LoadContent();
         }
         public override void Update(GameTime gameTime)
-        { 
-            if (KeyboardComponent.KeyPressed(Keys.Down) || GamePadComponent.ButtonPressed(Buttons.LeftThumbstickDown) ||  KeyboardComponent.KeyPressed(Keys.S))
+        {
+            switch (gs)
+            {
+
+                case GameState.MainMenu:
+                    
+                        if (KeyboardComponent.KeyPressed(Keys.Down) || GamePadComponent.ButtonPressed(Buttons.LeftThumbstickDown) ||  KeyboardComponent.KeyPressed(Keys.S))
             {
                 PreviousMenuChoice();
             }
@@ -99,9 +117,13 @@ namespace Meny
             
 
             _previousMouseState = mouseState;
-
+                    break;
+                case GameState.Playing:
+                    break;
+            }
             base.Update(gameTime);
-           
+                       
+
         }
         private void PreviousMenuChoice()
         {
@@ -129,17 +151,24 @@ namespace Meny
 
         public void Draw(GameTime gameTime)
         {
-                _spriteBatch.Begin();
-                foreach (var choice in _choices)
-                {
-                    //if(choice.IsVisible != null && !choice.IsVisible())
-                    //    continue;
-                    _spriteBatch.DrawString(choice.Selected ? _selectedFont : _normalFont,
-                        choice.Text, new Vector2(choice.X, choice.Y), Color.White);
-                }
-                _spriteBatch.End();
-                base.Draw(gameTime);
-            
+            switch (gs)
+            {
+
+                case GameState.MainMenu:
+                    _spriteBatch.Begin();
+                    foreach (var choice in _choices)
+                    {
+                        //if(choice.IsVisible != null && !choice.IsVisible())
+                        //    continue;
+                        _spriteBatch.DrawString(choice.Selected ? _selectedFont : _normalFont,
+                            choice.Text, new Vector2(choice.X, choice.Y), Color.White);
+                    }
+                    _spriteBatch.End();
+                    base.Draw(gameTime);
+                break;
+                case GameState.Playing:
+                break;
+            }
 
         }
     }
