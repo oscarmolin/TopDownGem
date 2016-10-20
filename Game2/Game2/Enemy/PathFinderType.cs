@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Game2
 {
-    public enum Maptype
+    public enum PathFinderType
     {
         Nothing = 0,
         Wall = 1,
