@@ -14,7 +14,7 @@ using TiledSharp;
 namespace Game2
 {
 
-    class Camera2D
+    public class Camera2D
     {
         protected float zoom; // Camera Zoom
         public Matrix transform; // Matrix Transform
