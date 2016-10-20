@@ -59,10 +59,7 @@ namespace Meny
             _selectedFont = Game.Content.Load<SpriteFont>("menuFontSelected");
             float startY = 0.2f * GraphicsDevice.Viewport.Height;
 
-            switch (gs)
-            {
-
-                case GameState.MainMenu:
+            
                     foreach (var choice in _choices)
                 {
                     Vector2 size = _normalFont.MeasureString(choice.Text);
@@ -71,10 +68,7 @@ namespace Meny
                     choice.HitBox = new Rectangle((int) choice.X, (int) choice.Y, (int) size.X, (int) size.Y);
                     startY += 70;
                 }
-                    break;
-                case GameState.Playing:
-                    break;
-            }
+              
 
             _previousMouseState = Mouse.GetState();
             base.LoadContent();
@@ -127,26 +121,40 @@ namespace Meny
         }
         private void PreviousMenuChoice()
         {
-            
-                int selectedIndex = _choices.IndexOf(_choices.First(c => c.Selected));
+            switch (gs)
+            {
+
+                case GameState.MainMenu:
+
+                    int selectedIndex = _choices.IndexOf(_choices.First(c => c.Selected));
                 _choices[selectedIndex].Selected = false;
                 selectedIndex--;
                 if (selectedIndex < 0)
                     selectedIndex = _choices.Count - 1;
                 _choices[selectedIndex].Selected = true;
-            
+                    break;
+                case GameState.Playing:
+                    break;
+            }
         }
 
         private void NextMenuChoice()
         {
-            
-                int selectedIndex = _choices.IndexOf(_choices.First(c => c.Selected));
+            switch (gs)
+            {
+
+                case GameState.MainMenu:
+
+                    int selectedIndex = _choices.IndexOf(_choices.First(c => c.Selected));
                 _choices[selectedIndex].Selected = false;
                 selectedIndex++;
                 if (selectedIndex >= _choices.Count)
                 selectedIndex = 0;
                 _choices[selectedIndex].Selected = true;
-            
+                    break;
+                case GameState.Playing:
+                    break;
+            }
         }
 
         public void Draw(GameTime gameTime)

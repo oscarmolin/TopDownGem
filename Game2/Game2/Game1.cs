@@ -75,6 +75,7 @@ namespace Game2
             shots = new List<shot>();
             GS = GameState.Start;
             base.Initialize();
+            PausMeny.PS = PausMeny.GameState.Playing;
         }
 
         /// <summary>
@@ -126,9 +127,12 @@ namespace Game2
                     break;
                 case GameState.Playing:
                     player1.Update(mousePosition,ks);
-                    player2.Update(mousePosition, ks);                    
+                    player2.Update(mousePosition, ks);
                     if (ks.IsKeyDown(Keys.Escape) && prevks.IsKeyUp(Keys.Escape))
+                    {
                         GS = GameState.Pause;
+                        PausMeny.PS = PausMeny.GameState.PausMenu;
+                    }
                     if (player1.X > graphics.PreferredBackBufferWidth / 2 && player1.Y > graphics.PreferredBackBufferHeight / 2)
                         cam.pos = player1.position;                  
                     else
@@ -152,6 +156,7 @@ namespace Game2
                     if (ks.IsKeyDown(Keys.Escape) && prevks.IsKeyUp(Keys.Escape))
                     {
                         GS = GameState.Playing;
+                        PausMeny.PS = PausMeny.GameState.Playing;
                     }
                     pm.Update(gameTime);
                     ms = Mouse.GetState();
