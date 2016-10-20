@@ -40,7 +40,7 @@ namespace Game2
         PausMeny pm;
         KeyboardComponent kc;
         GamePadComponent gc;
-        TmxMap map;
+        ServiceBus bus;
         TileEngineGood TileEngineG;
         Camera2D cam;
         float volume = 1.0f;
@@ -106,8 +106,12 @@ namespace Game2
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Player = Content.Load<Texture2D>("1");
-            map = new TmxMap("data/house.tmx");
-            TileEngineG = new TileEngineGood(map);
+
+            bus = new ServiceBus();
+            bus.Map = new TmxMap("data/house.tmx");
+            bus.PathFinder = new PathFinder(bus);
+
+            TileEngineG = new TileEngineGood(bus);
             TileEngineG.LoadContent(this);
 
 

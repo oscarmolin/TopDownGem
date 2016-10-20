@@ -9,36 +9,35 @@ namespace Game2
 {
     class TileEngineGood
     {
-        static TmxMap map;
+        //static TmxMap map;
+        ServiceBus bus;
         Texture2D tileset;
 
         int tileWidth;
         int tileHeight;
         int tilesetTilesWide;
         int tilesetTilesHigh;
-        public TileEngineGood(TmxMap Map)
+        public TileEngineGood(ServiceBus serviceBus)
         {
-            map = Map;
+            this.bus = serviceBus;
         }
         public void LoadContent(Game Game)
         {
             tileset = Game.Content.Load<Texture2D>("tilesheet_complete");
 
-            tileWidth = map.Tilesets[0].TileWidth;
-            tileHeight = map.Tilesets[0].TileHeight;
+            tileWidth = bus.Map.Tilesets[0].TileWidth;
+            tileHeight = bus.Map.Tilesets[0].TileHeight;
 
             tilesetTilesWide = tileset.Width / tileWidth;
             tilesetTilesHigh = tileset.Height / tileHeight;
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            for (int l = 0; l < map.Layers.Count; l++)
+            for (int l = 0; l < bus.Map.Layers.Count; l++)
             {
-
-
-                for (var i = 0; i < map.Layers[l].Tiles.Count; i++)
+                for (var i = 0; i < bus.Map.Layers[l].Tiles.Count; i++)
                 {
-                    int gid = map.Layers[l].Tiles[i].Gid;
+                    int gid = bus.Map.Layers[l].Tiles[i].Gid;
 
                     // Empty tile, do nothing
                     if (gid == 0)
@@ -51,8 +50,8 @@ namespace Game2
                         int column = tileFrame % tilesetTilesWide;
                         int row = (int)Math.Floor((double)tileFrame / (double)tilesetTilesWide);
 
-                        float x = (i % map.Width) * map.TileWidth;
-                        float y = (float)Math.Floor(i / (double)map.Width) * map.TileHeight;
+                        float x = (i % bus.Map.Width) * bus.Map.TileWidth;
+                        float y = (float)Math.Floor(i / (double)bus.Map.Width) * bus.Map.TileHeight;
 
                         Rectangle tilesetRec = new Rectangle(tileWidth * column, tileHeight * row, tileWidth, tileHeight);
 

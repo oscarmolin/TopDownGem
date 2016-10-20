@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Game2
 {
-    public class Map
+    public class PathFinder
     {
         public Node[,] MapData { get; private set; }
         public int SizeX { get { return MapData.GetLength(1); } }
@@ -19,16 +19,19 @@ namespace Game2
         private int _playerX = -1;
         private int _playerY = -1;
 
-        public Map(int[,] data)
+        private ServiceBus bus;
+
+        public PathFinder(ServiceBus serviceBus)
         {
-            MapData = new Node[data.GetLength(1), data.GetLength(0)];
+            bus = serviceBus;
+            MapData = new Node[bus.Map.Height, bus.Map.Width];
 
             for (var y=0; y< SizeY; y++)
             {
                 for(var x=0;x< SizeX; x++)
                 {
                     MapData[y, x] = new Node(x, y, 0, 0, 0, 0);
-                    MapData[y, x].Type = data[y, x] == 1 ? Maptype.Wall : Maptype.Nothing; 
+                    //MapData[y, x].Type = data[y, x] == 1 ? Maptype.Wall : Maptype.Nothing; 
                 }
             }
         }
