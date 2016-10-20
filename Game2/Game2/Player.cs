@@ -38,9 +38,13 @@ namespace Game2
         float pan = 0.0f;
         Vector2 anglevector ;
         Vector2 prevangelvector;
-        public float X { get;   private set;  }
-        public float Y{ get; private set; }
-        public Player( Vector2 Position,Controller Controler, float maxspeed)
+        Rectangle  rect;
+        List<Rectangle> map;
+        bool colided= false;
+
+        public float X { get { return position.X; } }
+        public float Y{ get { return position.Y; } }
+        public Player( Vector2 Position,Controller Controler, float maxspeed,List<Rectangle> Map)
         {
             this.maxspeed = maxspeed;
             this.position = Position;
@@ -48,12 +52,15 @@ namespace Game2
             shots = new List<shot>();
             acc = 0.5f;
             anglevector = new Vector2();
+            map = Map;
+            
         }
         public void LoadContent(Game game, string texture)
         {
             
             this.texture = game.Content.Load<Texture2D>(texture);
             effect = game.Content.Load<SoundEffect>("Pew");
+            rect = new Rectangle((int)position.X,(int)position.Y,this.texture.Width,this.texture.Height);
         }
         public void  Update(Vector2 mousePosition,KeyboardState ks)
         {
@@ -153,15 +160,24 @@ namespace Game2
                     effect.Play(volume, pitch, pan);
                 }
             }
-            
-            
 
-            
+
+            rect = new Rectangle((int)position.X + (int)velocity.X  -(int)(texture.Width/2), (int)position.Y + (int)velocity.Y - (int)(texture.Height/2), texture.Width, texture.Height);
+            for (int i = 0; i < map.Count; i++)
+            {
+                if (rect.Intersects(map[i]))
+                {
+                    colided = true;
+                    break;
+                }
+             }
+            if(!colided)
             position += velocity;
+            colided = false;
         }
         public void draw(SpriteBatch spritebatch)
         {
-            spritebatch.Draw(texture, position, null, Color.White, angle, new Vector2(texture.Width / 2, texture.Height / 2), 0.1f, SpriteEffects.None, 0);
+            spritebatch.Draw(texture, position, null, Color.White, angle, new Vector2(texture.Width / 2, texture.Height / 2), 1, SpriteEffects.None, 0);
         }
 
 

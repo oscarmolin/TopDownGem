@@ -61,5 +61,42 @@ namespace Game2
                 }
             }
         }
+        public Tuple<List<Rectangle>,List<Rectangle>>  RegHitBoxes()
+        {
+            List<Rectangle> playerMapHitBoxes = new List<Rectangle>();
+            List<Rectangle> mapHitBoxes = new List<Rectangle>();
+            //for (int y = 0; y < length; y++)
+            //{
+            List<List<Rectangle>> rects = new List<List<Rectangle>>();
+            rects.Add(new List<Rectangle>());
+                for (var x = 0; x < map.Layers[1].Tiles.Count; x++)
+                {
+                    int gid = map.Layers[1].Tiles[x].Gid;
+
+                    // Empty tile, do nothing
+                    if (gid == 0)
+                    {
+
+                    }
+                    else
+                    {
+                        float X = (x % map.Width) * map.TileWidth;
+                        float Y = (float)Math.Floor(x / (double)map.Width) * map.TileHeight;
+
+                        playerMapHitBoxes.Add(new Rectangle((int)X, (int)Y, 64, 64));
+
+                        if (gid == 27)
+                        {
+
+                        }
+                        else
+                        {
+                            mapHitBoxes.Add(new Rectangle((int)X, (int)Y, 64, 64));
+                        }
+                    }
+                }
+            //}
+            return (new Tuple<List<Rectangle>, List<Rectangle>>(playerMapHitBoxes,mapHitBoxes));
+        }
     }
 }

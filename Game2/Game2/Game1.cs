@@ -41,8 +41,10 @@ namespace Game2
         TmxMap map;
         TileEngineGood TileEngineG;
         Camera2D cam;
-
+        List<Rectangle> playerMapHitBoxes;
+        List<Rectangle> mapHitBoxes;
         Vector2 mousePosition;
+        
         KeyboardState ks = new KeyboardState();
 
         public CoolGAme()
@@ -72,10 +74,14 @@ namespace Game2
             pm = new PausMeny(this);
             Components.Add(pm);
             cam = new Camera2D();
-            player1 = new Player(new Vector2(300, 300), Controller.Keyboard, 6);
-            player2 = new Player(new Vector2(300, 500), Controller.Controller1, 6);
+            map = new TmxMap("data/house.tmx");
+            TileEngineG = new TileEngineGood(map);
             shots = new List<shot>();
             GS = GameState.Start;
+            playerMapHitBoxes = TileEngineG.RegHitBoxes().Item1;
+            mapHitBoxes = TileEngineG.RegHitBoxes().Item2;
+            player1 = new Player(new Vector2(300, 300), Controller.Keyboard, 6, mapHitBoxes);
+            player2 = new Player(new Vector2(300, 500), Controller.Controller1, 6, mapHitBoxes);
             base.Initialize();
         }
 
@@ -87,10 +93,8 @@ namespace Game2
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            player1.LoadContent(this, "1");
-            player2.LoadContent(this, "1");
-            map = new TmxMap("house.tmx");
-            TileEngineG = new TileEngineGood(map);
+            player1.LoadContent(this, "2");
+            player2.LoadContent(this, "2");
             TileEngineG.LoadContent(this);
 
 
@@ -197,7 +201,7 @@ namespace Game2
             }
             if (player1.controller == Controller.Keyboard||GS!=GameState.Playing)
                 spriteBatch.Draw(player1.texture, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red, 0, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
-
+             
             spriteBatch.End();
             base.Draw(gameTime);
         }
