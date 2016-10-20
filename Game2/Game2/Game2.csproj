@@ -45,6 +45,7 @@
     <Compile Include="PathFinder.cs" />
     <Compile Include="Maptype.cs" />
     <Compile Include="GamePadComponent.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="OptionsMeny.cs" />
     <Compile Include="PausMeny.cs" />
     <Compile Include="RandomFireAngle.cs" />
