@@ -11,7 +11,7 @@ namespace Game2
         Nothing = 0,
         Wall = 1,
         Route = 2,
-        Start = 3,
-        Stop = 4
+        Go = 3,
+        Attack = 4
     }
 }
