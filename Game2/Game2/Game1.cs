@@ -41,8 +41,7 @@ namespace Game2
         TmxMap map;
         TileEngineGood TileEngineG;
         Camera2D cam;
-        List<Rectangle> playerMapHitBoxes;
-        List<Rectangle> mapHitBoxes;
+        int[,] mapHitBoxes;
         Vector2 mousePosition;
         
         KeyboardState ks = new KeyboardState();
@@ -76,10 +75,10 @@ namespace Game2
             cam = new Camera2D();
             map = new TmxMap("data/house.tmx");
             TileEngineG = new TileEngineGood(map);
+            //TileEngineG.LoadContent(this);
             shots = new List<shot>();
             GS = GameState.Start;
-            playerMapHitBoxes = TileEngineG.RegHitBoxes().Item1;
-            mapHitBoxes = TileEngineG.RegHitBoxes().Item2;
+            mapHitBoxes = TileEngineG.RegHitBoxes();
             player1 = new Player(new Vector2(300, 300), Controller.Keyboard, 6, mapHitBoxes);
             player2 = new Player(new Vector2(300, 500), Controller.Controller1, 6, mapHitBoxes);
             base.Initialize();

@@ -38,13 +38,15 @@ namespace Game2
         float pan = 0.0f;
         Vector2 anglevector ;
         Vector2 prevangelvector;
-        Rectangle  rect;
-        List<Rectangle> map;
+        Rectangle  prect;
+        List<Rectangle> maprect;
+        int[,] map;
         bool colided= false;
+        float radius;
 
         public float X { get { return position.X; } }
         public float Y{ get { return position.Y; } }
-        public Player( Vector2 Position,Controller Controler, float maxspeed,List<Rectangle> Map)
+        public Player( Vector2 Position,Controller Controler, float maxspeed,int[,] Map)
         {
             this.maxspeed = maxspeed;
             this.position = Position;
@@ -53,14 +55,16 @@ namespace Game2
             acc = 0.5f;
             anglevector = new Vector2();
             map = Map;
-            
+            maprect = new List<Rectangle>();
+            radius= 64;
+
         }
         public void LoadContent(Game game, string texture)
         {
             
             this.texture = game.Content.Load<Texture2D>(texture);
             effect = game.Content.Load<SoundEffect>("Pew");
-            rect = new Rectangle((int)position.X,(int)position.Y,this.texture.Width,this.texture.Height);
+            prect = new Rectangle((int)position.X,(int)position.Y,this.texture.Width,this.texture.Height);
         }
         public void  Update(Vector2 mousePosition,KeyboardState ks)
         {
@@ -162,19 +166,35 @@ namespace Game2
             }
 
 
-            rect = new Rectangle((int)position.X + (int)velocity.X  -(int)(texture.Width/2), (int)position.Y + (int)velocity.Y - (int)(texture.Height/2), texture.Width, texture.Height);
-            for (int i = 0; i < map.Count; i++)
-            {
-                if (rect.Intersects(map[i]))
-                {
-                    colided = true;
-                    break;
-                }
-             }
-            if(!colided)
-            position += velocity;
-            colided = false;
+            checkColision();
+            
+                
         }
+
+        private void checkColision()
+        {
+            prect = new Rectangle((int)position.X +(int)velocity.X -(int)(texture.Width / 2), (int)position.Y + (int)velocity.Y - (int)(texture.Height / 2), texture.Width, texture.Height);
+
+
+            if (map[(int)(position.X / 64), (int)(position.Y / 64)] == 1|| map[(int)(position.X / 64), (int)(position.Y / 64)] == 2)
+                maprect.Add(new Rectangle((int)(position.X ), (int)(position.Y ),64,64));
+            if (map[(int)(position.X / 64)+1, (int)(position.Y / 64)] == 1 || map[(int)(position.X / 64)+1, (int)(position.Y / 64)] == 2)
+                maprect.Add(new Rectangle((int)(position.X +64 ), (int)(position.Y ), 64, 64));
+            if (map[(int)(position.X / 64), (int)(position.Y / 64)+1] == 1 || map[(int)(position.X / 64), (int)(position.Y / 64)+1] == 2)
+                maprect.Add(new Rectangle((int)(position.X ), (int)(position.Y + 64), 64, 64));
+            if (map[(int)(position.X / 64)+1, (int)(position.Y / 64)+1] == 1 || map[(int)(position.X / 64)+1, (int)(position.Y / 64)+1] == 2)
+                maprect.Add(new Rectangle((int)(position.X + 64), (int)(position.Y + 64), 64, 64));
+
+            for (int i = 0; i < maprect.Count;i++)
+            if (prect.Intersects(maprect[i]))
+                colided = true;
+
+            if (!colided)
+                position += velocity;
+            colided = false;
+            maprect.Clear();
+        }
+
         public void draw(SpriteBatch spritebatch)
         {
             spritebatch.Draw(texture, position, null, Color.White, angle, new Vector2(texture.Width / 2, texture.Height / 2), 1, SpriteEffects.None, 0);
