@@ -25,26 +25,19 @@ namespace Meny
         SpriteFont _selectedFont;
         List<MenuChoice> _Paus;
         MouseState _previousMouseState;
-        OptionsMeny om;
         public static GameState PS;
         
         public PausMeny(Game game) : base(game)
         {
             _Paus = new List<MenuChoice>();
             _Paus.Add(new MenuChoice() { Text = "CONTINUE", Selected = true, ClickAction = MenuStartClicked });
-            _Paus.Add(new MenuChoice() { Text = "OPTIONS", ClickAction = MenuOptionsClicked });
             _Paus.Add(new MenuChoice() { Text = "QUIT", ClickAction = MenuQuitClicked });
-            om = new OptionsMeny();
         }
 
         private void MenuStartClicked()
         {
             CoolGAme.GS = CoolGAme.GameState.Playing;
             PS = GameState.Playing;
-        }
-        private void MenuOptionsClicked()
-        {
-            om.Draw();
         }
         private void MenuQuitClicked()
         {

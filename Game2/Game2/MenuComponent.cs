@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using Game2;
@@ -24,7 +25,7 @@ namespace Meny
         OptionsMeny om;
         public enum GameState
         {
-            MainMenu, Playing
+            MainMenu, Playing, OptionsMenu
         }
 
         public static GameState gs;
@@ -34,11 +35,11 @@ namespace Meny
             _choices.Add(new MenuChoice() {Text = "START", Selected = true, ClickAction = MenuStartClicked});           
             _choices.Add(new MenuChoice() { Text = "OPTIONS", ClickAction = MenuOptionsClicked });
             _choices.Add(new MenuChoice() { Text = "QUIT", ClickAction = MenuQuitClicked });
-            om = new OptionsMeny();
+
             gs = GameState.MainMenu;
             
         }
-        
+
         private void MenuStartClicked()
         {
             CoolGAme.GS = CoolGAme.GameState.Playing;
@@ -46,7 +47,7 @@ namespace Meny
         }
         private void MenuOptionsClicked()
         {
-            om.Draw();
+            gs = GameState.OptionsMenu;
         }
         private void MenuQuitClicked()
         {
@@ -59,8 +60,7 @@ namespace Meny
             _selectedFont = Game.Content.Load<SpriteFont>("menuFontSelected");
             float startY = 0.2f * GraphicsDevice.Viewport.Height;
 
-            
-                    foreach (var choice in _choices)
+            foreach (var choice in _choices)
                 {
                     Vector2 size = _normalFont.MeasureString(choice.Text);
                     choice.Y = startY;
@@ -71,6 +71,8 @@ namespace Meny
               
 
             _previousMouseState = Mouse.GetState();
+            string[] menuItems = {"Graphics", "Fullscreen", "Sound"};
+            om = new OptionsMeny(Game, _spriteBatch, _selectedFont);
             base.LoadContent();
         }
         public override void Update(GameTime gameTime)
@@ -108,53 +110,36 @@ namespace Meny
                         choice.ClickAction.Invoke();
                 }
             }
-            
-
             _previousMouseState = mouseState;
                     break;
                 case GameState.Playing:
                     break;
             }
             base.Update(gameTime);
-                       
-
         }
         private void PreviousMenuChoice()
         {
-            switch (gs)
-            {
-
-                case GameState.MainMenu:
-
+           
                     int selectedIndex = _choices.IndexOf(_choices.First(c => c.Selected));
                 _choices[selectedIndex].Selected = false;
                 selectedIndex--;
                 if (selectedIndex < 0)
                     selectedIndex = _choices.Count - 1;
                 _choices[selectedIndex].Selected = true;
-                    break;
-                case GameState.Playing:
-                    break;
-            }
+              
         }
 
         private void NextMenuChoice()
         {
-            switch (gs)
-            {
-
-                case GameState.MainMenu:
-
+            
                     int selectedIndex = _choices.IndexOf(_choices.First(c => c.Selected));
                 _choices[selectedIndex].Selected = false;
                 selectedIndex++;
                 if (selectedIndex >= _choices.Count)
                 selectedIndex = 0;
                 _choices[selectedIndex].Selected = true;
-                    break;
-                case GameState.Playing:
-                    break;
-            }
+
+            
         }
 
         public void Draw(GameTime gameTime)
@@ -166,13 +151,16 @@ namespace Meny
                     _spriteBatch.Begin();
                     foreach (var choice in _choices)
                     {
-                        //if(choice.IsVisible != null && !choice.IsVisible())
-                        //    continue;
                         _spriteBatch.DrawString(choice.Selected ? _selectedFont : _normalFont,
                             choice.Text, new Vector2(choice.X, choice.Y), Color.White);
                     }
                     _spriteBatch.End();
                     base.Draw(gameTime);
+                    break;
+                case GameState.OptionsMenu:
+                    om.Draw(gameTime);
+
+                    
                 break;
                 case GameState.Playing:
                 break;

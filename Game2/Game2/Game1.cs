@@ -36,6 +36,7 @@ namespace Game2
         bool faku;
         MenuComponent mc;
         PausMeny pm;
+        public OptionsMeny om;
         KeyboardComponent kc;
         GamePadComponent gc;
         TmxMap map;

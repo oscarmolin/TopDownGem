@@ -17,5 +17,12 @@ namespace Meny
         public Action ClickAction { get; set; }
         public Rectangle HitBox { get; set; }
 
+        public bool IsSelectable { get; set; }
+
+        public MenuChoice()
+        {
+            IsSelectable = true;
+        }
+
     }
 }
