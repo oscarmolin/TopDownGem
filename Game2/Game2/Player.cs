@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Audio;
 using TiledSharp;
 namespace Game2
 {
-    enum Controller
+    public enum Controller
     { 
         Controller1,
         Controller2,
@@ -19,7 +19,7 @@ namespace Game2
         Keyboard
         
     }
-    class Player
+    public class Player
     {
         SoundEffect effect;
         public Controller controller;

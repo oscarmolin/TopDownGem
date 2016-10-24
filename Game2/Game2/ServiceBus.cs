@@ -11,5 +11,6 @@ namespace Game2
     {
         public TmxMap Map { get; set; }
         public PathFinder PathFinder { get; set; }
+        public Player Player { get; set; }
     }
 }

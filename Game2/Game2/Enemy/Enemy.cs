@@ -15,9 +15,16 @@ namespace Game2
         public int EnemyId { get; set; }
         public int Health { get; set; }
         public int Rescitense { get; set; }
-        public int Speed { get; set; }
+        public float Speed { get; set; }
         public string Name { get; set; }
         public EnemyType Enemytype { get; set; }
+        public Vector2 Position { get; set; }
+        public Vector2 Angle { get; set; }
+
+        public void Update()
+        {
+            Position += Angle * Speed;
+        }
     }
     public enum EnemyType
     {
@@ -30,6 +37,11 @@ namespace Game2
     }
     class Enemies
     {
+        private static Random rnd = new Random();
+        public static EnemyStat SpawnOne()
+        {
+            return SpawnOne((EnemyType)rnd.Next(6));
+        } 
         public static EnemyStat SpawnOne(EnemyType type)
         {
             switch (type)

@@ -24,6 +24,7 @@ namespace Game2
             GameOver
         }
 
+        EnemyManager enemyManager;
         public SoundEffect effect;
         public static GameState GS;
         GraphicsDeviceManager graphics;
@@ -43,15 +44,8 @@ namespace Game2
         Camera2D cam;
 
         Vector2 mousePosition;
-
-        Texture2D enemy_zombie;
         KeyboardState ks = new KeyboardState();
 
-        Texture2D enemy_crippler;
-        Texture2D enemy_spitter;
-        Texture2D enemy_charger;
-        Texture2D enemy_pistolzombie;
-        Texture2D enemy_shotgunzombie;
         Vector2 enemyPos;
         float enemyAngle;
         EnemyStat enemyStat;
@@ -73,9 +67,6 @@ namespace Game2
         /// </summary>
         protected override void Initialize()
         {
-            
-            enemyStat = Enemies.SpawnOne((EnemyType)r.Next(6));
-
             mc = new MenuComponent(this);
             Components.Add(mc);
             kc = new KeyboardComponent(this);
@@ -105,20 +96,20 @@ namespace Game2
 
             player2.LoadContent(this, "1");
             bus = new ServiceBus();
+            bus.Player = player1;
             bus.Map = new TmxMap("data/house.tmx");
             bus.PathFinder = new PathFinder(bus);
+
+            enemyManager = new EnemyManager(bus);
+            enemyStat = Enemies.SpawnOne((EnemyType)r.Next(6));
+
 
             TileEngineG = new TileEngineGood(bus);
             TileEngineG.LoadContent(this);
 
 
             //tileEngine.TileMap = Content.Load<Texture2D>("1");
-            enemy_zombie = this.Content.Load<Texture2D>("zombie2_hold");
-            enemy_crippler = this.Content.Load<Texture2D>("zoimbie1_hold");
-            enemy_spitter = this.Content.Load<Texture2D>("robot1_hold");
-            enemy_charger = this.Content.Load<Texture2D>("robot2_hold");
-            enemy_pistolzombie = this.Content.Load<Texture2D>("zombie2_silencer");
-            enemy_shotgunzombie = this.Content.Load<Texture2D>("zombie2_machine");
+            enemyManager.LoadContent(this);
         }
 
         /// <summary>
@@ -137,6 +128,8 @@ namespace Game2
 
         protected override void Update(GameTime gameTime)
         {
+            enemyManager.Update();
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 Exit();
             
@@ -151,6 +144,7 @@ namespace Game2
                     mc.Update(gameTime);
                     break;
                 case GameState.Playing:
+
                     player1.Update(mousePosition,ks);
                     player2.Update(mousePosition, ks);                    
                     if (ks.IsKeyDown(Keys.Escape) && prevks.IsKeyUp(Keys.Escape))
@@ -206,37 +200,9 @@ namespace Game2
 
                 case GameState.Playing:
                     TileEngineG.Draw(spriteBatch);
+                    enemyManager.Draw(spriteBatch);
                     player1.draw(spriteBatch);
-            if ( enemyStat.Enemytype == EnemyType.Zombie )
-            {
-                spriteBatch.Draw(enemy_zombie, enemyPos, null, Color.White, enemyAngle, new Vector2(enemy_zombie.Width / 2, enemy_zombie.Height / 2), 1.0f, SpriteEffects.None, 0);
                     player2.draw(spriteBatch);
-                    foreach (shot s in player1.shots)
-                        spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
-            }
-            else if (enemyStat.Enemytype == EnemyType.Crippler)
-            {
-                    
-                    foreach (shot s in player2.shots)
-                        spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
-                spriteBatch.Draw(enemy_crippler, enemyPos, null, Color.White, enemyAngle, new Vector2(enemy_crippler.Width / 2, enemy_crippler.Height / 2), 1.0f, SpriteEffects.None, 0);
-            }
-            else if (enemyStat.Enemytype == EnemyType.Spitter)
-            {
-                spriteBatch.Draw(enemy_spitter, enemyPos, null, Color.White, enemyAngle, new Vector2(enemy_spitter.Width / 2, enemy_spitter.Height / 2), 1.0f, SpriteEffects.None, 0);
-            }
-            else if (enemyStat.Enemytype == EnemyType.Charger)
-            {
-                spriteBatch.Draw(enemy_charger, enemyPos, null, Color.White, enemyAngle, new Vector2(enemy_charger.Width / 2, enemy_charger.Height / 2), 1.0f, SpriteEffects.None, 0);
-            }
-            else if (enemyStat.Enemytype == EnemyType.PistolZombie)
-            {
-                spriteBatch.Draw(enemy_pistolzombie, enemyPos, null, Color.White, enemyAngle, new Vector2(enemy_pistolzombie.Width / 2, enemy_pistolzombie.Height / 2), 1.0f, SpriteEffects.None, 0);
-            }
-            else if (enemyStat.Enemytype == EnemyType.ShotgunZombie)
-            {
-                spriteBatch.Draw(enemy_shotgunzombie, enemyPos, null, Color.White, enemyAngle, new Vector2(enemy_shotgunzombie.Width / 2, enemy_shotgunzombie.Height / 2), 1.0f, SpriteEffects.None, 0);
-            }
                     break;
 
                 case GameState.Pause:

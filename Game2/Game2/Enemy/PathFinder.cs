@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,7 +35,19 @@ namespace Game2
                 MapData[y, x].Type = tile.Gid > 0 ? PathFinderType.Wall : PathFinderType.Nothing;
             }
         }
-        public void MoveFromTo()
+
+        public List<Node> MoveFromTo(Vector2 posFrom, Vector2 posTo)
+        {
+            SetStart((int)(posFrom.X / 64), (int)(posFrom.Y / 64));
+            SetPlayer((int)(posTo.X / 64), (int)(posTo.Y / 64));
+            MoveFromTo();
+            var ret = Plotroute();
+            if (ret == null)
+                return null;
+            ret.Reverse();
+            return ret;
+        }
+        private void MoveFromTo()
         {
             if (_startX == -1 || _startY == -1 || _playerX == -1 || _playerY == -1)
                 return;
@@ -45,29 +58,36 @@ namespace Game2
 
             MoveFromTo(_startX, _startY, _playerX, _playerY);
         }
-        public void Plotroute()
+        public List<Node> Plotroute()
         {
             if (_startX == -1 || _startY == -1 || _playerX == -1 || _playerY == -1)
-                return;
+                return null;
+            if (_startX == _playerX && _startY == _playerY)
+                return null;
 
             var node = _closeNodes.Last();
+            var ret = new List<Node>();
 
             while (node.G != 0)
             {
                 //Hitta föregående nod
                 for (var i = 0; i < _closeNodes.Count; i++)
                 {
-                    if (_closeNodes[i].X == node.Sx && _closeNodes[i].Y == node.Sx)
+                    if (_closeNodes[i].X == node.Sx && _closeNodes[i].Y == node.Sy)
                     {
                         node = _closeNodes[i];
                         break;
                     }
                 }
                 if (node.G != 0)
+                {
                     MapData[node.Y, node.X].Type = PathFinderType.Route;
+                    ret.Add(node);
+                }
             }
             MapData[_startY, _startX].Type = PathFinderType.Go;
             MapData[_playerY, _playerX].Type = PathFinderType.Attack;
+            return ret;
         }
         public void SetWall(int x, int y)
         {
@@ -106,8 +126,8 @@ namespace Game2
             if(MapData[y,x].Type != PathFinderType.Wall)
             {
                 NoWall(_playerX, _playerY);
-                _startX = x;
-                _startY = y;
+                _playerX = x;
+                _playerY = y;
                 MapData[y, x].Type = PathFinderType.Attack;
                 return true;
             }
@@ -153,10 +173,16 @@ namespace Game2
                 var sx = bestNode.X;
                 var sy = bestNode.Y;
 
-                for (var y = bestNode.Y - 1; y <= sy + 1 && y >= 0 && y < SizeY; y++)
+                for (var y = bestNode.Y - 1; y <= sy + 1; y++)
                 {
-                    for (var x = bestNode.X - 1; x <= sx + 1 && x >= 0 && x < SizeX; x++)
+                    if (y < 0 || y >= SizeY)
+                        continue;
+
+                    for (var x = bestNode.X - 1; x <= sx + 1; x++)
                     {
+                        if (x < 0 || x >= SizeX)
+                            continue;
+
                         if (MapData[y, x].Type == PathFinderType.Wall)
                             continue;
 

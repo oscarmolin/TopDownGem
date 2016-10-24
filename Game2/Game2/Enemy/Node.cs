@@ -16,7 +16,7 @@ namespace Game2
         public int F { get; set; }
         public int Sx { get; set; }
         public int Sy { get; set; }
-        public Maptype Type { get; set; }
+        public PathFinderType Type { get; set; }
         public bool IsVisited { get; set; }
         public int Time { get; set; }
 
@@ -32,7 +32,7 @@ namespace Game2
         }
         public void Reset()
         {
-            Type = (Type == Maptype.Wall) ? Maptype.Wall : Maptype.Nothing;
+            Type = (Type == PathFinderType.Wall) ? PathFinderType.Wall : PathFinderType.Nothing;
             Sx = 0;
             Sy = 0;
             G = 0;
