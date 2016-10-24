@@ -89,7 +89,7 @@ namespace Game2
             spriteBatch = new SpriteBatch(GraphicsDevice);
             player1.LoadContent(this, "1");
             player2.LoadContent(this, "1");
-            map = new TmxMap("house.tmx");
+            map = new TmxMap("data/house.tmx");
             TileEngineG = new TileEngineGood(map);
             TileEngineG.LoadContent(this);
 
