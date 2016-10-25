@@ -37,7 +37,7 @@ namespace Meny
         public Menu SubMenu { get; set; }
         public MenuChoice(Menu parentMenu)
         {
-            ParentMenu = ParentMenu;
+            ParentMenu = parentMenu;
             IsEnabled = true;
             IsVisible = () => true;
         }

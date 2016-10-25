@@ -101,8 +101,8 @@ namespace Meny
             }
             if (KeyboardComponent.KeyPressed(Keys.Enter) || GamePadComponent.ButtonPressed(Buttons.A) || KeyboardComponent.KeyPressed(Keys.Space))
             {   
-                    var selectedChoice = _activeMenu.Items.First(c => c.Selected);
-                    selectedChoice.ClickAction.Invoke();
+                var selectedChoice = _activeMenu.Items.First(c => c.Selected);
+                selectedChoice.ClickAction.Invoke();
             }
             var mouseState = Mouse.GetState();
             foreach (var choice in _activeMenu.Items)
@@ -137,7 +137,7 @@ namespace Meny
             }
                 break;
                 case GameState.Playing:
-                    break;
+                break;
             }
             base.Update(gameTime);
         }
@@ -214,7 +214,6 @@ namespace Meny
                 SD = Sound.Off;
             }
         }
-
         private void FullMenu()
         {
             FL = (FL == Full.off) ? Full.on : Full.off;
