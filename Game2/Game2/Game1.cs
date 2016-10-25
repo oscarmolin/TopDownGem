@@ -26,7 +26,7 @@ namespace Game2
 
         public SoundEffect effect;
         public static GameState GS;
-        GraphicsDeviceManager graphics;
+        public GraphicsDeviceManager Graphics;
         SpriteBatch spriteBatch;
         Player player1;
         Player player2;
@@ -35,8 +35,6 @@ namespace Game2
         TileEngine tileEngine;
         bool faku;
         MenuComponent mc;
-        PausMeny pm;
-        public OptionsMeny om;
         KeyboardComponent kc;
         GamePadComponent gc;
         TmxMap map;
@@ -45,13 +43,16 @@ namespace Game2
 
         Vector2 mousePosition;
         KeyboardState ks = new KeyboardState();
+        GamePadState gs = GamePad.GetState(0);
 
         public CoolGAme()
         {
-            graphics = new GraphicsDeviceManager(this);
+            Graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight = 1080;
+            Graphics.PreferredBackBufferWidth = 1920;
+            Graphics.PreferredBackBufferHeight = 1080;
+            Graphics.IsFullScreen = false;
+
         }
 
         /// <summary>
@@ -68,15 +69,12 @@ namespace Game2
             Components.Add(kc);
             gc = new GamePadComponent(this);
             Components.Add(gc);
-            pm = new PausMeny(this);
-            Components.Add(pm);
             cam = new Camera2D();
             player1 = new Player(new Vector2(300, 300), Controller.Keyboard, 6);
             player2 = new Player(new Vector2(300, 500), Controller.Controller1, 6);
             shots = new List<shot>();
             GS = GameState.Start;
             base.Initialize();
-            PausMeny.PS = PausMeny.GameState.Playing;
         }
 
         /// <summary>
@@ -92,7 +90,7 @@ namespace Game2
             map = new TmxMap("house.tmx");
             TileEngineG = new TileEngineGood(map);
             TileEngineG.LoadContent(this);
-
+            
 
             //tileEngine.TileMap = Content.Load<Texture2D>("1");
         }
@@ -115,11 +113,14 @@ namespace Game2
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 Exit();
+
             
             KeyboardState prevks = ks;
+            GamePadState prevgs = gs;
+            gs = GamePad.GetState(0);
             ms = Mouse.GetState();
             ks = Keyboard.GetState();
-            mousePosition = new Vector2(ms.Position.X, ms.Position.Y) + cam.pos -new Vector2(graphics.PreferredBackBufferWidth/2,graphics.PreferredBackBufferHeight/2);
+            mousePosition = new Vector2(ms.Position.X, ms.Position.Y) + cam.pos -new Vector2(Graphics.PreferredBackBufferWidth/2,Graphics.PreferredBackBufferHeight/2);
             switch (GS)
             {
 
@@ -129,20 +130,20 @@ namespace Game2
                 case GameState.Playing:
                     player1.Update(mousePosition,ks);
                     player2.Update(mousePosition, ks);
-                    if (ks.IsKeyDown(Keys.Escape) && prevks.IsKeyUp(Keys.Escape))
+                    if (ks.IsKeyDown(Keys.Escape) && prevks.IsKeyUp(Keys.Escape) || gs.IsButtonDown(Buttons.Start) && prevgs.IsButtonUp(Buttons.Start))
                     {
                         GS = GameState.Pause;
-                        PausMeny.PS = PausMeny.GameState.PausMenu;
+                        MenuComponent.gs = MenuComponent.GameState.MainMenu;
                     }
-                    if (player1.X > graphics.PreferredBackBufferWidth / 2 && player1.Y > graphics.PreferredBackBufferHeight / 2)
+                    if (player1.X > Graphics.PreferredBackBufferWidth / 2 && player1.Y > Graphics.PreferredBackBufferHeight / 2)
                         cam.pos = player1.position;                  
                     else
-                        cam.pos = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
+                        cam.pos = new Vector2(Graphics.PreferredBackBufferWidth / 2, Graphics.PreferredBackBufferHeight / 2);
 
                     if (ks.IsKeyDown(Keys.R))
                         Initialize();
                     if (ks.IsKeyDown(Keys.Home))
-                        graphics.ToggleFullScreen();
+                        Graphics.ToggleFullScreen();
                     
                     foreach (shot s in player1.shots)
                     {
@@ -154,14 +155,14 @@ namespace Game2
                     }
                     break;
                     case GameState.Pause:
-                    if (ks.IsKeyDown(Keys.Escape) && prevks.IsKeyUp(Keys.Escape))
+                    if (ks.IsKeyDown(Keys.Escape) && prevks.IsKeyUp(Keys.Escape) || gs.IsButtonDown(Buttons.Start) && prevgs.IsButtonUp(Buttons.Start))
                     {
                         GS = GameState.Playing;
-                        PausMeny.PS = PausMeny.GameState.Playing;
+                        MenuComponent.gs = MenuComponent.GameState.Playing;
                     }
-                    pm.Update(gameTime);
+                    mc.Update(gameTime);
                     ms = Mouse.GetState();
-                    mousePosition = new Vector2(ms.Position.X, ms.Position.Y) + cam.pos - new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
+                    mousePosition = new Vector2(ms.Position.X, ms.Position.Y) + cam.pos - new Vector2(Graphics.PreferredBackBufferWidth / 2, Graphics.PreferredBackBufferHeight / 2);
                     break;
 
             }
@@ -196,7 +197,7 @@ namespace Game2
                     break;
 
                 case GameState.Pause:
-                    pm.Draw(gameTime);
+                    mc.Draw(gameTime);
                     break;
             }
             if (player1.controller == Controller.Keyboard||GS!=GameState.Playing)

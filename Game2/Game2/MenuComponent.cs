@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net;
+using System.Net.Mime;
 using Game2;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -20,69 +21,77 @@ namespace Meny
         SpriteBatch _spriteBatch;
         SpriteFont _normalFont;
         SpriteFont _selectedFont;
-        List<MenuChoice> _choices;
         MouseState _previousMouseState;
-        OptionsMeny om;
+        Menu _menu;
+        Menu _activeMenu;
         public enum GameState
         {
             MainMenu, Playing, OptionsMenu
         }
-
         public static GameState gs;
-        public MenuComponent(Game game) : base(game)
+        public enum Sound
         {
-            _choices = new List<MenuChoice>();
-            _choices.Add(new MenuChoice() {Text = "START", Selected = true, ClickAction = MenuStartClicked});           
-            _choices.Add(new MenuChoice() { Text = "OPTIONS", ClickAction = MenuOptionsClicked });
-            _choices.Add(new MenuChoice() { Text = "QUIT", ClickAction = MenuQuitClicked });
+            On, Off
+        }
+        public static Sound SD;
+        public enum Full
+        {
+            on, off
+        }
+        public static Full FL;
+        public MenuComponent(Game game) 
+            : base(game)
+        {
+            _menu = new Menu();
+            _activeMenu = _menu;
 
-            gs = GameState.MainMenu;
+            var optionsMenu = new Menu();
+            optionsMenu.Items = new List<MenuChoice>
+            {
+                new MenuChoice(_menu) { Text = "Graphics", IsEnabled = false},
+                new MenuChoice(_menu) { Text = "Sound", IsEnabled = false},
+                new MenuChoice(_menu) { Text = "Sound On", IsVisible = () => MenuComponent.SD == Sound.On, ClickAction = SoundMenu},
+                new MenuChoice(_menu) { Text = "Sound Off", IsVisible = () => MenuComponent.SD == Sound.Off, ClickAction = SoundMenu},
+                new MenuChoice(_menu) { Text = "Fullscreen On", IsVisible = () => MenuComponent.FL == Full.on, ClickAction = FullMenu},
+                new MenuChoice(_menu) { Text = "Fullscreen Off", IsVisible = () => MenuComponent.FL == Full.off, ClickAction = FullMenu},
+                new MenuChoice(_menu) { Text = "Back to Main", ClickAction = MoveUpClick}
+            };
+            _menu.Items = new List<MenuChoice>
+            {
+                new MenuChoice(null){Text = "START",Selected = true,ClickAction = MenuStartClicked,IsVisible = () => CoolGAme.GS != CoolGAme.GameState.Pause},
+                new MenuChoice(null){ Text = "PAUSED", ClickAction = MenuStartClicked,IsVisible = () => CoolGAme.GS == CoolGAme.GameState.Pause, IsEnabled = false},
+                new MenuChoice(null) {Text = "OPTIONS", ClickAction = MenuOptionsClicked, SubMenu = optionsMenu},
+                new MenuChoice(null) {Text = "QUIT", ClickAction = MenuQuitClicked}
+            };
             
         }
-
-        private void MenuStartClicked()
+        public override void Initialize()
         {
-            CoolGAme.GS = CoolGAme.GameState.Playing;
-            gs = GameState.Playing;
-        }
-        private void MenuOptionsClicked()
-        {
-            gs = GameState.OptionsMenu;
-        }
-        private void MenuQuitClicked()
-        {
-            Game.Exit();
+            gs = GameState.MainMenu;
+            SD = Sound.On;
+            FL = Full.off;
+            base.Initialize();
         }
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _normalFont = Game.Content.Load<SpriteFont>("menuFontNormal");
             _selectedFont = Game.Content.Load<SpriteFont>("menuFontSelected");
-            float startY = 0.2f * GraphicsDevice.Viewport.Height;
-
-            foreach (var choice in _choices)
-                {
-                    Vector2 size = _normalFont.MeasureString(choice.Text);
-                    choice.Y = startY;
-                    choice.X = GraphicsDevice.Viewport.Width/2.0f - size.X/2;
-                    choice.HitBox = new Rectangle((int) choice.X, (int) choice.Y, (int) size.X, (int) size.Y);
-                    startY += 70;
-                }
-              
-
             _previousMouseState = Mouse.GetState();
-            string[] menuItems = {"Graphics", "Fullscreen", "Sound"};
-            om = new OptionsMeny(Game, _spriteBatch, _selectedFont);
             base.LoadContent();
         }
         public override void Update(GameTime gameTime)
         {
             switch (gs)
             {
-
                 case GameState.MainMenu:
-                    
-                        if (KeyboardComponent.KeyPressed(Keys.Down) || GamePadComponent.ButtonPressed(Buttons.LeftThumbstickDown) ||  KeyboardComponent.KeyPressed(Keys.S))
+            if (KeyboardComponent.KeyPressed(Keys.Escape))
+            {
+                var selectedChoice = _activeMenu.Items.First(c => c.Selected);
+                if (selectedChoice.ParentMenu != null)
+                _activeMenu = selectedChoice.ParentMenu;
+            }
+            if (KeyboardComponent.KeyPressed(Keys.Down) || GamePadComponent.ButtonPressed(Buttons.LeftThumbstickDown) ||  KeyboardComponent.KeyPressed(Keys.S))
             {
                 PreviousMenuChoice();
             }
@@ -91,27 +100,42 @@ namespace Meny
                 NextMenuChoice();
             }
             if (KeyboardComponent.KeyPressed(Keys.Enter) || GamePadComponent.ButtonPressed(Buttons.A) || KeyboardComponent.KeyPressed(Keys.Space))
-            {
-                
-                    var selectedChoice = _choices.First(c => c.Selected);
+            {   
+                    var selectedChoice = _activeMenu.Items.First(c => c.Selected);
                     selectedChoice.ClickAction.Invoke();
             }
-            
             var mouseState = Mouse.GetState();
-            foreach (var choice in _choices)
+            foreach (var choice in _activeMenu.Items)
             {
-                if (choice.HitBox.Contains(mouseState.X, mouseState.Y))
+                if (choice.HitBox.Contains(mouseState.X, mouseState.Y) && choice.IsEnabled && choice.IsVisible())
                 {
-                    _choices.ForEach(c => c.Selected = false);
+                    _activeMenu.Items.ForEach(c => c.Selected = false);
                     choice.Selected = true;
 
-                    if (_previousMouseState.LeftButton == ButtonState.Released
-                        && mouseState.LeftButton == ButtonState.Pressed)
+                    if (_previousMouseState.LeftButton == ButtonState.Released && mouseState.LeftButton == ButtonState.Pressed && choice.IsVisible())
+                    {
                         choice.ClickAction.Invoke();
+                        if(choice.SubMenu != null)
+                        _activeMenu = choice.SubMenu;
+                        break;
+                    }
                 }
             }
             _previousMouseState = mouseState;
-                    break;
+            float startY = 0.2f * GraphicsDevice.Viewport.Height;
+            foreach (var choice in _activeMenu.Items)
+            {
+                if (!choice.IsVisible())
+                    continue;
+
+                Vector2 size = _normalFont.MeasureString(choice.Text);
+                choice.Y = startY;
+                choice.X = GraphicsDevice.Viewport.Width / 2.0f - size.X / 2;
+                choice.HitBox = new Rectangle((int)choice.X, (int)choice.Y, (int)size.X, (int)size.Y);
+                startY += 70;
+                
+            }
+                break;
                 case GameState.Playing:
                     break;
             }
@@ -119,53 +143,89 @@ namespace Meny
         }
         private void PreviousMenuChoice()
         {
-           
-                    int selectedIndex = _choices.IndexOf(_choices.First(c => c.Selected));
-                _choices[selectedIndex].Selected = false;
+            int selectedIndex = _activeMenu.Items.IndexOf(_activeMenu.Items.First(c => c.Selected));
+            _activeMenu.Items[selectedIndex].Selected = false;
+            for (int i = 0; i < _activeMenu.Items.Count; i++)
+            {
                 selectedIndex--;
                 if (selectedIndex < 0)
-                    selectedIndex = _choices.Count - 1;
-                _choices[selectedIndex].Selected = true;
-              
+                    selectedIndex = _activeMenu.Items.Count - 1;
+                if (_activeMenu.Items[selectedIndex].IsVisible() && _activeMenu.Items[selectedIndex].IsEnabled)
+                {
+                    _activeMenu.Items[selectedIndex].Selected = true;
+                    break;
+                }
+            }
         }
-
         private void NextMenuChoice()
         {
-            
-                    int selectedIndex = _choices.IndexOf(_choices.First(c => c.Selected));
-                _choices[selectedIndex].Selected = false;
+            int selectedIndex = _activeMenu.Items.IndexOf(_activeMenu.Items.First(c => c.Selected));
+            _activeMenu.Items[selectedIndex].Selected = false;
+            for (int i = 0; i < _activeMenu.Items.Count; i++)
+            {
                 selectedIndex++;
-                if (selectedIndex >= _choices.Count)
-                selectedIndex = 0;
-                _choices[selectedIndex].Selected = true;
-
-            
+                if (selectedIndex >= _activeMenu.Items.Count)
+                    selectedIndex = 0;
+                if (_activeMenu.Items[selectedIndex].IsVisible() && _activeMenu.Items[selectedIndex].IsEnabled)
+                {
+                    _activeMenu.Items[selectedIndex].Selected = true;
+                    break;
+                }
+            }
         }
-
         public void Draw(GameTime gameTime)
         {
-            switch (gs)
+            _spriteBatch.Begin();
+            foreach (var choice in _activeMenu.Items)
             {
-
-                case GameState.MainMenu:
-                    _spriteBatch.Begin();
-                    foreach (var choice in _choices)
-                    {
-                        _spriteBatch.DrawString(choice.Selected ? _selectedFont : _normalFont,
-                            choice.Text, new Vector2(choice.X, choice.Y), Color.White);
-                    }
-                    _spriteBatch.End();
-                    base.Draw(gameTime);
-                    break;
-                case GameState.OptionsMenu:
-                    om.Draw(gameTime);
-
-                    
-                break;
-                case GameState.Playing:
-                break;
+                if (!choice.IsVisible())
+                    continue;
+                    _spriteBatch.DrawString(choice.Selected ? _selectedFont : _normalFont, choice.Text, new Vector2(choice.X, choice.Y), Color.White);
             }
-
+            _spriteBatch.End();
+            base.Draw(gameTime);
         }
+        #region Menu Clickers
+        private void MenuStartClicked()
+        {
+            CoolGAme.GS = CoolGAme.GameState.Playing;
+            gs = GameState.Playing;
+        }
+        private void MenuOptionsClicked()
+        {
+            
+            
+        }
+        private void MoveUpClick()
+        {
+            var selectedChoice = _activeMenu.Items.First(c => c.Selected);
+            if (selectedChoice.ParentMenu != null)
+            _activeMenu = selectedChoice.ParentMenu;
+        }
+
+        private void SoundMenu()
+        {
+            if (SD == Sound.Off)
+            {
+                SD = Sound.On;
+            }
+            else if (SD == Sound.On)
+            {
+                SD = Sound.Off;
+            }
+        }
+
+        private void FullMenu()
+        {
+            FL = (FL == Full.off) ? Full.on : Full.off;
+            var coolGame = (CoolGAme) Game;
+            coolGame.Graphics.IsFullScreen = FL == Full.on;
+            coolGame.Graphics.ApplyChanges();
+        }
+        private void MenuQuitClicked()
+        {
+            Game.Exit();
+        }
+        #endregion
     }
 }
