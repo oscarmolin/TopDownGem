@@ -108,10 +108,6 @@ namespace Game2
                     else
                         speed -= 2 * acc;
                 }
-
-
-               
-
                 if (anglevector != new Vector2())
                 {
                     anglevector.Normalize();
@@ -122,8 +118,10 @@ namespace Game2
                 if (ks.IsKeyDown(Keys.Space))
                 {
                     shots.Add(new shot(position, angle));
-
-                    effect.Play(volume, pitch, pan);
+                    if (MenuComponent.SD == MenuComponent.Sound.On)
+                    {
+                        effect.Play(volume, pitch, pan);
+                    }
                 }
 
             }
