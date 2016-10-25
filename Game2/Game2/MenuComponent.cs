@@ -18,7 +18,6 @@ namespace Meny
     /// </summary>
     public class MenuComponent : Microsoft.Xna.Framework.DrawableGameComponent
     {
-        SpriteBatch _spriteBatch;
         SpriteFont _normalFont;
         SpriteFont _selectedFont;
         MouseState _previousMouseState;
@@ -45,23 +44,40 @@ namespace Meny
             _menu = new Menu();
             _activeMenu = _menu;
 
+
+            var graphicsMenu = new Menu();
+            graphicsMenu.Items = new List<MenuChoice>
+            {
+                new MenuChoice(_menu) {Text = "Graphics Menu", IsEnabled = false},
+                new MenuChoice(_menu) { Text = "Fullscreen On", IsVisible = () => MenuComponent.FL == Full.on, ClickAction = FullMenu},
+                new MenuChoice(_menu) { Text = "Fullscreen Off", IsVisible = () => MenuComponent.FL == Full.off, ClickAction = FullMenu},
+                new MenuChoice(_menu) {Text = "Back to Options", ClickAction = MoveUpClick}
+            };
+
+            var soundMenu = new Menu();
+            soundMenu.Items = new List<MenuChoice>
+            {
+                new MenuChoice(_menu) {Text = "Sound Menu", IsEnabled = false},
+                new MenuChoice(_menu) { Text = "Sound On", IsVisible = () => MenuComponent.SD == Sound.On, ClickAction = SoundMenu},
+                new MenuChoice(_menu) { Text = "Sound Off", IsVisible = () => MenuComponent.SD == Sound.Off, ClickAction = SoundMenu},
+                new MenuChoice(_menu) {Text = "Back to Options", ClickAction = MoveUpClick}
+            };
+
+
             var optionsMenu = new Menu();
             optionsMenu.Items = new List<MenuChoice>
             {
-                new MenuChoice(_menu) { Text = "Graphics", IsEnabled = false},
-                new MenuChoice(_menu) { Text = "Sound", IsEnabled = false},
-                new MenuChoice(_menu) { Text = "Sound On", IsVisible = () => MenuComponent.SD == Sound.On, ClickAction = SoundMenu},
-                new MenuChoice(_menu) { Text = "Sound Off", IsVisible = () => MenuComponent.SD == Sound.Off, ClickAction = SoundMenu},
-                new MenuChoice(_menu) { Text = "Fullscreen", IsEnabled = false},
-                new MenuChoice(_menu) { Text = "Fullscreen On", IsVisible = () => MenuComponent.FL == Full.on, ClickAction = FullMenu},
-                new MenuChoice(_menu) { Text = "Fullscreen Off", IsVisible = () => MenuComponent.FL == Full.off, ClickAction = FullMenu},
+                new MenuChoice(_menu) { Text = "Options Menu", ClickAction = MoveClick, IsEnabled = false},
+                new MenuChoice(_menu) {Text = "Grahpics Menu", ClickAction = MoveClick, SubMenu = graphicsMenu},
+                new MenuChoice(_menu) {Text = "Sound Menu", ClickAction = MoveClick, SubMenu = soundMenu},
                 new MenuChoice(_menu) { Text = "Back to Main", ClickAction = MoveUpClick}
             };
             _menu.Items = new List<MenuChoice>
             {
+                new MenuChoice(null) {Text = "CoolGAme", IsEnabled = false},
                 new MenuChoice(null){Text = "START",Selected = true,ClickAction = MenuStartClicked,IsVisible = () => CoolGAme.GS != CoolGAme.GameState.Pause},
                 new MenuChoice(null){ Text = "PAUSED", ClickAction = MenuStartClicked,IsVisible = () => CoolGAme.GS == CoolGAme.GameState.Pause, IsEnabled = false},
-                new MenuChoice(null) {Text = "OPTIONS", ClickAction = MenuOptionsClicked, SubMenu = optionsMenu},
+                new MenuChoice(null) {Text = "OPTIONS", ClickAction = MoveClick, SubMenu = optionsMenu},
                 new MenuChoice(null) {Text = "QUIT", ClickAction = MenuQuitClicked}
             };
             
@@ -75,7 +91,7 @@ namespace Meny
         }
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+           
             _normalFont = Game.Content.Load<SpriteFont>("menuFontNormal");
             _selectedFont = Game.Content.Load<SpriteFont>("menuFontSelected");
             _previousMouseState = Mouse.GetState();
@@ -174,17 +190,14 @@ namespace Meny
                 }
             }
         }
-        public void Draw(GameTime gameTime)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            _spriteBatch.Begin();
             foreach (var choice in _activeMenu.Items)
             {
                 if (!choice.IsVisible())
                     continue;
-                    _spriteBatch.DrawString(choice.Selected ? _selectedFont : _normalFont, choice.Text, new Vector2(choice.X, choice.Y), Color.White);
+                    spriteBatch.DrawString(choice.Selected ? _selectedFont : _normalFont, choice.Text, new Vector2(choice.X, choice.Y), Color.White);
             }
-            _spriteBatch.End();
-            base.Draw(gameTime);
         }
         #region Menu Clickers
         private void MenuStartClicked()
@@ -192,16 +205,15 @@ namespace Meny
             CoolGAme.GS = CoolGAme.GameState.Playing;
             gs = GameState.Playing;
         }
-        private void MenuOptionsClicked()
-        {
-            
-            
-        }
         private void MoveUpClick()
         {
             var selectedChoice = _activeMenu.Items.First(c => c.Selected);
             if (selectedChoice.ParentMenu != null)
             _activeMenu = selectedChoice.ParentMenu;
+        }
+        private void MoveClick()
+        {
+            
         }
 
         private void SoundMenu()

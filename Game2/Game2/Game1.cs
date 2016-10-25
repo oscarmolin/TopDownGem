@@ -182,7 +182,7 @@ namespace Game2
             switch (GS)
             {
                 case GameState.Start:
-                    mc.Draw(gameTime);
+                    mc.Draw(gameTime, spriteBatch);
                     break;
 
                 case GameState.Playing:
@@ -197,7 +197,15 @@ namespace Game2
                     break;
 
                 case GameState.Pause:
-                    mc.Draw(gameTime);
+                    TileEngineG.Draw(spriteBatch);
+                    player1.draw(spriteBatch);
+                    player2.draw(spriteBatch);
+                    foreach (shot s in player1.shots)
+                        spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
+
+                    foreach (shot s in player2.shots)
+                        spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
+                    mc.Draw(gameTime, spriteBatch);
                     break;
             }
             if (player1.controller == Controller.Keyboard||GS!=GameState.Playing)
