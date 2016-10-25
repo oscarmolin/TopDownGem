@@ -49,7 +49,7 @@ namespace Game2
         public void Update()
         {
             frame++;
-            if (frame == 20)
+            if (frame == 10)
             {
                 var e = Enemies.SpawnOne();
                 e.Position = new Vector2(400, 500);
@@ -58,14 +58,19 @@ namespace Game2
             }
             foreach (var e in _enemies)
             {
-                var list = bus.PathFinder.MoveFromTo(e.Position, bus.Player.position);
-                if (list == null || list.Count == 0)
-                    continue;
-                var node = list.First();
-                var posTo = new Vector2(node.X * 64 + 32, node.Y * 64 + 32);
-                var angle = (posTo - e.Position);
-                angle.Normalize();
-                e.Angle = angle;
+                e.Timer++;
+                if (e.Timer == 10)
+                {
+                    e.Timer = 0;
+                    var list = bus.PathFinder.MoveFromTo(e.Position, bus.Player.position);
+                    if (list == null || list.Count == 0)
+                        continue;
+                    var node = list.First();
+                    var posTo = new Vector2(node.X * 64 + 32, node.Y * 64 + 32);
+                    var angle = (posTo - e.Position);
+                    angle.Normalize();
+                    e.Angle = angle;
+                }
                 e.Update();
             }
         }
@@ -102,13 +107,13 @@ namespace Game2
                 }
             }
         }
-        public void LoadEnemy()
+        public void SpawnPoint()
         {
             var spawnpoint = new Vector2();
             Random id = new Random();
             Random spawnNumber = new Random();
 
-
+            spawnpoint = new Vector2(800, 800);
         }
     }
 }

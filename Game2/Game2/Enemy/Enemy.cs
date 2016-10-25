@@ -17,7 +17,7 @@ namespace Game2
         public float Speed { get; set; }
         public string Name { get; set; }
         public EnemyType Enemytype { get; set; }
-
+        public int Timer { get; set; }
         public Vector2 Position { get; set; }
         public Vector2 Angle { get; set; }
 
