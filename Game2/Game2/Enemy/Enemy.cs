@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Game2
 {
-
     public class EnemyStat
     {
         public int EnemyId { get; set; }
@@ -18,6 +17,7 @@ namespace Game2
         public float Speed { get; set; }
         public string Name { get; set; }
         public EnemyType Enemytype { get; set; }
+
         public Vector2 Position { get; set; }
         public Vector2 Angle { get; set; }
 

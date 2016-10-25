@@ -18,7 +18,9 @@ namespace Game2
         Texture2D enemy_charger;
         Texture2D enemy_pistolzombie;
         Texture2D enemy_shotgunzombie;
+
         ServiceBus bus;
+        int frame = 0;
 
         private List<EnemyStat> _enemies;
 
@@ -26,7 +28,7 @@ namespace Game2
         {
             _enemies = new List<EnemyStat>();
             bus = Bus;
-
+         
             var e = Enemies.SpawnOne();
             e.Position = new Vector2(80, 80);
             e.Angle = new Vector2(1, 0);
@@ -46,6 +48,14 @@ namespace Game2
 
         public void Update()
         {
+            frame++;
+            if (frame == 20)
+            {
+                var e = Enemies.SpawnOne();
+                e.Position = new Vector2(400, 500);
+                _enemies.Add(e);
+                frame = 0;
+            }
             foreach (var e in _enemies)
             {
                 var list = bus.PathFinder.MoveFromTo(e.Position, bus.Player.position);
@@ -92,7 +102,7 @@ namespace Game2
                 }
             }
         }
-        public void spawner()
+        public void LoadEnemy()
         {
             var spawnpoint = new Vector2();
             Random id = new Random();

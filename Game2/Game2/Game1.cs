@@ -145,6 +145,7 @@ namespace Game2
                     break;
                 case GameState.Playing:
 
+
                     player1.Update(mousePosition,ks);
                     player2.Update(mousePosition, ks);                    
                     if (ks.IsKeyDown(Keys.Escape) && prevks.IsKeyUp(Keys.Escape))
