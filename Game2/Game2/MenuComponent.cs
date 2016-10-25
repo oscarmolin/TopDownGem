@@ -52,6 +52,7 @@ namespace Meny
                 new MenuChoice(_menu) { Text = "Sound", IsEnabled = false},
                 new MenuChoice(_menu) { Text = "Sound On", IsVisible = () => MenuComponent.SD == Sound.On, ClickAction = SoundMenu},
                 new MenuChoice(_menu) { Text = "Sound Off", IsVisible = () => MenuComponent.SD == Sound.Off, ClickAction = SoundMenu},
+                new MenuChoice(_menu) { Text = "Fullscreen", IsEnabled = false},
                 new MenuChoice(_menu) { Text = "Fullscreen On", IsVisible = () => MenuComponent.FL == Full.on, ClickAction = FullMenu},
                 new MenuChoice(_menu) { Text = "Fullscreen Off", IsVisible = () => MenuComponent.FL == Full.off, ClickAction = FullMenu},
                 new MenuChoice(_menu) { Text = "Back to Main", ClickAction = MoveUpClick}
