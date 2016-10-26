@@ -130,6 +130,10 @@ namespace Game2
                 case GameState.Playing:
                     player1.Update(mousePosition,ks);
                     player2.Update(mousePosition, ks);
+                    if(MenuComponent.CL == MenuComponent.Controll.Cont)
+                        player1.controller = Controller.Controller1;
+                    else
+                        player1.controller = Controller.Keyboard;
                     if (ks.IsKeyDown(Keys.Escape) && prevks.IsKeyUp(Keys.Escape) || gs.IsButtonDown(Buttons.Start) && prevgs.IsButtonUp(Buttons.Start))
                     {
                         GS = GameState.Pause;

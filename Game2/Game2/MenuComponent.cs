@@ -38,6 +38,11 @@ namespace Meny
             on, off
         }
         public static Full FL;
+        public enum Controll
+        {
+            Cont, Key
+        }
+        public static Controll CL;
         public MenuComponent(Game game) 
             : base(game)
         {
@@ -48,42 +53,52 @@ namespace Meny
             var graphicsMenu = new Menu();
             graphicsMenu.Items = new List<MenuChoice>
             {
-                new MenuChoice(_menu) {Text = "Graphics Menu", IsEnabled = false},
+                new MenuChoice(_menu) { Text = "Graphics Menu", IsEnabled = false},
                 new MenuChoice(_menu) { Text = "Fullscreen On", IsVisible = () => MenuComponent.FL == Full.on, ClickAction = FullMenu},
                 new MenuChoice(_menu) { Text = "Fullscreen Off", IsVisible = () => MenuComponent.FL == Full.off, ClickAction = FullMenu},
-                new MenuChoice(_menu) {Text = "Back to Options", ClickAction = MoveUpClick}
+                new MenuChoice(_menu) { Text = "Back to Options", ClickAction = MoveUpClick}
             };
 
             var soundMenu = new Menu();
             soundMenu.Items = new List<MenuChoice>
             {
-                new MenuChoice(_menu) {Text = "Sound Menu", IsEnabled = false},
+                new MenuChoice(_menu) { Text = "Sound Menu", IsEnabled = false},
                 new MenuChoice(_menu) { Text = "Sound On", IsVisible = () => MenuComponent.SD == Sound.On, ClickAction = SoundMenu},
                 new MenuChoice(_menu) { Text = "Sound Off", IsVisible = () => MenuComponent.SD == Sound.Off, ClickAction = SoundMenu},
-                new MenuChoice(_menu) {Text = "Back to Options", ClickAction = MoveUpClick}
+                new MenuChoice(_menu) { Text = "Back to Options", ClickAction = MoveUpClick}
             };
 
+            var controllMenu = new Menu();
+            controllMenu.Items = new List<MenuChoice>
+            {
+                new MenuChoice(_menu) { Text = "Controll Menu", IsEnabled = false},
+                new MenuChoice(_menu) { Text = "Keyboard Active",  IsVisible = () => MenuComponent.CL == Controll.Key, ClickAction = ControlMenu},
+                new MenuChoice(_menu) { Text = "Controll Active",  IsVisible = () => MenuComponent.CL == Controll.Cont, ClickAction = ControlMenu},
+                new MenuChoice(_menu) { Text = "Back to Options", ClickAction = MoveUpClick}
+            };
 
             var optionsMenu = new Menu();
             optionsMenu.Items = new List<MenuChoice>
             {
                 new MenuChoice(_menu) { Text = "Options Menu", ClickAction = MoveClick, IsEnabled = false},
-                new MenuChoice(_menu) {Text = "Grahpics Menu", ClickAction = MoveClick, SubMenu = graphicsMenu},
-                new MenuChoice(_menu) {Text = "Sound Menu", ClickAction = MoveClick, SubMenu = soundMenu},
+                new MenuChoice(_menu) { Text = "Grahpics Menu", ClickAction = MoveClick, SubMenu = graphicsMenu},
+                new MenuChoice(_menu) { Text = "Controll Menu", ClickAction = MoveClick, SubMenu = controllMenu},
+                new MenuChoice(_menu) { Text = "Sound Menu", ClickAction = MoveClick, SubMenu = soundMenu},
                 new MenuChoice(_menu) { Text = "Back to Main", ClickAction = MoveUpClick}
             };
             _menu.Items = new List<MenuChoice>
             {
-                new MenuChoice(null) {Text = "CoolGAme", IsEnabled = false},
-                new MenuChoice(null){Text = "START",Selected = true,ClickAction = MenuStartClicked,IsVisible = () => CoolGAme.GS != CoolGAme.GameState.Pause},
-                new MenuChoice(null){ Text = "PAUSED", ClickAction = MenuStartClicked,IsVisible = () => CoolGAme.GS == CoolGAme.GameState.Pause, IsEnabled = false},
-                new MenuChoice(null) {Text = "OPTIONS", ClickAction = MoveClick, SubMenu = optionsMenu},
-                new MenuChoice(null) {Text = "QUIT", ClickAction = MenuQuitClicked}
+                new MenuChoice(null) { Text = "CoolGAme", IsEnabled = false},
+                new MenuChoice(null) { Text = "START", Selected = true,ClickAction = MenuStartClicked,IsVisible = () => CoolGAme.GS != CoolGAme.GameState.Pause},
+                new MenuChoice(null) { Text = "PAUSED", ClickAction = MenuStartClicked,IsVisible = () => CoolGAme.GS == CoolGAme.GameState.Pause, IsEnabled = false},
+                new MenuChoice(null) { Text = "OPTIONS", ClickAction = MoveClick, SubMenu = optionsMenu},
+                new MenuChoice(null) { Text = "QUIT", ClickAction = MenuQuitClicked}
             };
             
         }
         public override void Initialize()
         {
+            CL = Controll.Key;
             gs = GameState.MainMenu;
             SD = Sound.On;
             FL = Full.off;
@@ -225,6 +240,18 @@ namespace Meny
             else if (SD == Sound.On)
             {
                 SD = Sound.Off;
+            }
+        }
+        private void ControlMenu()
+        {
+            if (CL == Controll.Cont)
+            {
+                CL = Controll.Key;
+                
+            }
+            else if (CL == Controll.Key)
+            {
+                CL = Controll.Cont;
             }
         }
         private void FullMenu()

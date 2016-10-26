@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Audio;
 using TiledSharp;
 namespace Game2
 {
-    enum Controller
+    public enum Controller
     { 
         Controller1,
         Controller2,
@@ -117,7 +117,7 @@ namespace Game2
                     velocity = speed * prevangelvector;
                 if (ks.IsKeyDown(Keys.Space))
                 {
-                    shots.Add(new shot(position, angle));
+                    shots.Add(new shot(position, angle+ RandomFireAngle.Angle(10)));
                     if (MenuComponent.SD == MenuComponent.Sound.On)
                     {
                         effect.Play(volume, pitch, pan);
