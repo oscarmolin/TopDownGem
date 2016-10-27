@@ -131,7 +131,6 @@ namespace Meny
             _previousMouseState = Mouse.GetState();
             base.LoadContent();
         }
-
         public override void Update(GameTime gameTime)
         {
             switch (gs)
@@ -157,8 +156,7 @@ namespace Meny
                         selectedChoice.ClickAction.Invoke();
 
                         if (selectedChoice.SubMenu != null)
-                            _activeMenu = selectedChoice.SubMenu;
-
+                        _activeMenu = selectedChoice.SubMenu;
                     }
                     var mouseState = Mouse.GetState();
                     foreach (var choice in _activeMenu.Items)
@@ -167,13 +165,11 @@ namespace Meny
                         {
                             _activeMenu.Items.ForEach(c => c.Selected = false);
                             choice.Selected = true;
-
-                            if (_previousMouseState.LeftButton == ButtonState.Released &&
-                                mouseState.LeftButton == ButtonState.Pressed && choice.IsVisible())
+                            if (_previousMouseState.LeftButton == ButtonState.Released && mouseState.LeftButton == ButtonState.Pressed && choice.IsVisible())
                             {
                                 choice.ClickAction.Invoke();
                                 if (choice.SubMenu != null)
-                                    _activeMenu = choice.SubMenu;
+                                _activeMenu = choice.SubMenu;
                                 break;
                             }
                         }
@@ -188,9 +184,8 @@ namespace Meny
                         Vector2 size = _normalFont.MeasureString(choice.Text);
                         choice.Y = startY;
                         choice.X = GraphicsDevice.Viewport.Width/2.0f - size.X/2;
-                        choice.HitBox = new Rectangle((int) choice.X, (int) choice.Y, (int) size.X, (int) size.Y);
+                        choice.HitBox = new Rectangle((int) choice.X, (int) choice.Y, (int) size.X, (int) size.Y - 30);
                         startY += 70;
-
                     }
                     break;
                 case GameState.Playing:
@@ -232,7 +227,6 @@ namespace Meny
                 }
             }
         }
-
         public void Draw(GameTime gameTime)
         {
             _spriteBatch.Begin();
@@ -240,32 +234,26 @@ namespace Meny
             {
                 if (!choice.IsVisible())
                     continue;
-                _spriteBatch.DrawString(choice.Selected ? _selectedFont : _normalFont, choice.Text,
-                    new Vector2(choice.X, choice.Y), Color.White);
+                _spriteBatch.DrawString(choice.Selected ? _selectedFont : _normalFont, choice.Text, new Vector2(choice.X, choice.Y), Color.White);
             }
             _spriteBatch.End();
         }
 
         #region Menu Clickers
-
         private void MenuStartClicked()
         {
             CoolGAme.GS = CoolGAme.GameState.Playing;
             gs = GameState.Playing;
         }
-
         private void MoveUpClick()
         {
             var selectedChoice = _activeMenu.Items.First(c => c.Selected);
             if (selectedChoice.ParentMenu != null)
-                _activeMenu = selectedChoice.ParentMenu;
+            _activeMenu = selectedChoice.ParentMenu;
         }
-
         private void MoveClick()
         {
-            //_activeMenu = subMenu
         }
-
         private void SoundMenu()
         {
             if (SD == Sound.Off)
@@ -277,20 +265,17 @@ namespace Meny
                 SD = Sound.Off;
             }
         }
-
         private void ControlMenu()
         {
             if (CL == Controll.Cont)
             {
                 CL = Controll.Key;
-
             }
             else if (CL == Controll.Key)
             {
                 CL = Controll.Cont;
             }
         }
-
         private void FullMenu()
         {
             FL = (FL == Full.off) ? Full.on : Full.off;
@@ -298,12 +283,10 @@ namespace Meny
             coolGame.Graphics.IsFullScreen = FL == Full.on;
             coolGame.Graphics.ApplyChanges();
         }
-
         private void MenuQuitClicked()
         {
             Game.Exit();
         }
-
         #endregion
     }
 }
