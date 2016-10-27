@@ -39,6 +39,11 @@ namespace Game2
         Vector2 anglevector ;
         Vector2 prevangelvector;
         Rectangle  prect;
+        Rectangle rectTL;
+        Rectangle rectTR;
+        Rectangle rectBL;
+        Rectangle rectBR;
+
         List<Rectangle> maprect;
         int[,] map;
         bool colided= false;
@@ -56,7 +61,7 @@ namespace Game2
             anglevector = new Vector2();
             map = Map;
             maprect = new List<Rectangle>();
-            radius= 64;
+            radius= 32;
 
         }
         public void LoadContent(Game game, string texture)
@@ -173,25 +178,75 @@ namespace Game2
 
         private void checkColision()
         {
-            prect = new Rectangle((int)position.X +(int)velocity.X -(int)(texture.Width / 2), (int)position.Y + (int)velocity.Y - (int)(texture.Height / 2), texture.Width, texture.Height);
+            position += velocity;
+            //prect = new Rectangle((int)(position.X - texture.Width / 2), (int)(position.Y - texture.Height / 2), 64, 64);
+            Point temp = new Point((int)((position.X - (position.X % 64)) / 64)-1, (int)((position.Y - (position.Y % 64)) / 64)-1);
+
+            if (map[temp.X, temp.Y] == 1 || map[temp.X, temp.Y] == 2)
+            {
+                rectTL = new Rectangle(temp.X*64, temp.Y*64, 64, 64);
+                //if()
+                maprect.Add(rectTL);
+            }
+            if (map[temp.X, temp.Y + 1] == 1 || map[temp.X, temp.Y + 1] == 2)
+            {
+                rectTR = new Rectangle(temp.X * 64, temp.Y * 64 + 64, 64, 64);
+                maprect.Add(rectTR);
+            }
+            if (map[temp.X + 1, temp.Y] == 1 || map[temp.X + 1, temp.Y] == 2)
+            {
+                rectBL = new Rectangle(temp.X * 64 + 64, temp.Y * 64, 64, 64);
+                maprect.Add(rectBL);
+            }
+            if (map[temp.X + 1, temp.Y + 1] == 1 || map[temp.X + 1, temp.Y + 1] == 2)
+            {
+                rectBR = new Rectangle(temp.X * 64 + 64, temp.Y * 64 + 64, 64, 64);
+                maprect.Add(rectBR);
+            }
+
+            //prect = new Rectangle((int)position.X +(int)velocity.X -(int)(texture.Width / 2), (int)position.Y + (int)velocity.Y - (int)(texture.Height / 2), texture.Width, texture.Height);
+            //if (map[(int)(position.X / 64), (int)((position.Y-(position.Y%64))/ 64)] == 1|| map[(int)(position.X / 64), (int)(position.Y / 64)] == 2)
+            //    maprect.Add(new Rectangle((int)(1), (int)(position.Y ),64,64));
+            //if (map[(int)(position.X / 64)+1, (int)(position.Y / 64)] == 1 || map[(int)(position.X / 64)+1, (int)(position.Y / 64)] == 2)
+            //    maprect.Add(new Rectangle((int)(position.X +64 ), (int)(position.Y ), 64, 64));
+            //if (map[(int)(position.X / 64), (int)(position.Y / 64)+1] == 1 || map[(int)(position.X / 64), (int)(position.Y / 64)+1] == 2)
+            //    maprect.Add(new Rectangle((int)(position.X ), (int)(position.Y + 64), 64, 64));
+            //if (map[(int)(position.X / 64)+1, (int)(position.Y / 64)+1] == 1 || map[(int)(position.X / 64)+1, (int)(position.Y / 64)+1] == 2)
+            //    maprect.Add(new Rectangle((int)(position.X + 64), (int)(position.Y + 64), 64, 64));
 
 
-            if (map[(int)(position.X / 64), (int)(position.Y / 64)] == 1|| map[(int)(position.X / 64), (int)(position.Y / 64)] == 2)
-                maprect.Add(new Rectangle((int)(position.X ), (int)(position.Y ),64,64));
-            if (map[(int)(position.X / 64)+1, (int)(position.Y / 64)] == 1 || map[(int)(position.X / 64)+1, (int)(position.Y / 64)] == 2)
-                maprect.Add(new Rectangle((int)(position.X +64 ), (int)(position.Y ), 64, 64));
-            if (map[(int)(position.X / 64), (int)(position.Y / 64)+1] == 1 || map[(int)(position.X / 64), (int)(position.Y / 64)+1] == 2)
-                maprect.Add(new Rectangle((int)(position.X ), (int)(position.Y + 64), 64, 64));
-            if (map[(int)(position.X / 64)+1, (int)(position.Y / 64)+1] == 1 || map[(int)(position.X / 64)+1, (int)(position.Y / 64)+1] == 2)
-                maprect.Add(new Rectangle((int)(position.X + 64), (int)(position.Y + 64), 64, 64));
 
-            for (int i = 0; i < maprect.Count;i++)
-            if (prect.Intersects(maprect[i]))
-                colided = true;
+            for (int i = 0; i < maprect.Count; i++)
+            {
+                if (position.X + radius > maprect[i].X && position.X - radius < maprect[i].X)
+                {
+                    //velocity = new Vector2(0, velocity.Y);
+                    position = new Vector2(maprect[i].X-1,position.Y);
+                    break;
+                }
+                else if (position.X - radius < maprect[i].X +64 && position.X + radius > maprect[i].X+64)
+                {
+                    //velocity = new Vector2(0, velocity.Y);
+                    position = new Vector2(maprect[i].X +65 , position.Y);
+                    break;
+                }
+                else if (position.Y + radius > maprect[i].Y && position.Y - radius < maprect[i].Y)
+                {
+                    //velocity = new Vector2(velocity.X,0);
+                    position = new Vector2(position.X, maprect[i].Y -1 );
+                    break;
+                }
+                else if (position.Y - radius < maprect[i].Y +64&& position.Y + radius > maprect[i].Y+64)
+                {
+                    //velocity = new Vector2(velocity.X,0);
+                    position = new Vector2(position.X, maprect[i].Y +65 );
+                    break;
+                }
+            }
 
-            if (!colided)
-                position += velocity;
-            colided = false;
+            //if (!colided)
+            
+            //colided = false;
             maprect.Clear();
         }
 
