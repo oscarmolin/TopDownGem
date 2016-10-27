@@ -125,7 +125,6 @@ namespace Game2
             {
 
                 case GameState.Start:                    
-                    mc.Update(gameTime);
                     break;
                 case GameState.Playing:
                     player1.Update(mousePosition,ks);
@@ -163,7 +162,6 @@ namespace Game2
                         GS = GameState.Playing;
                         MenuComponent.gs = MenuComponent.GameState.Playing;
                     }
-                    mc.Update(gameTime);
                     if (MenuComponent.CL == MenuComponent.Controll.Cont)
                         player1.controller = Controller.Controller1;
                     else
@@ -202,14 +200,16 @@ namespace Game2
                         spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
                     break;
             }
-            if (player1.controller == Controller.Keyboard||GS!=GameState.Playing)
-                spriteBatch.Draw(player1.texture, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red, 0, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
-
+            if (player1.controller == Controller.Keyboard || GS != GameState.Playing) spriteBatch.Draw(player1.texture, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red, 0, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
             spriteBatch.End();
 
-            if(GS == GameState.Pause)
+            if (GS == GameState.Pause)
+            {
                 mc.Draw(gameTime);
-
+                spriteBatch.Begin();
+                if (player1.controller == Controller.Keyboard || GS != GameState.Playing) spriteBatch.Draw(player1.texture, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red, 0, new Vector2(player1.texture.Width/2, player1.texture.Height/2), 0.05f, SpriteEffects.None, 0);
+                spriteBatch.End();
+            }
             base.Draw(gameTime);
         }
     }
