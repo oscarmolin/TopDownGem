@@ -135,10 +135,9 @@ namespace Game2
                         GS = GameState.Pause;
                         MenuComponent.gs = MenuComponent.GameState.MainMenu;
                     }
-                    if (player1.X > Graphics.PreferredBackBufferWidth / 2 && player1.Y > Graphics.PreferredBackBufferHeight / 2)
+                   
                         cam.pos = player1.position;                  
-                    else
-                        cam.pos = new Vector2(Graphics.PreferredBackBufferWidth / 2, Graphics.PreferredBackBufferHeight / 2);
+                    
 
                     if (ks.IsKeyDown(Keys.R))
                         Initialize();
@@ -189,6 +188,15 @@ namespace Game2
                     break;
 
                 case GameState.Playing:
+                    TileEngineG.Draw(spriteBatch);
+                    player1.draw(spriteBatch);
+                    player2.draw(spriteBatch);
+                    foreach (shot s in player1.shots)
+                        spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
+
+                    foreach (shot s in player2.shots)
+                        spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
+                    break;
                 case GameState.Pause:
                     TileEngineG.Draw(spriteBatch);
                     player1.draw(spriteBatch);
@@ -198,18 +206,25 @@ namespace Game2
                     
                     foreach (shot s in player2.shots)
                         spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
+                    spriteBatch.End();
+                    mc.Draw(gameTime);
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, cam.get_transformation(GraphicsDevice));
+                    //if (player1.controller == Controller.Keyboard || GS != GameState.Playing) spriteBatch.Draw(player1.texture, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red, 0, new Vector2(player1.texture.Width/2, player1.texture.Height/2), 0.05f, SpriteEffects.None, 0);
+                    //spriteBatch.End();
+
+
+
                     break;
+                    
             }
-            if (player1.controller == Controller.Keyboard || GS != GameState.Playing) spriteBatch.Draw(player1.texture, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red, 0, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
+            if (player1.controller == Controller.Keyboard || GS != GameState.Playing)
+                spriteBatch.Draw(player1.texture, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red, 0, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
             spriteBatch.End();
 
-            if (GS == GameState.Pause)
-            {
-                mc.Draw(gameTime);
-                spriteBatch.Begin();
-                if (player1.controller == Controller.Keyboard || GS != GameState.Playing) spriteBatch.Draw(player1.texture, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red, 0, new Vector2(player1.texture.Width/2, player1.texture.Height/2), 0.05f, SpriteEffects.None, 0);
-                spriteBatch.End();
-            }
+            //if (GS == GameState.Pause)
+            //{
+               
+            //}
             base.Draw(gameTime);
         }
     }
