@@ -24,7 +24,6 @@ namespace Game2
         int frame = 0;
 
         private List<EnemyStat> _enemies;
-        Vector2 spawnpoint = new Vector2();
         List<Rectangle> SpawnPoints = new List<Rectangle>();
 
         public EnemyManager(ServiceBus Bus)
@@ -32,7 +31,7 @@ namespace Game2
             _enemies = new List<EnemyStat>();
             bus = Bus;
          
-            var e = Enemies.SpawnOne();
+            var e = Enemies.SpawnOne(new Vector2());
             e.Position = new Vector2(80, 80);
             e.Angle = new Vector2(1, 0);
 
@@ -52,16 +51,16 @@ namespace Game2
         public void Update()
         {
             frame++;
-            if (frame == 200)
+            if (frame == 500)
             {
+                frame = 0;
                 GetSpawningTiles();
                 CalculateZombies();
-                frame = 0;
             }
             foreach (var e in _enemies)
             {
                 e.Timer++;
-                if (e.Timer == 10)
+                if (e.Timer == 5)
                 {
                     e.Timer = 0;
                     var list = bus.PathFinder.MoveFromTo(e.Position, bus.Player.position);
@@ -119,13 +118,8 @@ namespace Game2
             for (int i = 0; i< round * 2; i++)
             {
                 int random = ran.Next(0, SpawnPoints.Count);
-                spawnpoint = new Vector2(SpawnPoints[random].X + 32,
-                SpawnPoints[random].Y + 32);
-                if(ran.Next(1,3) == 2)
-                {
-                    var e = Enemies.SpawnOne();
-                    _enemies.Add(e);
-                }
+                var e = Enemies.SpawnOne(new Vector2(SpawnPoints[random].X,SpawnPoints[random].Y));
+                _enemies.Add(e);
             }
         }
     }

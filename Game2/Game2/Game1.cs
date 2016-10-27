@@ -107,7 +107,7 @@ namespace Game2
             TileEngineG.LoadContent(this);
 
             enemyManager = new EnemyManager(bus);
-            enemyStat = Enemies.SpawnOne((EnemyType)r.Next(6));
+            enemyStat = Enemies.SpawnOne((EnemyType)r.Next(6),new Vector2());
 
 
 
