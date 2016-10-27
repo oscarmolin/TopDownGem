@@ -170,22 +170,20 @@ namespace Game2
                 }
             }
 
-
+            
             checkColision();
             
-                
         }
 
         private void checkColision()
         {
             position += velocity;
             //prect = new Rectangle((int)(position.X - texture.Width / 2), (int)(position.Y - texture.Height / 2), 64, 64);
-            Point temp = new Point((int)((position.X - (position.X % 64)) / 64)-1, (int)((position.Y - (position.Y % 64)) / 64)-1);
+            Point temp = new Point((int)(((position.X-32) - ((position.X-32) % 64)) / 64), (int)(((position.Y - 32) - ((position.Y - 32) % 64)) / 64));
 
             if (map[temp.X, temp.Y] == 1 || map[temp.X, temp.Y] == 2)
             {
-                rectTL = new Rectangle(temp.X*64, temp.Y*64, 64, 64);
-                //if()
+                rectTL = new Rectangle(temp.X*64 , temp.Y*64 , 64, 64);
                 maprect.Add(rectTL);
             }
             if (map[temp.X, temp.Y + 1] == 1 || map[temp.X, temp.Y + 1] == 2)
