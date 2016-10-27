@@ -135,10 +135,10 @@ namespace Game2
                         GS = GameState.Pause;
                         MenuComponent.gs = MenuComponent.GameState.MainMenu;
                     }
-                    if (player1.X > Graphics.PreferredBackBufferWidth / 2 && player1.Y > Graphics.PreferredBackBufferHeight / 2)
+                    
                         cam.pos = player1.position;                  
-                    else
-                    //    cam.pos = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
+                   
+                   
 
                     if (ks.IsKeyDown(Keys.R))
                         Initialize();
