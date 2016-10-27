@@ -130,10 +130,7 @@ namespace Game2
                 case GameState.Playing:
                     player1.Update(mousePosition,ks);
                     player2.Update(mousePosition, ks);
-                    if(MenuComponent.CL == MenuComponent.Controll.Cont)
-                        player1.controller = Controller.Controller1;
-                    else
-                        player1.controller = Controller.Keyboard;
+                    
                     if (ks.IsKeyDown(Keys.Escape) && prevks.IsKeyUp(Keys.Escape) || gs.IsButtonDown(Buttons.Start) && prevgs.IsButtonUp(Buttons.Start))
                     {
                         GS = GameState.Pause;
@@ -159,14 +156,18 @@ namespace Game2
                     }
                     break;
                     case GameState.Pause:
+                    ms = Mouse.GetState();
+                    mousePosition = new Vector2(ms.Position.X, ms.Position.Y) + cam.pos - new Vector2(Graphics.PreferredBackBufferWidth / 2, Graphics.PreferredBackBufferHeight / 2);
                     if (ks.IsKeyDown(Keys.Escape) && prevks.IsKeyUp(Keys.Escape) || gs.IsButtonDown(Buttons.Start) && prevgs.IsButtonUp(Buttons.Start))
                     {
                         GS = GameState.Playing;
                         MenuComponent.gs = MenuComponent.GameState.Playing;
                     }
                     mc.Update(gameTime);
-                    ms = Mouse.GetState();
-                    mousePosition = new Vector2(ms.Position.X, ms.Position.Y) + cam.pos - new Vector2(Graphics.PreferredBackBufferWidth / 2, Graphics.PreferredBackBufferHeight / 2);
+                    if (MenuComponent.CL == MenuComponent.Controll.Cont)
+                        player1.controller = Controller.Controller1;
+                    else
+                        player1.controller = Controller.Keyboard;
                     break;
 
             }
@@ -186,10 +187,11 @@ namespace Game2
             switch (GS)
             {
                 case GameState.Start:
-                    mc.Draw(gameTime, spriteBatch);
+                    mc.Draw(gameTime);
                     break;
 
                 case GameState.Playing:
+                case GameState.Pause:
                     TileEngineG.Draw(spriteBatch);
                     player1.draw(spriteBatch);
                     player2.draw(spriteBatch);
@@ -199,23 +201,15 @@ namespace Game2
                     foreach (shot s in player2.shots)
                         spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
                     break;
-
-                case GameState.Pause:
-                    TileEngineG.Draw(spriteBatch);
-                    player1.draw(spriteBatch);
-                    player2.draw(spriteBatch);
-                    foreach (shot s in player1.shots)
-                        spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
-
-                    foreach (shot s in player2.shots)
-                        spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
-                    mc.Draw(gameTime, spriteBatch);
-                    break;
             }
             if (player1.controller == Controller.Keyboard||GS!=GameState.Playing)
                 spriteBatch.Draw(player1.texture, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red, 0, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
 
             spriteBatch.End();
+
+            if(GS == GameState.Pause)
+                mc.Draw(gameTime);
+
             base.Draw(gameTime);
         }
     }

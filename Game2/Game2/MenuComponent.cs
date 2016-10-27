@@ -18,6 +18,7 @@ namespace Meny
     /// </summary>
     public class MenuComponent : Microsoft.Xna.Framework.DrawableGameComponent
     {
+        SpriteBatch _spriteBatch;
         SpriteFont _normalFont;
         SpriteFont _selectedFont;
         MouseState _previousMouseState;
@@ -106,7 +107,7 @@ namespace Meny
         }
         protected override void LoadContent()
         {
-           
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
             _normalFont = Game.Content.Load<SpriteFont>("menuFontNormal");
             _selectedFont = Game.Content.Load<SpriteFont>("menuFontSelected");
             _previousMouseState = Mouse.GetState();
@@ -203,16 +204,18 @@ namespace Meny
                     _activeMenu.Items[selectedIndex].Selected = true;
                     break;
                 }
-            }
+            } 
         }
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public void Draw(GameTime gameTime)
         {
+            _spriteBatch.Begin();
             foreach (var choice in _activeMenu.Items)
             {
                 if (!choice.IsVisible())
                     continue;
-                    spriteBatch.DrawString(choice.Selected ? _selectedFont : _normalFont, choice.Text, new Vector2(choice.X, choice.Y), Color.White);
+                    _spriteBatch.DrawString(choice.Selected ? _selectedFont : _normalFont, choice.Text, new Vector2(choice.X, choice.Y), Color.White);
             }
+            _spriteBatch.End();
         }
         #region Menu Clickers
         private void MenuStartClicked()
