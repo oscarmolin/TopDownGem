@@ -96,16 +96,21 @@ namespace Game2
 
             player2.LoadContent(this, "1");
             bus = new ServiceBus();
+
+            TileEngineG = new TileEngineGood(bus);
+
             bus.Player = player1;
             bus.Map = new TmxMap("data/house.tmx");
             bus.PathFinder = new PathFinder(bus);
+            bus.TileEngineG = TileEngineG;
+
+            TileEngineG.LoadContent(this);
 
             enemyManager = new EnemyManager(bus);
             enemyStat = Enemies.SpawnOne((EnemyType)r.Next(6));
 
 
-            TileEngineG = new TileEngineGood(bus);
-            TileEngineG.LoadContent(this);
+
 
 
             //tileEngine.TileMap = Content.Load<Texture2D>("1");

@@ -18,11 +18,14 @@ namespace Game2
         Texture2D enemy_charger;
         Texture2D enemy_pistolzombie;
         Texture2D enemy_shotgunzombie;
-
+        int round = 1;
+        Random ran = new Random();
         ServiceBus bus;
         int frame = 0;
 
         private List<EnemyStat> _enemies;
+        Vector2 spawnpoint = new Vector2();
+        List<Rectangle> SpawnPoints = new List<Rectangle>();
 
         public EnemyManager(ServiceBus Bus)
         {
@@ -49,11 +52,10 @@ namespace Game2
         public void Update()
         {
             frame++;
-            if (frame == 10)
+            if (frame == 200)
             {
-                var e = Enemies.SpawnOne();
-                e.Position = new Vector2(400, 500);
-                _enemies.Add(e);
+                GetSpawningTiles();
+                CalculateZombies();
                 frame = 0;
             }
             foreach (var e in _enemies)
@@ -107,13 +109,24 @@ namespace Game2
                 }
             }
         }
-        public void SpawnPoint()
+        public void GetSpawningTiles()
         {
-            var spawnpoint = new Vector2();
-            Random id = new Random();
-            Random spawnNumber = new Random();
-
-            spawnpoint = new Vector2(800, 800);
+            SpawnPoints= bus.TileEngineG.FindSpawnZones();
+           
+        }
+        public void CalculateZombies()
+        {
+            for (int i = 0; i< round * 2; i++)
+            {
+                int random = ran.Next(0, SpawnPoints.Count);
+                spawnpoint = new Vector2(SpawnPoints[random].X + 32,
+                SpawnPoints[random].Y + 32);
+                if(ran.Next(1,3) == 2)
+                {
+                    var e = Enemies.SpawnOne();
+                    _enemies.Add(e);
+                }
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ using TiledSharp;
 
 namespace Game2
 {
-    class TileEngineGood
+    public class TileEngineGood
     {
         //static TmxMap map;
         ServiceBus bus;
@@ -17,6 +17,7 @@ namespace Game2
         int tileHeight;
         int tilesetTilesWide;
         int tilesetTilesHigh;
+        public List<Rectangle> spawnZones = new List<Rectangle>();
         public TileEngineGood(ServiceBus serviceBus)
         {
             this.bus = serviceBus;
@@ -60,5 +61,22 @@ namespace Game2
                 }
             }
         }
+        public List<Rectangle> FindSpawnZones()
+        {
+            for (var i = 0; i < bus.Map.Layers[2].Tiles.Count; i++)
+            {
+                int gid = bus.Map.Layers[2].Tiles[i].Gid;
+
+                if(gid == 28)
+                {
+                    float x = (i % bus.Map.Width) * bus.Map.TileWidth;
+                    float y = (float)Math.Floor(i / (double)bus.Map.Width) * bus.Map.TileHeight;
+
+                    spawnZones.Add(new Rectangle((int)x, (int)y, tileWidth, tileHeight));
+                }
+            }
+            return spawnZones;
+        }
+
     }
 }
