@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Meny;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 using TiledSharp;
 namespace Game2
 {
-    enum Controller
+    public enum Controller
     { 
         Controller1,
         Controller2,
@@ -51,9 +52,10 @@ namespace Game2
         }
         public void LoadContent(Game game, string texture)
         {
+           
+                this.texture = game.Content.Load<Texture2D>(texture);
+                effect = game.Content.Load<SoundEffect>("Pew");
             
-            this.texture = game.Content.Load<Texture2D>(texture);
-            effect = game.Content.Load<SoundEffect>("Pew");
         }
         public void  Update(Vector2 mousePosition,KeyboardState ks)
         {
@@ -106,10 +108,6 @@ namespace Game2
                     else
                         speed -= 2 * acc;
                 }
-
-
-               
-
                 if (anglevector != new Vector2())
                 {
                     anglevector.Normalize();
@@ -119,9 +117,11 @@ namespace Game2
                     velocity = speed * prevangelvector;
                 if (ks.IsKeyDown(Keys.Space))
                 {
-                    shots.Add(new shot(position, angle));
-
-                    effect.Play(volume, pitch, pan);
+                    shots.Add(new shot(position, angle+ RandomFireAngle.Angle(0.1f)));
+                    if (MenuComponent.SD == MenuComponent.Sound.On)
+                    {
+                        effect.Play(volume, pitch, pan);
+                    }
                 }
 
             }
@@ -149,8 +149,10 @@ namespace Game2
                 if (gs.IsButtonDown(Buttons.RightTrigger))
                 {
                     shots.Add(new shot(position, angle));
-
-                    effect.Play(volume, pitch, pan);
+                    if (MenuComponent.SD == MenuComponent.Sound.On)
+                    {
+                        effect.Play(volume, pitch, pan);
+                    }
                 }
             }
             

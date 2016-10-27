@@ -26,7 +26,7 @@ namespace Game2
 
         public SoundEffect effect;
         public static GameState GS;
-        GraphicsDeviceManager graphics;
+        public GraphicsDeviceManager Graphics;
         SpriteBatch spriteBatch;
         Player player1;
         Player player2;
@@ -35,7 +35,6 @@ namespace Game2
         TileEngine tileEngine;
         bool faku;
         MenuComponent mc;
-        PausMeny pm;
         KeyboardComponent kc;
         GamePadComponent gc;
         TmxMap map;
@@ -44,14 +43,16 @@ namespace Game2
 
         Vector2 mousePosition;
         KeyboardState ks = new KeyboardState();
+        GamePadState gs = GamePad.GetState(0);
 
         public CoolGAme()
         {
-            graphics = new GraphicsDeviceManager(this);
+            Graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight = 1080;
-            // graphics.IsFullScreen = true;
+            Graphics.PreferredBackBufferWidth = 1920;
+            Graphics.PreferredBackBufferHeight = 1080;
+            Graphics.IsFullScreen = false;
+
         }
 
         /// <summary>
@@ -62,15 +63,12 @@ namespace Game2
         /// </summary>
         protected override void Initialize()
         {
-            
             mc = new MenuComponent(this);
             Components.Add(mc);
             kc = new KeyboardComponent(this);
             Components.Add(kc);
             gc = new GamePadComponent(this);
             Components.Add(gc);
-            pm = new PausMeny(this);
-            Components.Add(pm);
             cam = new Camera2D();
             player1 = new Player(new Vector2(300, 300), Controller.Keyboard, 6);
             player2 = new Player(new Vector2(300, 500), Controller.Controller1, 6);
@@ -92,7 +90,7 @@ namespace Game2
             map = new TmxMap("data/house.tmx");
             TileEngineG = new TileEngineGood(map);
             TileEngineG.LoadContent(this);
-
+            
 
             //tileEngine.TileMap = Content.Load<Texture2D>("1");
         }
@@ -115,32 +113,38 @@ namespace Game2
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 Exit();
+
             
             KeyboardState prevks = ks;
+            GamePadState prevgs = gs;
+            gs = GamePad.GetState(0);
             ms = Mouse.GetState();
             ks = Keyboard.GetState();
-            mousePosition = new Vector2(ms.Position.X, ms.Position.Y) + cam.pos -new Vector2(graphics.PreferredBackBufferWidth/2,graphics.PreferredBackBufferHeight/2);
+            mousePosition = new Vector2(ms.Position.X, ms.Position.Y) + cam.pos -new Vector2(Graphics.PreferredBackBufferWidth/2,Graphics.PreferredBackBufferHeight/2);
             switch (GS)
             {
 
                 case GameState.Start:                    
-                    mc.Update(gameTime);
                     break;
                 case GameState.Playing:
                     player1.Update(mousePosition,ks);
-                    player2.Update(mousePosition, ks);                    
-                    if (ks.IsKeyDown(Keys.Escape) && prevks.IsKeyUp(Keys.Escape))
+                    player2.Update(mousePosition, ks);
+                    
+                    if (ks.IsKeyDown(Keys.Escape) && prevks.IsKeyUp(Keys.Escape) || gs.IsButtonDown(Buttons.Start) && prevgs.IsButtonUp(Buttons.Start))
+                    {
                         GS = GameState.Pause;
-                    //if (player1.X > graphics.PreferredBackBufferWidth / 2 && player1.Y > graphics.PreferredBackBufferHeight / 2)
+                        MenuComponent.gs = MenuComponent.GameState.MainMenu;
+                    }
+                    if (player1.X > Graphics.PreferredBackBufferWidth / 2 && player1.Y > Graphics.PreferredBackBufferHeight / 2)
                         cam.pos = player1.position;                  
-                    //else
+                    else
                     //    cam.pos = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
 
                     if (ks.IsKeyDown(Keys.R))
                         Initialize();
                     if (ks.IsKeyDown(Keys.Home))
-                        graphics.ToggleFullScreen();
-
+                        Graphics.ToggleFullScreen();
+                    
                     foreach (shot s in player1.shots)
                     {
                         s.pos -= new Vector2(10 * (float)Math.Cos(s.angle), 10 * (float)Math.Sin(s.angle));
@@ -151,13 +155,17 @@ namespace Game2
                     }
                     break;
                     case GameState.Pause:
-                    if (ks.IsKeyDown(Keys.Escape) && prevks.IsKeyUp(Keys.Escape))
+                    ms = Mouse.GetState();
+                    mousePosition = new Vector2(ms.Position.X, ms.Position.Y) + cam.pos - new Vector2(Graphics.PreferredBackBufferWidth / 2, Graphics.PreferredBackBufferHeight / 2);
+                    if (ks.IsKeyDown(Keys.Escape) && prevks.IsKeyUp(Keys.Escape) || gs.IsButtonDown(Buttons.Start) && prevgs.IsButtonUp(Buttons.Start))
                     {
                         GS = GameState.Playing;
+                        MenuComponent.gs = MenuComponent.GameState.Playing;
                     }
-                    pm.Update(gameTime);
-                    ms = Mouse.GetState();
-                    mousePosition = new Vector2(ms.Position.X, ms.Position.Y) + cam.pos - new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
+                    if (MenuComponent.CL == MenuComponent.Controll.Cont)
+                        player1.controller = Controller.Controller1;
+                    else
+                        player1.controller = Controller.Keyboard;
                     break;
 
             }
@@ -181,6 +189,7 @@ namespace Game2
                     break;
 
                 case GameState.Playing:
+                case GameState.Pause:
                     TileEngineG.Draw(spriteBatch);
                     player1.draw(spriteBatch);
                     player2.draw(spriteBatch);
@@ -190,15 +199,17 @@ namespace Game2
                     foreach (shot s in player2.shots)
                         spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
                     break;
-
-                case GameState.Pause:
-                    pm.Draw(gameTime);
-                    break;
             }
-            if (player1.controller == Controller.Keyboard||GS!=GameState.Playing)
-                spriteBatch.Draw(player1.texture, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red, 0, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
-
+            if (player1.controller == Controller.Keyboard || GS != GameState.Playing) spriteBatch.Draw(player1.texture, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red, 0, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
             spriteBatch.End();
+
+            if (GS == GameState.Pause)
+            {
+                mc.Draw(gameTime);
+                spriteBatch.Begin();
+                if (player1.controller == Controller.Keyboard || GS != GameState.Playing) spriteBatch.Draw(player1.texture, new Vector2(mousePosition.X, mousePosition.Y), null, Color.Red, 0, new Vector2(player1.texture.Width/2, player1.texture.Height/2), 0.05f, SpriteEffects.None, 0);
+                spriteBatch.End();
+            }
             base.Draw(gameTime);
         }
     }
