@@ -117,7 +117,7 @@ namespace Game2
                     velocity = speed * prevangelvector;
                 if (ks.IsKeyDown(Keys.Space))
                 {
-                    shots.Add(new shot(position, angle+ RandomFireAngle.Angle(10)));
+                    shots.Add(new shot(position, angle+ RandomFireAngle.Angle(0.1f)));
                     if (MenuComponent.SD == MenuComponent.Sound.On)
                     {
                         effect.Play(volume, pitch, pan);

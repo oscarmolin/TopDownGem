@@ -184,7 +184,7 @@ namespace Meny
                         Vector2 size = _normalFont.MeasureString(choice.Text);
                         choice.Y = startY;
                         choice.X = GraphicsDevice.Viewport.Width/2.0f - size.X/2;
-                        choice.HitBox = new Rectangle((int) choice.X, (int) choice.Y, (int) size.X, (int) size.Y - 30);
+                        choice.HitBox = new Rectangle((int) choice.X, (int) choice.Y, (int) size.X, (int) size.Y - 15);
                         startY += 70;
                     }
                     break;
