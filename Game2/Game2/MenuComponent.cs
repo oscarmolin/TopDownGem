@@ -58,59 +58,100 @@ namespace Meny
 
         public static Controll CL;
 
+        public enum TwoPlayer
+        {
+            One,
+            Two
+        }
+
+        public static TwoPlayer TP;
+        public enum SelMap
+        {
+            Forrest,
+            Stone
+        }
+
+        public static SelMap SP;
+
         public MenuComponent(Game game)
             : base(game)
         {
             _menu = new Menu();
             _activeMenu = _menu;
+            var MapMenu = new Menu();
             var optionsMenu = new Menu();
             var graphicsMenu = new Menu();
             var soundMenu = new Menu();
             var controllMenu = new Menu();
+            var returnToMenu = new Menu();
+            var exitMenu = new Menu();
 
             _menu.Items = new List<MenuChoice>
             {
-                new MenuChoice(null) {Text = "CoolGAme", IsEnabled = false},
-                new MenuChoice(null) { Text = "START", Selected = true, ClickAction = MenuStartClicked, IsVisible = () => CoolGAme.GS != CoolGAme.GameState.Pause },
+                new MenuChoice(null) { Text = "CoolGAme", IsEnabled = false},
+                new MenuChoice(null) { Text = "START", Selected = true, ClickAction = MoveClick, SubMenu = MapMenu, IsVisible = () => CoolGAme.GS != CoolGAme.GameState.Pause },
                 new MenuChoice(null) { Text = "PAUSED", ClickAction = MenuStartClicked, IsVisible = () => CoolGAme.GS == CoolGAme.GameState.Pause, IsEnabled = false },
-                new MenuChoice(null) {Text = "OPTIONS", ClickAction = MoveClick, SubMenu = optionsMenu},
-                new MenuChoice(null) {Text = "QUIT", ClickAction = MenuQuitClicked}
+                new MenuChoice(null) { Text = "OPTIONS", ClickAction = MoveClick, SubMenu = optionsMenu},
+                new MenuChoice(null) { Text = "EXIT GAME", ClickAction = MoveClick, SubMenu = returnToMenu, IsVisible = () => CoolGAme.GS == CoolGAme.GameState.Pause},
+                new MenuChoice(null) { Text = "QUIT", ClickAction = MoveClick, SubMenu = exitMenu}
             };
-            
-            
+
+            MapMenu.Items = new List<MenuChoice>
+            {
+                new MenuChoice(_menu) { Text = "Select your map", IsEnabled = false},
+                new MenuChoice(_menu) { Text = "ForrestMap", Selected = true, ClickAction = ForrestMap },
+                new MenuChoice(_menu) { Text = "StoneMap", Selected = true, ClickAction = StoneMap },
+
+            };
+
+
             optionsMenu.Items = new List<MenuChoice>
             {
-                new MenuChoice(_menu) {Text = "Options Menu", ClickAction = MoveClick, IsEnabled = false},
-                new MenuChoice(_menu) {Text = "Grahpics Menu", Selected = true, ClickAction = MoveClick, SubMenu = graphicsMenu},
-                new MenuChoice(_menu) {Text = "Controll Menu", ClickAction = MoveClick, SubMenu = controllMenu},
-                new MenuChoice(_menu) {Text = "Sound Menu", ClickAction = MoveClick, SubMenu = soundMenu},
-                new MenuChoice(_menu) {Text = "Back to Main", ClickAction = MoveUpClick}
+                new MenuChoice(_menu) { Text = "Options Menu", ClickAction = MoveClick, IsEnabled = false},
+                new MenuChoice(_menu) { Text = "Grahpics Menu", Selected = true, ClickAction = MoveClick, SubMenu = graphicsMenu},
+                new MenuChoice(_menu) { Text = "Controll Menu", ClickAction = MoveClick, SubMenu = controllMenu},
+                new MenuChoice(_menu) { Text = "Sound Menu", ClickAction = MoveClick, SubMenu = soundMenu},
+                new MenuChoice(_menu) { Text = "Back to Main", ClickAction = MoveUpClick}
             };
             
             graphicsMenu.Items = new List<MenuChoice>
             {
-                new MenuChoice(optionsMenu) {Text = "Graphics Menu", IsEnabled = false},
+                new MenuChoice(optionsMenu) { Text = "Graphics Menu", IsEnabled = false},
                 new MenuChoice(optionsMenu) { Text = "Fullscreen On", Selected = true, IsVisible = () => MenuComponent.FL == Full.on, ClickAction = FullMenu },
                 new MenuChoice(optionsMenu) { Text = "Fullscreen Off", IsVisible = () => MenuComponent.FL == Full.off, ClickAction = FullMenu },
-                new MenuChoice(optionsMenu) {Text = "Back to Options", ClickAction = MoveUpClick}
+                new MenuChoice(optionsMenu) { Text = "Back to Options", ClickAction = MoveUpClick}
             };
 
             
             soundMenu.Items = new List<MenuChoice>
             {
-                new MenuChoice(optionsMenu) {Text = "Sound Menu", IsEnabled = false},
+                new MenuChoice(optionsMenu) { Text = "Sound Menu", IsEnabled = false},
                 new MenuChoice(optionsMenu) { Text = "Sound On", Selected = true, IsVisible = () => MenuComponent.SD == Sound.On,ClickAction = SoundMenu },
                 new MenuChoice(optionsMenu) { Text = "Sound Off", IsVisible = () => MenuComponent.SD == Sound.Off, ClickAction = SoundMenu },
-                new MenuChoice(optionsMenu) {Text = "Back to Options", ClickAction = MoveUpClick}
+                new MenuChoice(optionsMenu) { Text = "Back to Options", ClickAction = MoveUpClick}
             };
 
             
             controllMenu.Items = new List<MenuChoice>
             {
-                new MenuChoice(optionsMenu) {Text = "Controll Menu", IsEnabled = false},
+                new MenuChoice(optionsMenu) { Text = "Controll Menu", IsEnabled = false},
                 new MenuChoice(optionsMenu) { Text = "Keyboard Active", Selected = true, IsVisible = () => MenuComponent.CL == Controll.Key, ClickAction = ControlMenu },
                 new MenuChoice(optionsMenu) { Text = "Controll Active", IsVisible = () => MenuComponent.CL == Controll.Cont, ClickAction = ControlMenu },
-                new MenuChoice(optionsMenu) {Text = "Back to Options", ClickAction = MoveUpClick}
+                new MenuChoice(optionsMenu) { Text = "Twoplayer off", IsVisible = () => MenuComponent.TP == TwoPlayer.One, ClickAction = PlayerNum },
+                new MenuChoice(optionsMenu) { Text = "Twoplayer on", IsVisible = () => MenuComponent.TP == TwoPlayer.Two, ClickAction = PlayerNum },
+                new MenuChoice(optionsMenu) { Text = "Back to Options", ClickAction = MoveUpClick}
+            };
+            exitMenu.Items = new List<MenuChoice>
+            {
+                new MenuChoice(_menu) { Text = "Are you sure?", IsEnabled = false},
+                new MenuChoice(_menu) { Text = "No", Selected = true, ClickAction = MoveUpClick},
+                new MenuChoice(_menu) { Text = "Yes", ClickAction = MenuQuitClicked}
+            };
+            returnToMenu.Items = new List<MenuChoice>
+            {
+                new MenuChoice(_menu) { Text = "Are you sure?", IsEnabled = false},
+                new MenuChoice(_menu) { Text = "No", Selected = true, ClickAction = MoveUpClick},
+                new MenuChoice(_menu) { Text = "Yes", ClickAction = PausMenuQuitClicked}
             };
 
         }
@@ -120,6 +161,8 @@ namespace Meny
             gs = GameState.MainMenu;
             SD = Sound.On;
             FL = Full.off;
+            TP = TwoPlayer.One;
+            SP = SelMap.Forrest;
             base.Initialize();
         }
 
@@ -245,6 +288,20 @@ namespace Meny
             CoolGAme.GS = CoolGAme.GameState.Playing;
             gs = GameState.Playing;
         }
+
+        private void ForrestMap()
+        {
+            SP = SelMap.Forrest;
+            CoolGAme.GS = CoolGAme.GameState.Playing;
+            gs = GameState.Playing;
+        }
+
+        private void StoneMap()
+        {
+            SP = SelMap.Stone;
+            CoolGAme.GS = CoolGAme.GameState.Playing;
+            gs = GameState.Playing;
+        }
         private void MoveUpClick()
         {
             var selectedChoice = _activeMenu.Items.First(c => c.Selected);
@@ -276,12 +333,31 @@ namespace Meny
                 CL = Controll.Cont;
             }
         }
+
+        private void PlayerNum()
+        {
+            if (TP == TwoPlayer.One)
+            {
+                TP = TwoPlayer.Two;
+            }
+            else if (TP == TwoPlayer.Two)
+            {
+                TP = TwoPlayer.One;
+            }
+        }
         private void FullMenu()
         {
             FL = (FL == Full.off) ? Full.on : Full.off;
             var coolGame = (CoolGAme) Game;
             coolGame.Graphics.IsFullScreen = FL == Full.on;
             coolGame.Graphics.ApplyChanges();
+        }
+        private void PausMenuQuitClicked()
+        {
+            CoolGAme.GS = CoolGAme.GameState.Start;
+            var selectedChoice = _activeMenu.Items.First(c => c.Selected);
+            if (selectedChoice.ParentMenu != null)
+                _activeMenu = selectedChoice.ParentMenu;
         }
         private void MenuQuitClicked()
         {

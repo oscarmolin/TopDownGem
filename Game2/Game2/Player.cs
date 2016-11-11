@@ -59,10 +59,6 @@ namespace Game2
         }
         public void  Update(Vector2 mousePosition,KeyboardState ks)
         {
-
-           
-
-
             if (controller == Controller.Keyboard)
             {
                 accelerating = false;

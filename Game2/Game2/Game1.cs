@@ -31,7 +31,6 @@ namespace Game2
         Player player1;
         Player player2;
         MouseState ms;
-        List<shot> shots;
         TileEngine tileEngine;
         bool faku;
         MenuComponent mc;
@@ -70,9 +69,8 @@ namespace Game2
             gc = new GamePadComponent(this);
             Components.Add(gc);
             cam = new Camera2D();
-            player1 = new Player(new Vector2(300, 300), Controller.Keyboard, 6);
-            player2 = new Player(new Vector2(300, 500), Controller.Controller1, 6);
-            shots = new List<shot>();
+            player1 = new Player(new Vector2(900, 300), Controller.Keyboard, 6);
+            player2 = new Player(new Vector2(900, 500), Controller.Controller1, 6);
             GS = GameState.Start;
             base.Initialize();
         }
@@ -87,9 +85,7 @@ namespace Game2
             spriteBatch = new SpriteBatch(GraphicsDevice);
             player1.LoadContent(this, "1");
             player2.LoadContent(this, "1");
-            map = new TmxMap("house.tmx");
-            TileEngineG = new TileEngineGood(map);
-            TileEngineG.LoadContent(this);
+            
             
 
             //tileEngine.TileMap = Content.Load<Texture2D>("1");
@@ -124,9 +120,14 @@ namespace Game2
             switch (GS)
             {
 
-                case GameState.Start:                    
+                case GameState.Start:
+                    
                     break;
                 case GameState.Playing:
+                    
+
+                    TileEngineG = new TileEngineGood(map);
+                    TileEngineG.LoadContent(this);
                     player1.Update(mousePosition,ks);
                     player2.Update(mousePosition, ks);
                     
@@ -188,6 +189,13 @@ namespace Game2
                     break;
 
                 case GameState.Playing:
+                    if (MenuComponent.SP == MenuComponent.SelMap.Forrest)
+                        map = new TmxMap("ForrestMap.tmx");
+                    if (MenuComponent.SP == MenuComponent.SelMap.Stone)
+                        map = new TmxMap("StoneMap.tmx");
+
+                    TileEngineG = new TileEngineGood(map);
+                    TileEngineG.LoadContent(this);
                     TileEngineG.Draw(spriteBatch);
                     player1.draw(spriteBatch);
                     player2.draw(spriteBatch);
