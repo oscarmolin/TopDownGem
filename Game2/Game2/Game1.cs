@@ -15,7 +15,6 @@ namespace Game2
     public class CoolGAme : Game
     {
         Random r = new Random();
-
         public enum GameState
         {
             Start,
@@ -133,7 +132,7 @@ namespace Game2
 
         protected override void Update(GameTime gameTime)
         {
-            enemyManager.Update();
+            enemyManager.Update(gameTime);
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 Exit();
@@ -185,7 +184,6 @@ namespace Game2
                     break;
 
             }
-
             base.Update(gameTime);
         }
 
@@ -197,7 +195,6 @@ namespace Game2
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default,  RasterizerState.CullNone, null, cam.get_transformation(GraphicsDevice));
-            
             switch (GS)
             {
                 case GameState.Start:

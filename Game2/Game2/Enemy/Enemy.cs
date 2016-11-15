@@ -14,10 +14,12 @@ namespace Game2
         public int EnemyId { get; set; }
         public int Health { get; set; }
         public int Rescitense { get; set; }
+        public int CollisionDamage { get; set; }
         public float Speed { get; set; }
         public string Name { get; set; }
         public EnemyType Enemytype { get; set; }
         public int Timer { get; set; }
+        public float ShootTimer { get; set; }
         public Vector2 Position { get; set; }
         public Vector2 Angle { get; set; }
 
@@ -52,6 +54,7 @@ namespace Game2
                     zombie.EnemyId = 1;
                     zombie.Health = 20;
                     zombie.Rescitense = 0;
+                    zombie.CollisionDamage = 5;
                     zombie.Speed = 2;
                     zombie.Name = "Zombie";
                     zombie.Enemytype = type;
@@ -63,6 +66,7 @@ namespace Game2
                     crippler.EnemyId = 2;
                     crippler.Health = 30;
                     crippler.Rescitense = 10;
+                    crippler.CollisionDamage = 10;
                     crippler.Speed = 1;
                     crippler.Name = "Crippler";
                     crippler.Enemytype = type;
@@ -74,6 +78,7 @@ namespace Game2
                     spitter.EnemyId = 3;
                     spitter.Health = 25;
                     spitter.Rescitense = 5;
+                    spitter.CollisionDamage = 2;
                     spitter.Speed = 2;
                     spitter.Name = "Spitter";
                     spitter.Enemytype = type;
@@ -85,6 +90,7 @@ namespace Game2
                     charger.EnemyId = 4;
                     charger.Health = 40;
                     charger.Rescitense = 10;
+                    charger.CollisionDamage = 15;
                     charger.Speed = 5;
                     charger.Name = "Charger";
                     charger.Enemytype = type;
@@ -96,6 +102,7 @@ namespace Game2
                     pistolzombie.EnemyId = 5;
                     pistolzombie.Health = 35;
                     pistolzombie.Rescitense = 15;
+                    pistolzombie.CollisionDamage = 0;
                     pistolzombie.Speed = 2;
                     pistolzombie.Name = "Pistol Zombie";
                     pistolzombie.Enemytype = type;
@@ -107,6 +114,7 @@ namespace Game2
                     shotgunzombie.EnemyId = 6;
                     shotgunzombie.Health = 35;
                     shotgunzombie.Rescitense = 15;
+                    shotgunzombie.CollisionDamage = 0;
                     shotgunzombie.Speed = 2;
                     shotgunzombie.Name = "Shotgun Zombie";
                     shotgunzombie.Enemytype = type;

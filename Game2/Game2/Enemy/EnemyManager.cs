@@ -18,13 +18,21 @@ namespace Game2
         Texture2D enemy_charger;
         Texture2D enemy_pistolzombie;
         Texture2D enemy_shotgunzombie;
+        Texture2D spit_projectile;
+        Texture2D zombie_bullet;
+        Texture2D gfx_spitterPool;
         int round = 1;
+        int Health;
         Random ran = new Random();
         ServiceBus bus;
         int frame = 0;
 
+        private AcidPool acidPool;
         private List<EnemyStat> _enemies;
         List<Rectangle> SpawnPoints = new List<Rectangle>();
+        List<SpitProjectile> SpitProjectile = new List<SpitProjectile>();
+        List<ZombieBullet> ZombieBullet = new List<ZombieBullet>();
+        List<AcidPool> AcidPool = new List<AcidPool>(); 
 
         public EnemyManager(ServiceBus Bus)
         {
@@ -36,6 +44,7 @@ namespace Game2
             e.Angle = new Vector2(1, 0);
 
             _enemies.Add(e);
+            Health = e.Health;
         }
 
         public void LoadContent(Game Game)
@@ -46,12 +55,15 @@ namespace Game2
             enemy_charger = Game.Content.Load<Texture2D>("robot2_hold");
             enemy_pistolzombie = Game.Content.Load<Texture2D>("zombie2_silencer");
             enemy_shotgunzombie = Game.Content.Load<Texture2D>("zombie2_machine");
+            spit_projectile = Game.Content.Load<Texture2D>("Spitter projectile");
+            zombie_bullet = Game.Content.Load<Texture2D>("ZombieBullet");
+            gfx_spitterPool = Game.Content.Load<Texture2D>("Spitter Pool 1");
         }
 
-        public void Update()
+        public void Update(GameTime gametime)
         {
             frame++;
-            if (frame == 500)
+            if (frame == 1000)
             {
                 frame = 0;
                 GetSpawningTiles();
@@ -60,7 +72,7 @@ namespace Game2
             foreach (var e in _enemies)
             {
                 e.Timer++;
-                if (e.Timer == 5)
+                if (e.Timer == 10)
                 {
                     e.Timer = 0;
                     var list = bus.PathFinder.MoveFromTo(e.Position, bus.Player.position);
@@ -71,13 +83,132 @@ namespace Game2
                     var angle = (posTo - e.Position);
                     angle.Normalize();
                     e.Angle = angle;
+
                 }
                 e.Update();
             }
+            foreach (var enemyStat in _enemies)
+            {
+                if (enemyStat.Enemytype == EnemyType.Spitter)
+                {
+                    enemyStat.ShootTimer++;
+                    if (enemyStat.ShootTimer >= 150)
+                    {
+                        enemyStat.ShootTimer = 0;
+                        Spit(enemyStat);
+                    }
+                    UpdateSpit(gametime);
+                }
+                else if (enemyStat.Enemytype == EnemyType.PistolZombie)
+                {
+                    enemyStat.ShootTimer++;
+                    if(enemyStat.ShootTimer >= 150)
+                    {
+                        enemyStat.ShootTimer = 0;
+                        Shoot(enemyStat);
+                    }
+                }
+                else if (enemyStat.Enemytype == EnemyType.ShotgunZombie)
+                {
+                    enemyStat.ShootTimer++;
+                    if(enemyStat.ShootTimer >= 150)
+                    {
+                        enemyStat.ShootTimer = 0;
+                        Shoot(enemyStat);
+                        Shoot(enemyStat);
+                        Shoot(enemyStat);
+                        Shoot(enemyStat);
+                        Shoot(enemyStat);
+                        Shoot(enemyStat);
+                    }
+                }
+            }
+            foreach(AcidPool Pool in AcidPool)
+            {
+                Pool.Update(gametime);
+            }
+            AcidPool.RemoveAll(z => z.Decay);
+
+            UpdateBullet();
+        }
+        public void UpdateBullet()
+        {
+            foreach(ZombieBullet bullet in ZombieBullet)
+            {
+                bullet.BulletPosition += bullet.BulletVelocity;
+                if(bullet.BulletPosition.X < 0)
+                {
+                    bullet.BulletIsVisible = false;
+                }
+            }
+            ZombieBullet.RemoveAll(z => !z.BulletIsVisible);
+        }
+        public void UpdateSpit(GameTime time)
+        {
+            foreach(SpitProjectile projectile in SpitProjectile)
+            {
+                projectile.Update(time);
+                if (projectile.pos.X < 0)
+                {
+                    projectile.isVisible = false;
+                }
+            }
+            foreach (SpitProjectile projectile in SpitProjectile.Where(s => s.hasLanded))
+            {
+                AcidPool.Add(new AcidPool(gfx_spitterPool, 2, 4) { location = projectile.pos });
+            }
+            SpitProjectile.RemoveAll(z => !z.isVisible || z.hasLanded);
+        }
+        public void Shoot(EnemyStat enemyStat)
+        {
+            ZombieBullet newShoot = new ZombieBullet(zombie_bullet);
+
+            Vector2 direction = bus.Player.position - enemyStat.Position;
+            direction.Normalize();
+
+            var d = (ran.NextDouble() - 0.5) / 10.0;
+            direction = Vector2.Transform(direction, Matrix.CreateRotationZ((float)d));
+
+            direction = direction * 10;
+
+            newShoot.BulletVelocity = direction * 2;
+            newShoot.BulletPosition = new Vector2(enemyStat.Position.X + newShoot.BulletVelocity.X, enemyStat.Position.Y + (enemy_pistolzombie.Height / 2) - (zombie_bullet.Height / 2));
+
+            newShoot.BulletIsVisible = true;
+            ZombieBullet.Add(newShoot);
+        }
+
+        public void Spit(EnemyStat enemyStat)
+        {
+            SpitProjectile newSpit = new SpitProjectile(spit_projectile);
+
+            Vector2 direction = bus.Player.position - enemyStat.Position;
+            direction.Normalize();
+            direction = direction * 10;
+
+            newSpit.velocity = direction / 2;
+            newSpit.angle = (float)Math.Atan2(direction.Y, direction.X) + MathHelper.Pi;
+
+            newSpit.pos = new Vector2(enemyStat.Position.X + newSpit.velocity.X, enemyStat.Position.Y + (enemy_spitter.Height / 2) - (spit_projectile.Height / 2));
+
+            newSpit.isVisible = true;
+            SpitProjectile.Add(newSpit);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            foreach (AcidPool pool in AcidPool)
+            {
+                pool.Draw(spriteBatch);
+            }
+            foreach (SpitProjectile projectile in SpitProjectile)
+            {
+                projectile.Draw(spriteBatch);
+            }
+            foreach(ZombieBullet bullet in ZombieBullet)
+            {
+                bullet.Draw(spriteBatch);
+            }
             foreach (var enemyStat in _enemies)
             {
                 float enemyAngle = (float)(Math.Atan2(enemyStat.Angle.X, -enemyStat.Angle.Y) - MathHelper.PiOver2);
