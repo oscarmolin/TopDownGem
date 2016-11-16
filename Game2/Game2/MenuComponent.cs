@@ -72,6 +72,13 @@ namespace Meny
         }
 
         public static SelMap SP;
+        public enum ConKey
+        {
+            Con,
+            Key
+        }
+
+        public static ConKey CK;
 
         public MenuComponent(Game game)
             : base(game)
@@ -99,7 +106,8 @@ namespace Meny
             {
                 new MenuChoice(_menu) { Text = "Select your map", IsEnabled = false},
                 new MenuChoice(_menu) { Text = "ForrestMap", Selected = true, ClickAction = ForrestMap },
-                new MenuChoice(_menu) { Text = "StoneMap", Selected = true, ClickAction = StoneMap },
+                new MenuChoice(_menu) { Text = "StoneMap", ClickAction = StoneMap },
+                new MenuChoice(_menu) { Text = "Back", ClickAction = MoveUpClick}
 
             };
             optionsMenu.Items = new List<MenuChoice>
@@ -131,6 +139,8 @@ namespace Meny
                 new MenuChoice(optionsMenu) { Text = "Controll Active", IsVisible = () => MenuComponent.CL == Controll.Cont, ClickAction = ControlMenu },
                 new MenuChoice(optionsMenu) { Text = "Twoplayer off", IsVisible = () => MenuComponent.TP == TwoPlayer.One, ClickAction = PlayerNum },
                 new MenuChoice(optionsMenu) { Text = "Twoplayer on", IsVisible = () => MenuComponent.TP == TwoPlayer.Two, ClickAction = PlayerNum },
+                new MenuChoice(optionsMenu) { Text = "Player 2 Controller", IsVisible = () => MenuComponent.CK == ConKey.Con && MenuComponent.TP == TwoPlayer.Two, ClickAction = Switch},
+                new MenuChoice(optionsMenu) { Text = "Player 2 Keyboard", IsVisible = () => MenuComponent.CK == ConKey.Key && MenuComponent.TP == TwoPlayer.Two, ClickAction = Switch},
                 new MenuChoice(optionsMenu) { Text = "Back to Options", ClickAction = MoveUpClick}
             };
             exitMenu.Items = new List<MenuChoice>
@@ -154,6 +164,7 @@ namespace Meny
             FL = Full.off;
             TP = TwoPlayer.One;
             SP = SelMap.Forrest;
+            CK = ConKey.Con;
             base.Initialize();
         }
         protected override void LoadContent()
@@ -319,7 +330,6 @@ namespace Meny
                 CL = Controll.Cont;
             }
         }
-
         private void PlayerNum()
         {
             if (TP == TwoPlayer.One)
@@ -337,6 +347,10 @@ namespace Meny
             var coolGame = (CoolGAme) Game;
             coolGame.Graphics.IsFullScreen = FL == Full.on;
             coolGame.Graphics.ApplyChanges();
+        }
+        private void Switch()
+        {
+            CK = (CK == ConKey.Con) ? ConKey.Key : ConKey.Con;
         }
         private void PausMenuQuitClicked()
         {

@@ -42,6 +42,7 @@
     <Compile Include="Game1.cs" />
     <Compile Include="GamePadComponent.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="QuadTree.cs" />
     <Compile Include="RandomFireAngle.cs" />
     <Compile Include="KeyboardComponent.cs" />
     <Compile Include="MenuChoice.cs" />
