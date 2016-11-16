@@ -95,7 +95,6 @@ namespace Meny
                 new MenuChoice(null) { Text = "EXIT GAME", ClickAction = MoveClick, SubMenu = returnToMenu, IsVisible = () => CoolGAme.GS == CoolGAme.GameState.Pause},
                 new MenuChoice(null) { Text = "QUIT", ClickAction = MoveClick, SubMenu = exitMenu}
             };
-
             MapMenu.Items = new List<MenuChoice>
             {
                 new MenuChoice(_menu) { Text = "Select your map", IsEnabled = false},
@@ -103,8 +102,6 @@ namespace Meny
                 new MenuChoice(_menu) { Text = "StoneMap", Selected = true, ClickAction = StoneMap },
 
             };
-
-
             optionsMenu.Items = new List<MenuChoice>
             {
                 new MenuChoice(_menu) { Text = "Options Menu", ClickAction = MoveClick, IsEnabled = false},
@@ -113,7 +110,6 @@ namespace Meny
                 new MenuChoice(_menu) { Text = "Sound Menu", ClickAction = MoveClick, SubMenu = soundMenu},
                 new MenuChoice(_menu) { Text = "Back to Main", ClickAction = MoveUpClick}
             };
-            
             graphicsMenu.Items = new List<MenuChoice>
             {
                 new MenuChoice(optionsMenu) { Text = "Graphics Menu", IsEnabled = false},
@@ -121,8 +117,6 @@ namespace Meny
                 new MenuChoice(optionsMenu) { Text = "Fullscreen Off", IsVisible = () => MenuComponent.FL == Full.off, ClickAction = FullMenu },
                 new MenuChoice(optionsMenu) { Text = "Back to Options", ClickAction = MoveUpClick}
             };
-
-            
             soundMenu.Items = new List<MenuChoice>
             {
                 new MenuChoice(optionsMenu) { Text = "Sound Menu", IsEnabled = false},
@@ -130,8 +124,6 @@ namespace Meny
                 new MenuChoice(optionsMenu) { Text = "Sound Off", IsVisible = () => MenuComponent.SD == Sound.Off, ClickAction = SoundMenu },
                 new MenuChoice(optionsMenu) { Text = "Back to Options", ClickAction = MoveUpClick}
             };
-
-            
             controllMenu.Items = new List<MenuChoice>
             {
                 new MenuChoice(optionsMenu) { Text = "Controll Menu", IsEnabled = false},
@@ -153,7 +145,6 @@ namespace Meny
                 new MenuChoice(_menu) { Text = "No", Selected = true, ClickAction = MoveUpClick},
                 new MenuChoice(_menu) { Text = "Yes", ClickAction = PausMenuQuitClicked}
             };
-
         }
         public override void Initialize()
         {
@@ -165,7 +156,6 @@ namespace Meny
             SP = SelMap.Forrest;
             base.Initialize();
         }
-
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -236,7 +226,6 @@ namespace Meny
             }
             base.Update(gameTime);
         }
-
         private void PreviousMenuChoice()
         {
             int selectedIndex = _activeMenu.Items.IndexOf(_activeMenu.Items.First(c => c.Selected));
@@ -253,7 +242,6 @@ namespace Meny
                 }
             }
         }
-
         private void NextMenuChoice()
         {
             int selectedIndex = _activeMenu.Items.IndexOf(_activeMenu.Items.First(c => c.Selected));
@@ -281,21 +269,18 @@ namespace Meny
             }
             _spriteBatch.End();
         }
-
         #region Menu Clickers
         private void MenuStartClicked()
         {
             CoolGAme.GS = CoolGAme.GameState.Playing;
             gs = GameState.Playing;
         }
-
         private void ForrestMap()
         {
             SP = SelMap.Forrest;
             CoolGAme.GS = CoolGAme.GameState.Playing;
             gs = GameState.Playing;
         }
-
         private void StoneMap()
         {
             SP = SelMap.Stone;
@@ -310,6 +295,7 @@ namespace Meny
         }
         private void MoveClick()
         {
+            // Krav på att en ClickAction ska tillkallas. Då ingen behövs kallas en som inte gör något.
         }
         private void SoundMenu()
         {
@@ -355,6 +341,8 @@ namespace Meny
         private void PausMenuQuitClicked()
         {
             CoolGAme.GS = CoolGAme.GameState.Start;
+            gs = GameState.MainMenu;
+            (this.Game as CoolGAme).Restart();
             var selectedChoice = _activeMenu.Items.First(c => c.Selected);
             if (selectedChoice.ParentMenu != null)
                 _activeMenu = selectedChoice.ParentMenu;

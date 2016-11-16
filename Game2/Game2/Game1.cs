@@ -75,6 +75,14 @@ namespace Game2
             base.Initialize();
         }
 
+        public void Restart()
+        {
+            this.Exit();
+            CoolGAme gAme = new CoolGAme();
+            gAme.Run();
+            
+        }
+
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
@@ -85,10 +93,7 @@ namespace Game2
             spriteBatch = new SpriteBatch(GraphicsDevice);
             player1.LoadContent(this, "1");
             player2.LoadContent(this, "1");
-            
-            
-
-            //tileEngine.TileMap = Content.Load<Texture2D>("1");
+            // tileEngine.TileMap = Content.Load<Texture2D>("1");
         }
 
         /// <summary>
@@ -97,14 +102,13 @@ namespace Game2
         /// </summary>
         protected override void UnloadContent()
         {
-        }
 
+        }
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
@@ -124,7 +128,7 @@ namespace Game2
                     
                     break;
                 case GameState.Playing:
-                    
+
 
                     TileEngineG = new TileEngineGood(map);
                     TileEngineG.LoadContent(this);
@@ -167,9 +171,7 @@ namespace Game2
                     else
                         player1.controller = Controller.Keyboard;
                     break;
-
             }
-
             base.Update(gameTime);
         }
 
