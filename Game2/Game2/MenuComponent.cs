@@ -13,9 +13,6 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Meny
 {
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
     public class MenuComponent : Microsoft.Xna.Framework.DrawableGameComponent
     {
         SpriteBatch _spriteBatch;
@@ -336,10 +333,15 @@ namespace Meny
         {
             FL = (FL == Full.off) ? Full.on : Full.off;
             var coolGame = (CoolGAme) Game;
+            if (FL == Full.on)
+            {
+                GR = Graphics.set1;
+                coolGame.Graphics.PreferredBackBufferWidth = 1920;
+                coolGame.Graphics.PreferredBackBufferHeight = 1080;
+            }
             coolGame.Graphics.IsFullScreen = FL == Full.on;
             coolGame.Graphics.ApplyChanges();
         }
-
         private void Grafik()
         {
             if (GR == Graphics.set1)

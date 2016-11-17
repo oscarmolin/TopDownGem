@@ -8,9 +8,6 @@ using TiledSharp;
 using Microsoft.Xna.Framework.Audio;
 namespace Game2
 {
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
     public class CoolGAme : Game
     {
         Random r = new Random();
@@ -45,7 +42,6 @@ namespace Game2
         Vector2 enemyPos;
         float enemyAngle;
         EnemyStat enemyStat;
-
         public CoolGAme()
         {
             Graphics = new GraphicsDeviceManager(this);
@@ -66,7 +62,6 @@ namespace Game2
             player1 = new Player(new Vector2(900, 300), Controller.Keyboard, 6);
             enemyPos = new Vector2(200, 200);
             player2 = new Player(new Vector2(900, 500), Controller.Controller1, 6);
-
             GS = GameState.Start;
             base.Initialize();
         }
@@ -75,33 +70,37 @@ namespace Game2
             player1.Reset(new Vector2(900, 300));
             player2.Reset(new Vector2(900, 500));
         }
-
         public void Grafitti()
         {
             if (MenuComponent.GR == MenuComponent.Graphics.set1)
             {
                 Graphics.PreferredBackBufferWidth = 1920;
                 Graphics.PreferredBackBufferHeight = 1080;
+                Graphics.ApplyChanges();
             }
             if (MenuComponent.GR == MenuComponent.Graphics.set2)
             {
                 Graphics.PreferredBackBufferWidth = 1024;
                 Graphics.PreferredBackBufferHeight = 700;
+                Graphics.ApplyChanges();
             }
             if (MenuComponent.GR == MenuComponent.Graphics.set3)
             {
                 Graphics.PreferredBackBufferWidth = 1366;
                 Graphics.PreferredBackBufferHeight = 768;
+                Graphics.ApplyChanges();
             }
             if (MenuComponent.GR == MenuComponent.Graphics.set4)
             {
                 Graphics.PreferredBackBufferWidth = 1440;
                 Graphics.PreferredBackBufferHeight = 900;
+                Graphics.ApplyChanges();
             }
             if (MenuComponent.GR == MenuComponent.Graphics.set5)
             {
                 Graphics.PreferredBackBufferWidth = 1600;
                 Graphics.PreferredBackBufferHeight = 900;
+                Graphics.ApplyChanges();
             }
         }
         public void LoadMap(MenuComponent.SelMap selectedMap)
@@ -123,25 +122,16 @@ namespace Game2
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             player1.LoadContent(this, "1");
-
             player2.LoadContent(this, "1");
             map = new TmxMap("data/house.tmx");
             bus = new ServiceBus();
-
             TileEngineG = new TileEngineGood(bus);
-
             bus.Player = player1;
             bus.Map = new TmxMap("data/house.tmx");
             bus.PathFinder = new PathFinder(bus);
             bus.TileEngineG = TileEngineG;
-
             enemyManager = new EnemyManager(bus);
             enemyStat = Enemies.SpawnOne((EnemyType)r.Next(6),new Vector2());
-
-
-
-
-            // tileEngine.TileMap = Content.Load<Texture2D>("1");
             enemyManager.LoadContent(this);
         }
         protected override void UnloadContent()
@@ -219,7 +209,6 @@ namespace Game2
                     player1.draw(spriteBatch);
                     if (MenuComponent.TP == MenuComponent.TwoPlayer.Two)
                         player2.draw(spriteBatch);
-                    
                     break;
                 case GameState.Pause:
                     TileEngineG.Draw(spriteBatch);

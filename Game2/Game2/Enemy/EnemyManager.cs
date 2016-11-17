@@ -247,8 +247,8 @@ namespace Game2
                     {
                         spriteBatch.Draw(enemy_shotgunzombie, enemyStat.Position, null, Color.White, enemyAngle, new Vector2(enemy_shotgunzombie.Width / 2, enemy_shotgunzombie.Height / 2), 1.0f, SpriteEffects.None, 0);
                     }
-                    RectangleBar = new Rectangle(((int)enemyStat.Position.X - 25), ((int)enemyStat.Position.Y - 35), enemyStat.Health / MaxHealth * 50, 2);
-                    RectangleGauge = new Rectangle(((int)enemyStat.Position.X - 25), ((int)enemyStat.Position.Y - 35), 50, 2);
+                    RectangleBar = new Rectangle((int)enemyStat.Position.X - 25, (int)enemyStat.Position.Y - 35, enemyStat.Health / MaxHealth * 50, 2);
+                    RectangleGauge = new Rectangle((int)enemyStat.Position.X - 25, (int)enemyStat.Position.Y - 35, 50, 2);
                     spriteBatch.Draw(health_Gauge, RectangleGauge, Color.White);
                     spriteBatch.Draw(health_Bar, RectangleBar, Color.White);
                 }
