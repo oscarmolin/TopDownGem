@@ -38,8 +38,14 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Enemy\AcidPool.cs" />
     <Compile Include="Camera.cs" />
+    <Compile Include="Enemy\EnemyManager.cs" />
+    <Compile Include="Enemy\Enemy.cs" />
+    <Compile Include="Enemy\PathFinder.cs" />
+    <Compile Include="Enemy\PathFinderType.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Enemy\Node.cs" />
     <Compile Include="GamePadComponent.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="RandomFireAngle.cs" />
@@ -48,10 +54,13 @@
     <Compile Include="MenuComponent.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceBus.cs" />
     <Compile Include="shot.cs" />
+    <Compile Include="Enemy\SpitProjectile.cs" />
     <Compile Include="TextureTool.cs" />
     <Compile Include="TileEngine.cs" />
     <Compile Include="TileEngineGood.cs" />
+    <Compile Include="Enemy\ZombieBullet.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -74,6 +83,9 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\house.tmx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -20,7 +20,7 @@ namespace Game2
         Keyboard
         
     }
-    class Player
+    public class Player
     {
         SoundEffect effect;
         public Controller controller;

@@ -15,7 +15,6 @@ namespace Game2
     public class CoolGAme : Game
     {
         Random r = new Random();
-
         public enum GameState
         {
             Start,
@@ -24,6 +23,7 @@ namespace Game2
             GameOver
         }
 
+        EnemyManager enemyManager;
         public SoundEffect effect;
         public static GameState GS;
         public GraphicsDeviceManager Graphics;
@@ -37,13 +37,17 @@ namespace Game2
         MenuComponent mc;
         KeyboardComponent kc;
         GamePadComponent gc;
-        TmxMap map;
+        ServiceBus bus;
         TileEngineGood TileEngineG;
         Camera2D cam;
 
         Vector2 mousePosition;
         KeyboardState ks = new KeyboardState();
         GamePadState gs = GamePad.GetState(0);
+
+        Vector2 enemyPos;
+        float enemyAngle;
+        EnemyStat enemyStat;
 
         public CoolGAme()
         {
@@ -71,6 +75,7 @@ namespace Game2
             Components.Add(gc);
             cam = new Camera2D();
             player1 = new Player(new Vector2(300, 300), Controller.Keyboard, 6);
+            enemyPos = new Vector2(200, 200);
             player2 = new Player(new Vector2(300, 500), Controller.Controller1, 6);
             shots = new List<shot>();
             GS = GameState.Start;
@@ -86,13 +91,29 @@ namespace Game2
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             player1.LoadContent(this, "1");
+
             player2.LoadContent(this, "1");
             map = new TmxMap("data/house.tmx");
-            TileEngineG = new TileEngineGood(map);
+            bus = new ServiceBus();
+
+            TileEngineG = new TileEngineGood(bus);
+
+            bus.Player = player1;
+            bus.Map = new TmxMap("data/house.tmx");
+            bus.PathFinder = new PathFinder(bus);
+            bus.TileEngineG = TileEngineG;
+
             TileEngineG.LoadContent(this);
             
+            enemyManager = new EnemyManager(bus);
+            enemyStat = Enemies.SpawnOne((EnemyType)r.Next(6),new Vector2());
+
+
+
+
 
             //tileEngine.TileMap = Content.Load<Texture2D>("1");
+            enemyManager.LoadContent(this);
         }
 
         /// <summary>
@@ -111,6 +132,8 @@ namespace Game2
 
         protected override void Update(GameTime gameTime)
         {
+            enemyManager.Update(gameTime);
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 Exit();
 
@@ -127,6 +150,8 @@ namespace Game2
                 case GameState.Start:                    
                     break;
                 case GameState.Playing:
+
+
                     player1.Update(mousePosition,ks);
                     player2.Update(mousePosition, ks);
                     
@@ -168,7 +193,6 @@ namespace Game2
                     break;
 
             }
-
             base.Update(gameTime);
         }
 
@@ -180,7 +204,6 @@ namespace Game2
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default,  RasterizerState.CullNone, null, cam.get_transformation(GraphicsDevice));
-            
             switch (GS)
             {
                 case GameState.Start:
@@ -189,13 +212,10 @@ namespace Game2
 
                 case GameState.Playing:
                     TileEngineG.Draw(spriteBatch);
+                    enemyManager.Draw(spriteBatch);
                     player1.draw(spriteBatch);
                     player2.draw(spriteBatch);
-                    foreach (shot s in player1.shots)
-                        spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
-
-                    foreach (shot s in player2.shots)
-                        spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
+                    
                     break;
                 case GameState.Pause:
                     TileEngineG.Draw(spriteBatch);
