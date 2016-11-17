@@ -48,6 +48,7 @@ namespace Game2
         Vector2 enemyPos;
         float enemyAngle;
         EnemyStat enemyStat;
+        private TmxMap map;
 
         public CoolGAme()
         {
