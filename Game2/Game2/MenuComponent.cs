@@ -103,7 +103,7 @@ namespace Meny
                 new MenuChoice(null) { Text = "START", Selected = true, ClickAction = MoveClick, SubMenu = MapMenu, IsVisible = () => CoolGAme.GS != CoolGAme.GameState.Pause },
                 new MenuChoice(null) { Text = "PAUSED", ClickAction = MenuStartClicked, IsVisible = () => CoolGAme.GS == CoolGAme.GameState.Pause, IsEnabled = false },
                 new MenuChoice(null) { Text = "OPTIONS", ClickAction = MoveClick, SubMenu = optionsMenu},
-                new MenuChoice(null) { Text = "EXIT GAME", ClickAction = MoveClick, SubMenu = returnToMenu, IsVisible = () => CoolGAme.GS == CoolGAme.GameState.Pause},
+                new MenuChoice(null) { Text = "EXIT TO MENU", ClickAction = MoveClick, SubMenu = returnToMenu, IsVisible = () => CoolGAme.GS == CoolGAme.GameState.Pause},
                 new MenuChoice(null) { Text = "QUIT", ClickAction = MoveClick, SubMenu = exitMenu}
             };
             TwoPlayers.Items = new List<MenuChoice>

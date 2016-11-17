@@ -45,7 +45,6 @@ namespace Game2
         Vector2 enemyPos;
         float enemyAngle;
         EnemyStat enemyStat;
-        private TmxMap map;
 
         public CoolGAme()
         {
@@ -106,18 +105,17 @@ namespace Game2
             }
         }
         public void LoadMap(MenuComponent.SelMap selectedMap)
-        {
-            TmxMap map = null; 
+        { 
             switch (selectedMap)
             {
                    case MenuComponent.SelMap.Forrest:
-                    map = new TmxMap("ForrestMap.tmx");
+                    bus.Map = new TmxMap("ForrestMap.tmx");
                     break;
                     case MenuComponent.SelMap.Stone:
-                    map = new TmxMap("StoneMap.tmx");
+                    bus.Map = new TmxMap("StoneMap.tmx");
                     break;
             }
-            TileEngineG = new TileEngineGood(map);
+            TileEngineG = new TileEngineGood(bus);
             TileEngineG.LoadContent(this);
         }
         protected override void LoadContent()
@@ -129,8 +127,6 @@ namespace Game2
             player2.LoadContent(this, "1");
             map = new TmxMap("data/house.tmx");
             bus = new ServiceBus();
-            map = new TmxMap("house.tmx");
-            TileEngineG = new TileEngineGood(map);
 
             TileEngineG = new TileEngineGood(bus);
 
