@@ -18,7 +18,6 @@ namespace Game2
         Controller3,
         controller4,
         Keyboard
-        
     }
     public class Player
     {
@@ -52,32 +51,29 @@ namespace Game2
         }
         public void LoadContent(Game game, string texture)
         {
-           
-                this.texture = game.Content.Load<Texture2D>(texture);
-                effect = game.Content.Load<SoundEffect>("Pew");
-            
+            this.texture = game.Content.Load<Texture2D>(texture);
+            effect = game.Content.Load<SoundEffect>("Pew");
+        }
+        public void Reset(Vector2 startPosition)
+        {
+            position = startPosition;
+            anglevector = new Vector2();
+            shots.Clear();
         }
         public void  Update(Vector2 mousePosition,KeyboardState ks)
         {
-
-           
-
-
             if (controller == Controller.Keyboard)
             {
-                accelerating = false;
+            accelerating = false;
             if(anglevector != new Vector2())
             prevangelvector = anglevector;
             anglevector = new Vector2();
-                
-                angle = (float)Math.Atan2(position.Y - mousePosition.Y, position.X - mousePosition.X);
-
+            angle = (float)Math.Atan2(position.Y - mousePosition.Y, position.X - mousePosition.X);
                 if (ks.IsKeyDown(Keys.W))
                 {
                     anglevector += new Vector2(0, -1);
                     accelerating = true;
                 }
-
                 if (ks.IsKeyDown(Keys.A))
                 {
                     anglevector += new Vector2(-1, 0);
@@ -98,9 +94,7 @@ namespace Game2
                     if (speed >= maxspeed)
                     speed = maxspeed;
                     else
-                    speed += acc;
-                   
-                }
+                    speed += acc;                }
                 else
                 {
                     if (speed < 0.5f)
@@ -123,7 +117,6 @@ namespace Game2
                         effect.Play(volume, pitch, pan);
                     }
                 }
-
             }
             else
             {
@@ -143,29 +136,21 @@ namespace Game2
                    else 
                         speed -= 0.5f * acc;
                 }
-                 velocity = speed * new Vector2(gs.ThumbSticks.Left.X, gs.ThumbSticks.Left.Y * -1);
+                velocity = speed * new Vector2(gs.ThumbSticks.Left.X, gs.ThumbSticks.Left.Y * -1);
                 if (gs.ThumbSticks.Right != new Vector2(0, 0))
                     angle = (float)Math.Atan2(gs.ThumbSticks.Right.X, gs.ThumbSticks.Right.Y) + (float)Math.PI / 2;
                 if (gs.IsButtonDown(Buttons.RightTrigger))
                 {
                     shots.Add(new shot(position, angle));
                     if (MenuComponent.SD == MenuComponent.Sound.On)
-                    {
                         effect.Play(volume, pitch, pan);
-                    }
                 }
             }
-            
-            
-
-            
             position += velocity;
         }
         public void draw(SpriteBatch spritebatch)
         {
             spritebatch.Draw(texture, position, null, Color.White, angle, new Vector2(texture.Width / 2, texture.Height / 2), 0.1f, SpriteEffects.None, 0);
         }
-
-
     }
 }
