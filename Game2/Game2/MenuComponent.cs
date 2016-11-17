@@ -89,10 +89,10 @@ namespace Meny
             var optionsMenu = new Menu();
             var graphicsMenu = new Menu();
             var soundMenu = new Menu();
+            var TwoPlayers = new Menu();
             var controllMenu = new Menu();
             var returnToMenu = new Menu();
             var exitMenu = new Menu();
-
             _menu.Items = new List<MenuChoice>
             {
                 new MenuChoice(null) { Text = "CoolGAme", IsEnabled = false},
@@ -102,13 +102,21 @@ namespace Meny
                 new MenuChoice(null) { Text = "EXIT GAME", ClickAction = MoveClick, SubMenu = returnToMenu, IsVisible = () => CoolGAme.GS == CoolGAme.GameState.Pause},
                 new MenuChoice(null) { Text = "QUIT", ClickAction = MoveClick, SubMenu = exitMenu}
             };
+            TwoPlayers.Items = new List<MenuChoice>
+            {
+                new MenuChoice(MapMenu) { Text = "Start game", Selected = true, ClickAction = MenuStartClicked},
+                new MenuChoice(MapMenu) { Text = "Twoplayer off", IsVisible = () => MenuComponent.TP == TwoPlayer.One, ClickAction = PlayerNum },
+                new MenuChoice(MapMenu) { Text = "Twoplayer on", IsVisible = () => MenuComponent.TP == TwoPlayer.Two, ClickAction = PlayerNum },
+                new MenuChoice(MapMenu) { Text = "Player 2 Controller", IsVisible = () => MenuComponent.CK == ConKey.Con && MenuComponent.TP == TwoPlayer.Two, ClickAction = Switch },
+                new MenuChoice(MapMenu) { Text = "Player 2 Keyboard", IsVisible = () => MenuComponent.CK == ConKey.Key && MenuComponent.TP == TwoPlayer.Two, ClickAction = Switch },
+                new MenuChoice(MapMenu) { Text = "Back", ClickAction = MoveUpClick}
+            };
             MapMenu.Items = new List<MenuChoice>
             {
                 new MenuChoice(_menu) { Text = "Select your map", IsEnabled = false},
-                new MenuChoice(_menu) { Text = "ForrestMap", Selected = true, ClickAction = ForrestMap },
-                new MenuChoice(_menu) { Text = "StoneMap", ClickAction = StoneMap },
+                new MenuChoice(_menu) { Text = "ForrestMap", Selected = true, ClickAction = ForrestMap, SubMenu = TwoPlayers},
+                new MenuChoice(_menu) { Text = "StoneMap", ClickAction = StoneMap, SubMenu = TwoPlayers},
                 new MenuChoice(_menu) { Text = "Back", ClickAction = MoveUpClick}
-
             };
             optionsMenu.Items = new List<MenuChoice>
             {
@@ -137,10 +145,6 @@ namespace Meny
                 new MenuChoice(optionsMenu) { Text = "Controll Menu", IsEnabled = false},
                 new MenuChoice(optionsMenu) { Text = "Keyboard Active", Selected = true, IsVisible = () => MenuComponent.CL == Controll.Key, ClickAction = ControlMenu },
                 new MenuChoice(optionsMenu) { Text = "Controll Active", IsVisible = () => MenuComponent.CL == Controll.Cont, ClickAction = ControlMenu },
-                new MenuChoice(optionsMenu) { Text = "Twoplayer off", IsVisible = () => MenuComponent.TP == TwoPlayer.One, ClickAction = PlayerNum },
-                new MenuChoice(optionsMenu) { Text = "Twoplayer on", IsVisible = () => MenuComponent.TP == TwoPlayer.Two, ClickAction = PlayerNum },
-                new MenuChoice(optionsMenu) { Text = "Player 2 Controller", IsVisible = () => MenuComponent.CK == ConKey.Con && MenuComponent.TP == TwoPlayer.Two, ClickAction = Switch},
-                new MenuChoice(optionsMenu) { Text = "Player 2 Keyboard", IsVisible = () => MenuComponent.CK == ConKey.Key && MenuComponent.TP == TwoPlayer.Two, ClickAction = Switch},
                 new MenuChoice(optionsMenu) { Text = "Back to Options", ClickAction = MoveUpClick}
             };
             exitMenu.Items = new List<MenuChoice>
@@ -285,18 +289,19 @@ namespace Meny
         {
             CoolGAme.GS = CoolGAme.GameState.Playing;
             gs = GameState.Playing;
+            _activeMenu = _menu;
         }
         private void ForrestMap()
         {
             SP = SelMap.Forrest;
-            CoolGAme.GS = CoolGAme.GameState.Playing;
-            gs = GameState.Playing;
+            CoolGAme g = Game as CoolGAme;
+            g.LoadMap(SP);
         }
         private void StoneMap()
         {
             SP = SelMap.Stone;
-            CoolGAme.GS = CoolGAme.GameState.Playing;
-            gs = GameState.Playing;
+            CoolGAme g = Game as CoolGAme;
+            g.LoadMap(SP);
         }
         private void MoveUpClick()
         {

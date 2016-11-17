@@ -57,6 +57,13 @@ namespace Game2
                 effect = game.Content.Load<SoundEffect>("Pew");
             
         }
+
+        public void Reset(Vector2 startPosition)
+        {
+            position = startPosition;
+            anglevector = new Vector2();
+            shots.Clear();
+        }
         public void  Update(Vector2 mousePosition,KeyboardState ks)
         {
             if (controller == Controller.Keyboard)
