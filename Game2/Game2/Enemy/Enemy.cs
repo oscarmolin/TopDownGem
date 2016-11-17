@@ -13,7 +13,7 @@ namespace Game2
     {
         public int EnemyId { get; set; }
         public int Health { get; set; }
-        public int Rescitense { get; set; }
+        public int Resistance { get; set; }
         public int CollisionDamage { get; set; }
         public float Speed { get; set; }
         public string Name { get; set; }
@@ -53,7 +53,7 @@ namespace Game2
                     zombie.Position = position;
                     zombie.EnemyId = 1;
                     zombie.Health = 20;
-                    zombie.Rescitense = 0;
+                    zombie.Resistance = 0;
                     zombie.CollisionDamage = 5;
                     zombie.Speed = 2;
                     zombie.Name = "Zombie";
@@ -65,7 +65,7 @@ namespace Game2
                     crippler.Position = position;
                     crippler.EnemyId = 2;
                     crippler.Health = 30;
-                    crippler.Rescitense = 10;
+                    crippler.Resistance = 10;
                     crippler.CollisionDamage = 10;
                     crippler.Speed = 1;
                     crippler.Name = "Crippler";
@@ -77,7 +77,7 @@ namespace Game2
                     spitter.Position = position;
                     spitter.EnemyId = 3;
                     spitter.Health = 25;
-                    spitter.Rescitense = 5;
+                    spitter.Resistance = 5;
                     spitter.CollisionDamage = 2;
                     spitter.Speed = 2;
                     spitter.Name = "Spitter";
@@ -89,7 +89,7 @@ namespace Game2
                     charger.Position = position;
                     charger.EnemyId = 4;
                     charger.Health = 40;
-                    charger.Rescitense = 10;
+                    charger.Resistance = 10;
                     charger.CollisionDamage = 15;
                     charger.Speed = 5;
                     charger.Name = "Charger";
@@ -101,7 +101,7 @@ namespace Game2
                     pistolzombie.Position = position;
                     pistolzombie.EnemyId = 5;
                     pistolzombie.Health = 35;
-                    pistolzombie.Rescitense = 15;
+                    pistolzombie.Resistance = 15;
                     pistolzombie.CollisionDamage = 0;
                     pistolzombie.Speed = 2;
                     pistolzombie.Name = "Pistol Zombie";
@@ -113,7 +113,7 @@ namespace Game2
                     shotgunzombie.Position = position;
                     shotgunzombie.EnemyId = 6;
                     shotgunzombie.Health = 35;
-                    shotgunzombie.Rescitense = 15;
+                    shotgunzombie.Resistance = 15;
                     shotgunzombie.CollisionDamage = 0;
                     shotgunzombie.Speed = 2;
                     shotgunzombie.Name = "Shotgun Zombie";

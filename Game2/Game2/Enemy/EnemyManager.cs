@@ -21,18 +21,22 @@ namespace Game2
         Texture2D spit_projectile;
         Texture2D zombie_bullet;
         Texture2D gfx_spitterPool;
+        Texture2D health_Gauge;
+        Texture2D health_Bar;
         int round = 1;
-        int Health;
+        int Resistance;
+        int CollisionDamage;
         Random ran = new Random();
         ServiceBus bus;
         int frame = 0;
 
-        private AcidPool acidPool;
         private List<EnemyStat> _enemies;
         List<Rectangle> SpawnPoints = new List<Rectangle>();
         List<SpitProjectile> SpitProjectile = new List<SpitProjectile>();
         List<ZombieBullet> ZombieBullet = new List<ZombieBullet>();
-        List<AcidPool> AcidPool = new List<AcidPool>(); 
+        List<AcidPool> AcidPool = new List<AcidPool>();
+        Rectangle RectangleBar;
+        Rectangle RectangleGauge;
 
         public EnemyManager(ServiceBus Bus)
         {
@@ -44,7 +48,8 @@ namespace Game2
             e.Angle = new Vector2(1, 0);
 
             _enemies.Add(e);
-            Health = e.Health;
+            Resistance = e.Resistance;
+            CollisionDamage = e.CollisionDamage;
         }
 
         public void LoadContent(Game Game)
@@ -58,6 +63,8 @@ namespace Game2
             spit_projectile = Game.Content.Load<Texture2D>("Spitter projectile");
             zombie_bullet = Game.Content.Load<Texture2D>("ZombieBullet");
             gfx_spitterPool = Game.Content.Load<Texture2D>("Spitter Pool 1");
+            health_Bar = Game.Content.Load<Texture2D>("GreenHealthBar");
+            health_Gauge = Game.Content.Load<Texture2D>("RedHealthBar");
         }
 
         public void Update(GameTime gametime)
@@ -128,7 +135,6 @@ namespace Game2
                 Pool.Update(gametime);
             }
             AcidPool.RemoveAll(z => z.Decay);
-
             UpdateBullet();
         }
         public void UpdateBullet()
@@ -237,6 +243,10 @@ namespace Game2
                 {
                     spriteBatch.Draw(enemy_shotgunzombie, enemyStat.Position, null, Color.White, enemyAngle, new Vector2(enemy_shotgunzombie.Width / 2, enemy_shotgunzombie.Height / 2), 1.0f, SpriteEffects.None, 0);
                 }
+                RectangleBar = new Rectangle(((int)enemyStat.Position.X - 25), ((int)enemyStat.Position.Y - 35), 50, 2);
+                RectangleGauge = new Rectangle(((int)enemyStat.Position.X - 25), ((int)enemyStat.Position.Y - 35), 50, 2);
+                spriteBatch.Draw(health_Gauge, RectangleGauge, Color.White);
+                spriteBatch.Draw(health_Bar, RectangleBar, Color.White);
             }
         }
         public void GetSpawningTiles()
