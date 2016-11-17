@@ -1,6 +1,5 @@
 ﻿using System;
 using Meny;
-
 namespace Game2
 {
 #if WINDOWS || LINUX

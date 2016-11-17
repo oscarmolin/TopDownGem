@@ -6,9 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
 using TiledSharp;
-
 namespace Game2
 {
     public class shot
