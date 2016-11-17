@@ -24,12 +24,14 @@ namespace Game2
         Texture2D health_Gauge;
         Texture2D health_Bar;
         int round = 1;
+        int MaxHealth;
         int Resistance;
         int CollisionDamage;
         Random ran = new Random();
         ServiceBus bus;
         int frame = 0;
 
+        shot shots;
         private List<EnemyStat> _enemies;
         List<Rectangle> SpawnPoints = new List<Rectangle>();
         List<SpitProjectile> SpitProjectile = new List<SpitProjectile>();
@@ -48,6 +50,7 @@ namespace Game2
             e.Angle = new Vector2(1, 0);
 
             _enemies.Add(e);
+            MaxHealth = e.Health;
             Resistance = e.Resistance;
             CollisionDamage = e.CollisionDamage;
         }
@@ -218,35 +221,37 @@ namespace Game2
             foreach (var enemyStat in _enemies)
             {
                 float enemyAngle = (float)(Math.Atan2(enemyStat.Angle.X, -enemyStat.Angle.Y) - MathHelper.PiOver2);
-
-                if (enemyStat.Enemytype == EnemyType.Zombie)
+                if (enemyStat.Health > 0)
                 {
-                    spriteBatch.Draw(enemy_zombie, enemyStat.Position, null, Color.White, enemyAngle, new Vector2(enemy_zombie.Width / 2, enemy_zombie.Height / 2), 1.0f, SpriteEffects.None, 0);
+                    if (enemyStat.Enemytype == EnemyType.Zombie)
+                    {
+                        spriteBatch.Draw(enemy_zombie, enemyStat.Position, null, Color.White, enemyAngle, new Vector2(enemy_zombie.Width / 2, enemy_zombie.Height / 2), 1.0f, SpriteEffects.None, 0);
+                    }
+                    else if (enemyStat.Enemytype == EnemyType.Crippler)
+                    {
+                        spriteBatch.Draw(enemy_crippler, enemyStat.Position, null, Color.White, enemyAngle, new Vector2(enemy_crippler.Width / 2, enemy_crippler.Height / 2), 1.0f, SpriteEffects.None, 0);
+                    }
+                    else if (enemyStat.Enemytype == EnemyType.Spitter)
+                    {
+                        spriteBatch.Draw(enemy_spitter, enemyStat.Position, null, Color.White, enemyAngle, new Vector2(enemy_spitter.Width / 2, enemy_spitter.Height / 2), 1.0f, SpriteEffects.None, 0);
+                    }
+                    else if (enemyStat.Enemytype == EnemyType.Charger)
+                    {
+                        spriteBatch.Draw(enemy_charger, enemyStat.Position, null, Color.White, enemyAngle, new Vector2(enemy_charger.Width / 2, enemy_charger.Height / 2), 1.0f, SpriteEffects.None, 0);
+                    }
+                    else if (enemyStat.Enemytype == EnemyType.PistolZombie)
+                    {
+                        spriteBatch.Draw(enemy_pistolzombie, enemyStat.Position, null, Color.White, enemyAngle, new Vector2(enemy_pistolzombie.Width / 2, enemy_pistolzombie.Height / 2), 1.0f, SpriteEffects.None, 0);
+                    }
+                    else if (enemyStat.Enemytype == EnemyType.ShotgunZombie)
+                    {
+                        spriteBatch.Draw(enemy_shotgunzombie, enemyStat.Position, null, Color.White, enemyAngle, new Vector2(enemy_shotgunzombie.Width / 2, enemy_shotgunzombie.Height / 2), 1.0f, SpriteEffects.None, 0);
+                    }
+                    RectangleBar = new Rectangle(((int)enemyStat.Position.X - 25), ((int)enemyStat.Position.Y - 35), enemyStat.Health / MaxHealth * 50, 2);
+                    RectangleGauge = new Rectangle(((int)enemyStat.Position.X - 25), ((int)enemyStat.Position.Y - 35), 50, 2);
+                    spriteBatch.Draw(health_Gauge, RectangleGauge, Color.White);
+                    spriteBatch.Draw(health_Bar, RectangleBar, Color.White);
                 }
-                else if (enemyStat.Enemytype == EnemyType.Crippler)
-                {
-                    spriteBatch.Draw(enemy_crippler, enemyStat.Position, null, Color.White, enemyAngle, new Vector2(enemy_crippler.Width / 2, enemy_crippler.Height / 2), 1.0f, SpriteEffects.None, 0);
-                }
-                else if (enemyStat.Enemytype == EnemyType.Spitter)
-                {
-                    spriteBatch.Draw(enemy_spitter, enemyStat.Position, null, Color.White, enemyAngle, new Vector2(enemy_spitter.Width / 2, enemy_spitter.Height / 2), 1.0f, SpriteEffects.None, 0);
-                }
-                else if (enemyStat.Enemytype == EnemyType.Charger)
-                {
-                    spriteBatch.Draw(enemy_charger, enemyStat.Position, null, Color.White, enemyAngle, new Vector2(enemy_charger.Width / 2, enemy_charger.Height / 2), 1.0f, SpriteEffects.None, 0);
-                }
-                else if (enemyStat.Enemytype == EnemyType.PistolZombie)
-                {
-                    spriteBatch.Draw(enemy_pistolzombie, enemyStat.Position, null, Color.White, enemyAngle, new Vector2(enemy_pistolzombie.Width / 2, enemy_pistolzombie.Height / 2), 1.0f, SpriteEffects.None, 0);
-                }
-                else if (enemyStat.Enemytype == EnemyType.ShotgunZombie)
-                {
-                    spriteBatch.Draw(enemy_shotgunzombie, enemyStat.Position, null, Color.White, enemyAngle, new Vector2(enemy_shotgunzombie.Width / 2, enemy_shotgunzombie.Height / 2), 1.0f, SpriteEffects.None, 0);
-                }
-                RectangleBar = new Rectangle(((int)enemyStat.Position.X - 25), ((int)enemyStat.Position.Y - 35), 50, 2);
-                RectangleGauge = new Rectangle(((int)enemyStat.Position.X - 25), ((int)enemyStat.Position.Y - 35), 50, 2);
-                spriteBatch.Draw(health_Gauge, RectangleGauge, Color.White);
-                spriteBatch.Draw(health_Bar, RectangleBar, Color.White);
             }
         }
         public void GetSpawningTiles()
