@@ -70,8 +70,21 @@ namespace Game2
             health_Gauge = Game.Content.Load<Texture2D>("RedHealthBar");
         }
 
-        public void Update(GameTime gametime)
+        public void Update(GameTime gametime,List<shot> p1s,List<shot> p2s)
         {
+            foreach (var e in _enemies)
+            {
+                foreach (var s in p1s)
+                {
+                    if ((s.pos - e.Position).Length() < 32)
+                    {
+                        _enemies.Remove(e);
+                        p1s.Remove(s);
+                        break;
+                    }
+                }
+                break;
+            }
             frame++;
             if (frame == 1000)
             {

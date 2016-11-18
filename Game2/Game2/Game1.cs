@@ -62,15 +62,13 @@ namespace Game2
             Components.Add(gc);
             cam = new Camera2D();
             map = new TmxMap("data/house.tmx");
-            TileEngineG = new TileEngineGood(map);
+             TileEngineG = new TileEngineGood(bus);
             //TileEngineG.LoadContent(this);
-            player1 = new Player(new Vector2(900, 300), Controller.Keyboard, 6);
-            enemyPos = new Vector2(200, 200);
-            player2 = new Player(new Vector2(900, 500), Controller.Controller1, 6);
-            GS = GameState.Start;
-            mapHitBoxes = TileEngineG.RegHitBoxes();
-            player1 = new Player(new Vector2(300, 300), Controller.Keyboard, 6, mapHitBoxes);
-            player2 = new Player(new Vector2(300, 500), Controller.Controller1, 6, mapHitBoxes);
+
+            player1 = new Player(new Vector2(900, 300), Controller.Keyboard, 6, mapHitBoxes);
+            player2 = new Player(new Vector2(900, 500), Controller.Controller1, 6, mapHitBoxes);
+            enemyPos = new Vector2(200, 200);      GS = GameState.Start;
+           
             base.Initialize();
         }
         public void Restart()
@@ -124,7 +122,14 @@ namespace Game2
             }
             TileEngineG = new TileEngineGood(bus);
             TileEngineG.LoadContent(this);
+            mapHitBoxes = TileEngineG.RegHitBoxes();
+
+            player1 = new Player(new Vector2(900, 300), Controller.Keyboard, 6, mapHitBoxes);
+            player2 = new Player(new Vector2(900, 500), Controller.Controller1, 6, mapHitBoxes);
+            player1.LoadContent(this, "2");
+            player2.LoadContent(this, "2");
         }
+
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -147,7 +152,7 @@ namespace Game2
         }
         protected override void Update(GameTime gameTime)
         {
-            enemyManager.Update(gameTime);
+            enemyManager.Update(gameTime,player1.shots,player2.shots);
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 Exit();
@@ -217,6 +222,10 @@ namespace Game2
                     player1.draw(spriteBatch);
                     if (MenuComponent.TP == MenuComponent.TwoPlayer.Two)
                         player2.draw(spriteBatch);
+                    foreach (shot s in player1.shots)
+                        spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
+                    foreach (shot s in player2.shots)
+                        spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
                     break;
                 case GameState.Pause:
                     TileEngineG.Draw(spriteBatch);
@@ -224,9 +233,9 @@ namespace Game2
                     if (MenuComponent.TP == MenuComponent.TwoPlayer.Two)
                         player2.draw(spriteBatch);
                     foreach (shot s in player1.shots)
-                        spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.05f, SpriteEffects.None, 0);
+                        spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width / 2, player1.texture.Height / 2), 0.3f, SpriteEffects.None, 0);
                     foreach (shot s in player2.shots)
-                        spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width/2, player1.texture.Height/2), 0.05f, SpriteEffects.None, 0);                    
+                        spriteBatch.Draw(player1.texture, s.pos, null, Color.White, s.angle, new Vector2(player1.texture.Width/2, player1.texture.Height/2), 0.3f, SpriteEffects.None, 0);                    
                     spriteBatch.End();
                     mc.Draw(gameTime);
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, cam.get_transformation(GraphicsDevice));                    

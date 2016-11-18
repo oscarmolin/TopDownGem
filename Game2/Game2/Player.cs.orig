@@ -127,11 +127,17 @@ namespace Game2
                     velocity = speed * prevangelvector;
                 if (ks.IsKeyDown(Keys.Space))
                 {
+<<<<<<< HEAD
                     shots.Add(new shot(position, angle+ RandomFireAngle.Angle(0.1f)));
                     if (MenuComponent.SD == MenuComponent.Sound.On)
                     {
                         effect.Play(volume, pitch, pan);
                     }
+=======
+                    shots.Add(new shot(position, angle+ RandomFireAngle.Angle(1)));
+
+                    effect.Play(volume, pitch, pan);
+>>>>>>> origin/Colision
                 }
             }
             else
@@ -162,10 +168,17 @@ namespace Game2
                         effect.Play(volume, pitch, pan);
                 }
             }
+<<<<<<< HEAD
+=======
+
+            
             checkColision();
+            
         }
+
         private void checkColision()
         {
+>>>>>>> origin/Colision
             position += velocity;
             prect = new Rectangle((int)(position.X - texture.Width / 2), (int)(position.Y - texture.Height / 2), 64, 64);
             Point temp = new Point((int)(((position.X-32) - ((position.X-32) % 64)) / 64), (int)(((position.Y - 32) - ((position.Y - 32) % 64)) / 64));
@@ -231,12 +244,18 @@ namespace Game2
 
         public void draw(SpriteBatch spritebatch)
         {
+<<<<<<< HEAD
+            spritebatch.Draw(texture, position, null, Color.White, angle, new Vector2(texture.Width / 2, texture.Height / 2), 0.1f, SpriteEffects.None, 0);
+        }
+=======
             spritebatch.Draw(texture, position, null, Color.White, angle, new Vector2(texture.Width / 2, texture.Height / 2), 1, SpriteEffects.None, 0);
 
-            //for (int i = 0; i < maprect.Count; i++)
-            //    spritebatch.Draw(texture,new Vector2( maprect[i].X,maprect[i].Y), null, Color.Red, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+            for (int i = 0; i < maprect.Count; i++)
+                spritebatch.Draw(texture,new Vector2( maprect[i].X,maprect[i].Y), null, Color.Red, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
             maprect.Clear();
         }
        
+
+>>>>>>> origin/Colision
     }
 }
