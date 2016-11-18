@@ -135,7 +135,7 @@ namespace Game2
                     velocity = speed * prevangelvector;
                 if (ks.IsKeyDown(Keys.Space))
                 {
-                    shots.Add(new shot(position, angle));
+                    shots.Add(new shot(position, angle+ RandomFireAngle.Angle(1)));
 
                     effect.Play(volume, pitch, pan);
                 }
@@ -178,7 +178,7 @@ namespace Game2
         private void checkColision()
         {
             position += velocity;
-            //prect = new Rectangle((int)(position.X - texture.Width / 2), (int)(position.Y - texture.Height / 2), 64, 64);
+            prect = new Rectangle((int)(position.X - texture.Width / 2), (int)(position.Y - texture.Height / 2), 64, 64);
             Point temp = new Point((int)(((position.X-32) - ((position.X-32) % 64)) / 64), (int)(((position.Y - 32) - ((position.Y - 32) % 64)) / 64));
 
             if (map[temp.X, temp.Y] == 1 || map[temp.X, temp.Y] == 2)
@@ -201,58 +201,54 @@ namespace Game2
                 rectBR = new Rectangle(temp.X * 64 + 64, temp.Y * 64 + 64, 64, 64);
                 maprect.Add(rectBR);
             }
-
-            //prect = new Rectangle((int)position.X +(int)velocity.X -(int)(texture.Width / 2), (int)position.Y + (int)velocity.Y - (int)(texture.Height / 2), texture.Width, texture.Height);
-            //if (map[(int)(position.X / 64), (int)((position.Y-(position.Y%64))/ 64)] == 1|| map[(int)(position.X / 64), (int)(position.Y / 64)] == 2)
-            //    maprect.Add(new Rectangle((int)(1), (int)(position.Y ),64,64));
-            //if (map[(int)(position.X / 64)+1, (int)(position.Y / 64)] == 1 || map[(int)(position.X / 64)+1, (int)(position.Y / 64)] == 2)
-            //    maprect.Add(new Rectangle((int)(position.X +64 ), (int)(position.Y ), 64, 64));
-            //if (map[(int)(position.X / 64), (int)(position.Y / 64)+1] == 1 || map[(int)(position.X / 64), (int)(position.Y / 64)+1] == 2)
-            //    maprect.Add(new Rectangle((int)(position.X ), (int)(position.Y + 64), 64, 64));
-            //if (map[(int)(position.X / 64)+1, (int)(position.Y / 64)+1] == 1 || map[(int)(position.X / 64)+1, (int)(position.Y / 64)+1] == 2)
-            //    maprect.Add(new Rectangle((int)(position.X + 64), (int)(position.Y + 64), 64, 64));
-
-
+            
 
             for (int i = 0; i < maprect.Count; i++)
             {
-                if (position.X + radius > maprect[i].X && position.X - radius < maprect[i].X)
+                if (true) //prect.Intersects(maprect[i]))
                 {
-                    //velocity = new Vector2(0, velocity.Y);
-                    position = new Vector2(maprect[i].X-1,position.Y);
-                    break;
-                }
-                else if (position.X - radius < maprect[i].X +64 && position.X + radius > maprect[i].X+64)
-                {
-                    //velocity = new Vector2(0, velocity.Y);
-                    position = new Vector2(maprect[i].X +65 , position.Y);
-                    break;
-                }
-                else if (position.Y + radius > maprect[i].Y && position.Y - radius < maprect[i].Y)
-                {
-                    //velocity = new Vector2(velocity.X,0);
-                    position = new Vector2(position.X, maprect[i].Y -1 );
-                    break;
-                }
-                else if (position.Y - radius < maprect[i].Y +64&& position.Y + radius > maprect[i].Y+64)
-                {
-                    //velocity = new Vector2(velocity.X,0);
-                    position = new Vector2(position.X, maprect[i].Y +65 );
-                    break;
+                    if (position.X + radius > maprect[i].X && position.X - radius < maprect[i].X && (position).Y < maprect[i].Y + 64 && (position).Y > maprect[i].Y)
+                    {
+                        //velocity = new Vector2(0, velocity.Y);
+                        position = new Vector2(maprect[i].X - radius, position.Y);
+                        break;
+                    }
+                    else if (position.X - radius < maprect[i].X + 64 && position.X + radius > maprect[i].X + 64 && (position ).Y > maprect[i].Y + 64 && (position ).Y < maprect[i].Y)
+                    {
+                        //velocity = new Vector2(0, velocity.Y);
+                        position = new Vector2(maprect[i].X + radius + 64, position.Y);
+                        break;
+                    }
+                    else if (position.Y + radius > maprect[i].Y && position.Y - radius < maprect[i].Y)
+                    {
+                        //velocity = new Vector2(velocity.X,0);
+                        position = new Vector2(position.X, maprect[i].Y - radius);
+                        break;
+                    }
+                    else if (position.Y - radius < maprect[i].Y + 64 && position.Y + radius > maprect[i].Y + 64)
+                    {
+                        //velocity = new Vector2(velocity.X,0);
+                        position = new Vector2(position.X, maprect[i].Y + radius + 64);
+                        break;
+                    }
                 }
             }
 
             //if (!colided)
             
             //colided = false;
-            maprect.Clear();
+            
         }
 
         public void draw(SpriteBatch spritebatch)
         {
             spritebatch.Draw(texture, position, null, Color.White, angle, new Vector2(texture.Width / 2, texture.Height / 2), 1, SpriteEffects.None, 0);
-        }
 
+            for (int i = 0; i < maprect.Count; i++)
+                spritebatch.Draw(texture,new Vector2( maprect[i].X,maprect[i].Y), null, Color.Red, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+            maprect.Clear();
+        }
+       
 
     }
 }

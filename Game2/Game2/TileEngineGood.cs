@@ -76,7 +76,7 @@ namespace Game2
                         else                        
                         mapHitBoxes[tile.X, tile.Y] = 1;                    
                     }
-                
+
             
             return (mapHitBoxes);
         }
