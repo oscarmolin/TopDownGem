@@ -52,8 +52,24 @@ namespace Game2
                 }
             }
         }
+        public int[,] RegHitBoxes()
         public List<Rectangle> FindSpawnZones()
         {
+            
+            int[,] mapHitBoxes = new int[map.Width,map.Height];
+            
+            List<List<Rectangle>> rects = new List<List<Rectangle>>();
+            rects.Add(new List<Rectangle>());
+                foreach(var tile in map.Layers[1].Tiles)
+                    if (tile.Gid != 0)
+                    { 
+                        if (tile.Gid == 27)
+                        mapHitBoxes[tile.X, tile.Y] = 2;
+                        else                        
+                        mapHitBoxes[tile.X, tile.Y] = 1;                    
+                    }
+
+            
             for (var i = 0; i < bus.Map.Layers[2].Tiles.Count; i++)
             {
                 int gid = bus.Map.Layers[2].Tiles[i].Gid;
@@ -69,5 +85,7 @@ namespace Game2
             return spawnZones;
         }
 
+            return (mapHitBoxes);
+        }
     }
 }

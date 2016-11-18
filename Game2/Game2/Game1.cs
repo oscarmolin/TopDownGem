@@ -36,7 +36,9 @@ namespace Game2
         TmxMap selectedMapmap;
         TileEngineGood TileEngineG;
         Camera2D cam;
+        int[,] mapHitBoxes;
         Vector2 mousePosition;
+        
         KeyboardState ks = new KeyboardState();
         GamePadState gs = GamePad.GetState(0);
         Vector2 enemyPos;
@@ -59,10 +61,16 @@ namespace Game2
             gc = new GamePadComponent(this);
             Components.Add(gc);
             cam = new Camera2D();
+            map = new TmxMap("data/house.tmx");
+            TileEngineG = new TileEngineGood(map);
+            //TileEngineG.LoadContent(this);
             player1 = new Player(new Vector2(900, 300), Controller.Keyboard, 6);
             enemyPos = new Vector2(200, 200);
             player2 = new Player(new Vector2(900, 500), Controller.Controller1, 6);
             GS = GameState.Start;
+            mapHitBoxes = TileEngineG.RegHitBoxes();
+            player1 = new Player(new Vector2(300, 300), Controller.Keyboard, 6, mapHitBoxes);
+            player2 = new Player(new Vector2(300, 500), Controller.Controller1, 6, mapHitBoxes);
             base.Initialize();
         }
         public void Restart()
@@ -121,8 +129,8 @@ namespace Game2
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            player1.LoadContent(this, "1");
-            player2.LoadContent(this, "1");
+            player1.LoadContent(this, "2");
+            player2.LoadContent(this, "2");
             map = new TmxMap("data/house.tmx");
             bus = new ServiceBus();
             TileEngineG = new TileEngineGood(bus);
