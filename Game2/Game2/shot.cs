@@ -16,10 +16,21 @@ namespace Game2
         Texture2D texture;
         public float angle;//make vector
         public Vector2 pos;
+        public Rectangle Rectangle;
+        public Color[] textureData;
         public shot(Vector2 Pos, float Angle)
         {
             pos = Pos;
             angle = Angle;
+        }
+        public void Load()
+        {
+            textureData = new Color[texture.Width * texture.Height];
+            texture.GetData(textureData);
+        }
+        public void Update()
+        {
+            Rectangle = new Rectangle((int)pos.X, (int)pos.Y, texture.Width, texture.Height);
         }
     }
 }

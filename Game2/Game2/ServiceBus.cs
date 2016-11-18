@@ -13,5 +13,7 @@ namespace Game2
         public PathFinder PathFinder { get; set; }
         public Player Player { get; set; }
         public TileEngineGood TileEngineG { get; set; }
+        public shot Shot { get; set; }
+        public EnemyManager EnemyManager { get; set; }
     }
 }

@@ -22,6 +22,7 @@ namespace Game2
         public float ShootTimer { get; set; }
         public Vector2 Position { get; set; }
         public Vector2 Angle { get; set; }
+        public Color[] textureData { get; set; }
 
         public void Update()
         {

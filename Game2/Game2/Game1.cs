@@ -112,7 +112,6 @@ namespace Game2
 
 
 
-
             //tileEngine.TileMap = Content.Load<Texture2D>("1");
             enemyManager.LoadContent(this);
         }
@@ -130,7 +129,6 @@ namespace Game2
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-
         protected override void Update(GameTime gameTime)
         {
             enemyManager.Update(gameTime);
